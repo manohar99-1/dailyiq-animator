@@ -41,7 +41,7 @@ Rules:
 
 
 def _post(url, payload, headers, timeout=120):
-    req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json", **headers}, method="POST")
+    req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json", "Accept": "application/json", "User-Agent": "Mozilla/5.0 (compatible; dailyiq-animator/1.0)", **headers}, method="POST")
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return json.loads(r.read().decode("utf-8"))
 
@@ -96,7 +96,7 @@ def generate_spec(topic, cfg, log=print):
                     log(f"[llm] ok: {len(spec['scenes'])} scenes, title '{spec['title']}'")
                     return spec
                 except urllib.error.HTTPError as e:
-                    errors.append(f"{name}/{model}: HTTP {e.code}")
+                    errors.append(f"{name}/{model}: HTTP {e.code} {e.read().decode('utf-8', 'ignore')[:160]}")
                     if e.code == 429 and attempt == 1:
                         time.sleep(6)
                         continue
