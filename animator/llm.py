@@ -77,6 +77,31 @@ def extract_json(text):
         return json.loads(re.sub(r",\s*([}\]])", r"\1", t))
 
 
+_SKIP = ("whisper", "orpheus", "guard", "tts", "safeguard", "embed", "distil-whisper")
+
+
+def _get(url, headers):
+    req = urllib.request.Request(url, headers={"Accept": "application/json", "User-Agent": "Mozilla/5.0 (compatible; dailyiq-animator/1.0)", **headers})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return json.loads(r.read().decode("utf-8"))
+
+
+def candidate_models(name, key, configured, log=print):
+    """Groq: ask the API which models this key can really use (model names change often), keep the configured order first,
+    then append any other chat model that is available."""
+    if name != "groq":
+        return list(configured)
+    try:
+        ids = [m["id"] for m in _get("https://api.groq.com/openai/v1/models", {"Authorization": f"Bearer {key}"}).get("data", [])]
+    except Exception as e:
+        log(f"[llm] could not list groq models ({type(e).__name__}); using config")
+        return list(configured)
+    chat = [i for i in ids if not any(w in i.lower() for w in _SKIP)]
+    log(f"[llm] groq models available to this key: {', '.join(chat) or 'none'}")
+    order = [m for m in configured if m in chat] + [m for m in chat if m not in configured]
+    return order[:5] or list(configured)
+
+
 def generate_spec(topic, cfg, log=print):
     prompt = build_prompt(topic, cfg)
     errors = []
@@ -86,7 +111,7 @@ def generate_spec(topic, cfg, log=print):
         key = os.environ.get(ENV_KEYS.get(name, ""), "").strip()
         if not key:
             continue
-        for model in prov["models"]:
+        for model in candidate_models(name, key, prov["models"], log):
             tried += 1
             for attempt in (1, 2):
                 try:
