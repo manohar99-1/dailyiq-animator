@@ -1,0 +1,65 @@
+"""The 'spec' is the JSON that describes a video: a title plus scenes, each with narration (`say`), a scene `type` and its `data`.
+This module defines the allowed scene types, cleans up whatever an LLM returns, and explains the schema to the LLM."""
+import re
+
+SCENE_TYPES = ["hook", "searchbar", "flow", "network", "hub", "grid", "counter", "compare", "steps", "alert", "bars", "collapse", "keypoints"]
+
+ICON_NAMES = ("search mail map play video phone laptop cab car truck shop bell cloud server database lock wifi globe battery chip robot shield user users "
+              "cart bag bank qr rupee money bolt clock calendar fire heart star camera music chat thumb home code plane gear warning check x question power link").split()
+
+SCHEMA_HELP = """
+Scene types (each scene = one spoken sentence + one animated visual). "data" fields:
+- hook: {"lines": ["What if","Google","vanished?"] (1-3 short lines), "icon": "<icon>"}  -> big animated title. Use as FIRST scene.
+- searchbar: {"query": "search anything", "word": "Google", "vanish": true}  -> a search bar that types, glitches and disappears. Good first scene for "what if X disappeared".
+- flow: {"nodes": [{"icon": "phone", "label": "You"}, ...] (2-5 nodes), "layout": "row|column|zigzag"} -> a packet travels node to node. For "how X works".
+- network: {"label": "Decentralized web", "from": "YOU", "to": "SITE", "crash": true, "crash_label": "CRASH!", "result": "STILL WORKS"} -> mesh network; one node crashes and traffic reroutes.
+- hub: {"hub": {"icon": "cloud", "label": "Central"}, "spokes": [{"icon": "mail", "label": "Mail"}, ... 3-6], "fail": true, "label": "Single point of failure"} -> hub and spokes; hub fails, spokes go dark.
+- grid: {"items": [{"icon": "mail", "label": "Mail"}, ... up to 9], "mode": "fail|light", "badge": "OUTAGE"} -> icon tiles that go dark one by one (fail) or light up (light).
+- counter: {"value": 1000000, "from": 0, "prefix": "", "suffix": "+", "label": "short label", "sub": "optional small text", "icon": "<icon>", "plain": false} -> big number counting up. Set "plain": true for years.
+- compare: {"a": {"title": "Before", "icon": "cash", "points": ["...", "..."]}, "b": {"title": "After", "icon": "phone", "points": ["..."]}, "winner": "a|b"} -> two cards with VS.
+- steps: {"title": "How it works", "steps": ["Scan the QR", "Enter the amount", ...] (2-5, each max 6 words)} -> numbered timeline that ticks off.
+- alert: {"kind": "warning|error|success|info", "text": "OUTAGE", "sub": "optional one line"} -> big alert symbol with a word.
+- bars: {"title": "Chart title", "bars": [{"label": "2019", "value": 10}, ... 2-6], "unit": "%"} -> growing bar chart. Only use numbers you are confident are true.
+- collapse: {"items": ["phone","laptop","cab","shop","play"] (icon names, 3-5), "label": ["SINGLE POINT","OF FAILURE"]} -> everything stands on one pillar that breaks.
+- keypoints: {"points": ["Short idea one", "Short idea two", "Short idea three"] (1-4, each max 5 words)} -> stacked bullet cards. Good for the final takeaway.
+Allowed icon names: """ + ", ".join(ICON_NAMES) + """.
+"""
+
+_BAD_CHARS = re.compile(r"[\*\_`#<>\[\]{}|\\^~]")
+
+
+def clean_say(s):
+    s = _BAD_CHARS.sub("", str(s or "")).replace("&", " and ").replace("%", " percent").replace("/", " or ")
+    s = re.sub(r"\s+", " ", s).strip()
+    if s and s[-1] not in ".?!":
+        s += "."
+    return s
+
+
+def _short(s, words=5):
+    w = re.sub(r"[^\w\s'-]", "", str(s)).split()
+    return " ".join(w[:words]) or "Key idea"
+
+
+def validate(spec, max_scenes=14):
+    """Return a cleaned copy of the spec. Never raises for fixable problems; raises ValueError if nothing usable is left."""
+    if not isinstance(spec, dict):
+        raise ValueError("spec must be a JSON object")
+    scenes = []
+    for sc in (spec.get("scenes") or [])[:max_scenes]:
+        if not isinstance(sc, dict):
+            continue
+        say = clean_say(sc.get("say") or sc.get("narration") or sc.get("text"))
+        if not say:
+            continue
+        typ = str(sc.get("type") or "").strip().lower()
+        data = sc.get("data") if isinstance(sc.get("data"), dict) else {}
+        if typ not in SCENE_TYPES:
+            typ, data = "keypoints", {"points": [_short(say, 5)]}
+        scenes.append({"say": say, "type": typ, "data": data})
+    if len(scenes) < 2:
+        raise ValueError("spec needs at least 2 scenes with narration")
+    title = re.sub(r"\s+", " ", _BAD_CHARS.sub("", str(spec.get("title") or "Untitled"))).strip()[:60]
+    tags = [("#" + re.sub(r"\W", "", str(t).lstrip("#"))) for t in (spec.get("hashtags") or []) if re.sub(r"\W", "", str(t))]
+    tags = list(dict.fromkeys(tags))[:5] or ["#shorts"]
+    return {"title": title, "description": str(spec.get("description") or "")[:400].strip(), "hashtags": tags, "scenes": scenes}

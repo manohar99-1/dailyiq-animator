@@ -1,0 +1,123 @@
+{
+ "title": "What if Google disappeared?",
+ "description": "All scene types.",
+ "hashtags": [
+  "#shorts",
+  "#demo"
+ ],
+ "scenes": [
+  {
+   "say": "What if Google vanished tomorrow?",
+   "type": "hook",
+   "data": {
+    "lines": [
+     "What if",
+     "Google",
+     "vanished?"
+    ],
+    "icon": "search"
+   }
+  },
+  {
+   "say": "You would search, and nothing would answer.",
+   "type": "searchbar",
+   "data": {
+    "query": "best biryani near me",
+    "word": "Google",
+    "vanish": true
+   }
+  },
+  {
+   "say": "But most services depend on one central hub.",
+   "type": "hub",
+   "data": {
+    "hub": {
+     "icon": "cloud",
+     "label": "Central"
+    },
+    "spokes": [
+     {
+      "icon": "mail",
+      "label": "Mail"
+     },
+     {
+      "icon": "map",
+      "label": "Maps"
+     },
+     {
+      "icon": "video",
+      "label": "Video"
+     },
+     {
+      "icon": "cab",
+      "label": "Cabs"
+     }
+    ],
+    "fail": true,
+    "label": "Single point of failure"
+   }
+  },
+  {
+   "say": "Apps you use daily would go dark one by one.",
+   "type": "grid",
+   "data": {
+    "items": [
+     {
+      "icon": "mail",
+      "label": "Mail"
+     },
+     {
+      "icon": "map",
+      "label": "Maps"
+     },
+     {
+      "icon": "video",
+      "label": "Video"
+     },
+     {
+      "icon": "cab",
+      "label": "Cabs"
+     },
+     {
+      "icon": "shop",
+      "label": "Shops"
+     },
+     {
+      "icon": "chat",
+      "label": "Chat"
+     }
+    ],
+    "mode": "fail",
+    "badge": "OUTAGE"
+   }
+  },
+  {
+   "say": "Everything stands on a single pillar.",
+   "type": "collapse",
+   "data": {
+    "items": [
+     "phone",
+     "laptop",
+     "cab",
+     "shop",
+     "play"
+    ],
+    "label": [
+     "SINGLE POINT",
+     "OF FAILURE"
+    ]
+   }
+  },
+  {
+   "say": "So the lesson is simple.",
+   "type": "keypoints",
+   "data": {
+    "points": [
+     "Never depend on one thing",
+     "Spread the risk",
+     "Stay prepared"
+    ]
+   }
+  }
+ ]
+}

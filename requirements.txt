@@ -1,0 +1,4 @@
+playwright>=1.40
+edge-tts>=6.1
+numpy>=1.24
+gTTS>=2.5

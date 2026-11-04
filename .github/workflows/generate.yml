@@ -1,0 +1,60 @@
+name: Generate video
+
+on:
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Video topic, e.g. What if UPI stopped working?'
+        required: true
+        type: string
+      voice:
+        description: 'Voice (blank = default en-IN-NeerjaNeural, "none" = silent draft)'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install ffmpeg and Python packages
+        run: |
+          sudo apt-get update -y && sudo apt-get install -y ffmpeg
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+      - name: Generate
+        env:
+          TOPIC: ${{ inputs.topic }}
+          VOICE: ${{ inputs.voice }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          ARGS=()
+          if [ -n "$VOICE" ]; then ARGS+=(--voice "$VOICE"); fi
+          python -m animator.cli generate --topic "$TOPIC" --out output --notify "${ARGS[@]}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: video
+          path: output/
+      - name: Publish as a release (easy download on phone)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          MP4=$(ls output/*/*.mp4 | head -1)
+          DIR=$(dirname "$MP4")
+          TAG="video-$(date +%Y%m%d-%H%M%S)"
+          TITLE=$(python -c "import json,sys;print(json.load(open('$DIR/metadata.json'))['title'])")
+          NOTES=$(python -c "import json;print(json.load(open('$DIR/metadata.json'))['youtube_description'])")
+          gh release create "$TAG" "$MP4" "$DIR/thumbnail.jpg" "$DIR/metadata.json" --title "$TITLE" --notes "$NOTES"

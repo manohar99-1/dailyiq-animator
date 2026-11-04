@@ -1,0 +1,62 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  @font-face{font-family:'InterBundled';font-weight:400;src:url('../fonts/Inter-Regular.otf')}
+  @font-face{font-family:'InterBundled';font-weight:500;src:url('../fonts/Inter-Medium.otf')}
+  @font-face{font-family:'InterBundled';font-weight:600;src:url('../fonts/Inter-SemiBold.otf')}
+  @font-face{font-family:'InterBundled';font-weight:700;src:url('../fonts/Inter-Bold.otf')}
+  @font-face{font-family:'InterBundled';font-weight:800;src:url('../fonts/Inter-ExtraBold.otf')}
+  @font-face{font-family:'InterBundled';font-weight:900;src:url('../fonts/Inter-Black.otf')}
+  :root{--cream:#f7f0e1;--dot:#e2d7be;--navy:#14213d;--blue:#2f7bff;--orange:#ff8a1f;--red:#ff3b3b}
+  html,body{margin:0;padding:0;background:var(--cream)}
+  #root{position:relative;width:720px;height:1280px;overflow:hidden;font-family:'InterBundled',sans-serif;
+        background-color:var(--cream);background-image:radial-gradient(circle,var(--dot) 2px,transparent 2.4px);background-size:27px 27px}
+  #title{position:absolute;left:0;top:0;width:720px;height:133px;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0}
+  #title .t{font-weight:800;color:var(--navy);white-space:nowrap;line-height:1.1}
+  #title .u{width:100px;height:6px;border-radius:3px;background:var(--orange);margin-top:8px}
+  #frame{position:absolute;left:40px;top:133px;width:640px;height:1091px;box-sizing:border-box;border:4.7px solid var(--navy);
+         border-radius:40px;overflow:hidden;background:#0a1128;box-shadow:0 11px 18px rgba(20,33,61,.28)}
+  #stage{position:absolute;left:calc(50% - 360px);top:calc(50% - 614px);width:720px;height:1228px;transform-origin:50% 50%;
+         font-family:'InterBundled',sans-serif;background:#0a1128}
+  #stage svg{position:absolute;left:0;top:0}
+  #cap{position:absolute;left:0;top:1103px;width:720px;height:86px;display:flex;justify-content:center;align-items:center}
+  #capbox{background:rgb(206,214,219);color:#38414a;font:500 48px/1 'InterBundled',sans-serif;padding:0 15px;height:86px;
+          display:none;align-items:center;white-space:nowrap;box-shadow:0 2px 5px rgba(0,0,0,.18)}
+  #end{position:absolute;left:0;top:0;width:720px;height:1280px;opacity:0;display:none;
+       background-color:var(--cream);background-image:radial-gradient(circle,var(--dot) 2px,transparent 2.4px);background-size:27px 27px}
+  #end .abs{position:absolute;left:0;width:720px;text-align:center;color:var(--navy)}
+  #end .btn{position:absolute;left:50%;display:flex;align-items:center;border-radius:100px;color:#fff;font-weight:800;box-shadow:0 7px 12px rgba(20,33,61,.28);opacity:0}
+  #end .btn .badge{background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none}
+  #end .btn .lab{flex:1;text-align:center}
+</style></head>
+<body>
+<div id="root">
+  <div id="title"><div class="t"></div><div class="u"></div></div>
+  <div id="frame"><div id="stage">
+    <svg id="svg" width="720" height="1228" viewBox="0 0 720 1228" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bgg" cx="50%" cy="42%" r="78%"><stop offset="0" stop-color="#1b3170"/><stop offset=".55" stop-color="#101d45"/><stop offset="1" stop-color="#070d22"/></radialGradient>
+        <pattern id="dots" width="36" height="36" patternUnits="userSpaceOnUse"><circle cx="18" cy="18" r="1.3" fill="#7fb0ff" fill-opacity=".13"/></pattern>
+        <filter id="fx" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+          <feTurbulence id="turb" type="fractalNoise" baseFrequency="0.028" numOctaves="2" seed="2" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="3.4" result="d"/>
+          <feGaussianBlur in="d" stdDeviation="5.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="d"/></feMerge>
+        </filter>
+        <radialGradient id="redg" cx="50%" cy="55%" r="70%"><stop offset="0" stop-color="#ff3b3b" stop-opacity="0"/><stop offset="1" stop-color="#ff3b3b" stop-opacity=".55"/></radialGradient>
+      </defs>
+      <rect width="720" height="1228" fill="url(#bgg)"/>
+      <rect width="720" height="1228" fill="url(#dots)"/>
+      <g id="parts"></g>
+      <g id="scenes"></g>
+      <rect id="redv" width="720" height="1228" fill="url(#redg)" opacity="0"/>
+    </svg>
+    <div id="cap"><div id="capbox"></div></div>
+  </div></div>
+  <div id="end"></div>
+</div>
+<script src="icons.js"></script>
+<script src="engine.js"></script>
+<script src="scenes.js"></script>
+<script src="runtime.js"></script>
+</body></html>

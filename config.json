@@ -1,0 +1,35 @@
+{
+  "channel": {
+    "name": "DailyIQ",
+    "name_accent": "IQ",
+    "handle": "@DailyIQ-p2k",
+    "end_text": "Follow for more"
+  },
+  "voice": {
+    "name": "en-IN-NeerjaNeural",
+    "rate": "+6%",
+    "pitch": "+0Hz",
+    "fallback_names": ["en-IN-PrabhatNeural", "en-US-AriaNeural"]
+  },
+  "video": {
+    "fps": 30,
+    "caption_words": 4,
+    "gap_between_scenes": 0.2,
+    "tail_seconds": 0.5,
+    "end_card_seconds": 3.4,
+    "title_in_video": true,
+    "music": true,
+    "music_volume_db_under_voice": 15
+  },
+  "llm": {
+    "providers": [
+      {"name": "openrouter", "models": ["deepseek/deepseek-chat-v3.1:free", "meta-llama/llama-3.3-70b-instruct:free", "google/gemini-2.0-flash-exp:free"]},
+      {"name": "groq", "models": ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]},
+      {"name": "gemini", "models": ["gemini-2.0-flash", "gemini-1.5-flash"]}
+    ],
+    "scenes_min": 8,
+    "scenes_max": 12,
+    "audience": "Indian English speakers, curious about tech",
+    "target_seconds": 45
+  }
+}

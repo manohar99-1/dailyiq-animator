@@ -1,0 +1,16 @@
+{"title":"Scene Showcase","description":"All scene types.","hashtags":["#shorts","#demo"],
+"scenes":[
+{"say":"What if Google vanished tomorrow?","type":"hook","data":{"lines":["What if","Google","vanished?"],"icon":"search"}},
+{"say":"You would search, and nothing would answer.","type":"searchbar","data":{"query":"best biryani near me","word":"Google","vanish":true}},
+{"say":"Every request travels through a chain of servers.","type":"flow","data":{"nodes":[{"icon":"phone","label":"You"},{"icon":"wifi","label":"Network"},{"icon":"server","label":"Server"},{"icon":"database","label":"Data"}],"layout":"row"}},
+{"say":"A decentralized web would simply reroute around the damage.","type":"network","data":{"label":"Decentralized web","from":"YOU","to":"SITE","crash":true,"crash_label":"CRASH!","result":"STILL WORKS"}},
+{"say":"But most services depend on one central hub.","type":"hub","data":{"hub":{"icon":"cloud","label":"Central"},"spokes":[{"icon":"mail","label":"Mail"},{"icon":"map","label":"Maps"},{"icon":"video","label":"Video"},{"icon":"cab","label":"Cabs"}],"fail":true,"label":"Single point of failure"}},
+{"say":"Apps you use daily would go dark one by one.","type":"grid","data":{"items":[{"icon":"mail","label":"Mail"},{"icon":"map","label":"Maps"},{"icon":"video","label":"Video"},{"icon":"cab","label":"Cabs"},{"icon":"shop","label":"Shops"},{"icon":"chat","label":"Chat"}],"mode":"fail","badge":"OUTAGE"}},
+{"say":"Billions of people rely on it every day.","type":"counter","data":{"value":5000000000,"from":0,"suffix":"+","label":"daily searches","icon":"search"}},
+{"say":"Cash versus digital is a very different world.","type":"compare","data":{"a":{"title":"Before","icon":"money","points":["Queues","Cash only"]},"b":{"title":"After","icon":"phone","points":["Instant","Scan and pay"]},"winner":"b"}},
+{"say":"Paying takes just three steps.","type":"steps","data":{"title":"How it works","steps":["Scan the QR","Enter the amount","Done in seconds"]}},
+{"say":"One failure and everything stops.","type":"alert","data":{"kind":"error","text":"OUTAGE","sub":"Services unavailable"}},
+{"say":"Growth has been enormous.","type":"bars","data":{"title":"Users","bars":[{"label":"2019","value":10},{"label":"2021","value":35},{"label":"2023","value":80}],"unit":"%"}},
+{"say":"Everything stands on a single pillar.","type":"collapse","data":{"items":["phone","laptop","cab","shop","play"],"label":["SINGLE POINT","OF FAILURE"]}},
+{"say":"So the lesson is simple.","type":"keypoints","data":{"points":["Never depend on one thing","Spread the risk","Stay prepared"]}}
+]}
