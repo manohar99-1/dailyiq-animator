@@ -2,7 +2,7 @@
 This module defines the allowed scene types, cleans up whatever an LLM returns, and explains the schema to the LLM."""
 import re
 
-SCENE_TYPES = ["hook", "searchbar", "flow", "network", "hub", "grid", "counter", "compare", "steps", "alert", "bars", "collapse", "keypoints"]
+SCENE_TYPES = ["hook", "searchbar", "flow", "network", "hub", "grid", "counter", "compare", "steps", "alert", "bars", "collapse", "keypoints", "toon"]
 
 ICON_NAMES = ("search mail map play video phone laptop cab car truck shop bell cloud server database lock wifi globe battery chip robot shield user users "
               "cart bag bank qr rupee money bolt clock calendar fire heart star camera music chat thumb home code plane gear warning check x question power link").split()
@@ -21,6 +21,13 @@ Scene types (each scene = one spoken sentence + one animated visual). "data" fie
 - alert: {"kind": "warning|error|success|info", "text": "OUTAGE", "sub": "optional one line"} -> big alert symbol with a word.
 - bars: {"title": "Chart title", "bars": [{"label": "2019", "value": 10}, ... 2-6], "unit": "%"} -> growing bar chart. Only use numbers you are confident are true.
 - collapse: {"items": ["phone","laptop","cab","shop","play"] (icon names, 3-5), "label": ["SINGLE POINT","OF FAILURE"]} -> everything stands on one pillar that breaks.
+- toon: {"cast": [{"who": "earth", "mood": "happy", "mood2": "shocked", "act": "float"}, ...] (1-3 characters), "layout": "auto|solo|duo|trio|orbit", "at": 0.5, "label": "NO MOON!"}
+  -> cute cartoon characters with faces. Each character shows `mood`, then switches to `mood2` at fraction `at` of the scene, so the faces REACT to what the sentence says.
+  who: sun earth moon star cloud buddy phone bulb server coin (buddy = friendly round robot for anything else; phone/server/cloud/coin/bulb for tech topics).
+  mood/mood2: happy joy excited shocked scared worried sad cry angry sleepy love dizzy cool thinking.
+  act: float (default) hop shake spin vanish (character pops out of existence at `at`) appear fall grow shrink.
+  layout "orbit": first character in the centre, second circles it, third circles the second (sun, earth, moon). "label": optional 1-3 word banner at the top (ALL CAPS).
+  Example (moon disappears): {"cast": [{"who": "earth", "mood": "happy", "mood2": "shocked"}, {"who": "moon", "mood": "happy", "act": "vanish"}], "layout": "orbit", "at": 0.5, "label": "NO MOON!"}
 - keypoints: {"points": ["Short idea one", "Short idea two", "Short idea three"] (1-4, each max 5 words)} -> stacked bullet cards. Good for the final takeaway.
 Allowed icon names: """ + ", ".join(ICON_NAMES) + """.
 """
@@ -41,6 +48,35 @@ def _short(s, words=5):
     return " ".join(w[:words]) or "Key idea"
 
 
+TOON_WHO = "sun earth moon star cloud buddy phone bulb server coin".split()
+TOON_MOODS = "happy joy excited shocked scared worried sad cry angry sleepy love dizzy cool thinking".split()
+TOON_ACTS = "float hop shake spin vanish appear fall grow shrink".split()
+
+
+def _clean_toon(d):
+    cast = []
+    for c in (d.get("cast") if isinstance(d.get("cast"), list) else [])[:3]:
+        if not isinstance(c, dict):
+            continue
+        who = str(c.get("who") or "buddy").lower().strip()
+        mood = str(c.get("mood") or "happy").lower().strip()
+        mood2 = str(c.get("mood2") or mood).lower().strip()
+        act = str(c.get("act") or "float").lower().strip()
+        cast.append({"who": who if who in TOON_WHO else who, "mood": mood if mood in TOON_MOODS else "happy",
+                     "mood2": mood2 if mood2 in TOON_MOODS else (mood if mood in TOON_MOODS else "happy"),
+                     "act": act if act in TOON_ACTS else "float"})
+    if not cast:
+        cast = [{"who": "buddy", "mood": "happy", "mood2": "thinking", "act": "float"}]
+    out = {"cast": cast, "layout": d.get("layout") if d.get("layout") in ("auto", "solo", "duo", "trio", "orbit") else "auto"}
+    try:
+        out["at"] = min(.85, max(.15, float(d.get("at", .5))))
+    except (TypeError, ValueError):
+        out["at"] = .5
+    if d.get("label"):
+        out["label"] = str(d["label"]).upper()[:22]
+    return out
+
+
 def validate(spec, max_scenes=14):
     """Return a cleaned copy of the spec. Never raises for fixable problems; raises ValueError if nothing usable is left."""
     if not isinstance(spec, dict):
@@ -56,6 +92,8 @@ def validate(spec, max_scenes=14):
         data = sc.get("data") if isinstance(sc.get("data"), dict) else {}
         if typ not in SCENE_TYPES:
             typ, data = "keypoints", {"points": [_short(say, 5)]}
+        if typ == "toon":
+            data = _clean_toon(data)
         scenes.append({"say": say, "type": typ, "data": data})
     if len(scenes) < 2:
         raise ValueError("spec needs at least 2 scenes with narration")

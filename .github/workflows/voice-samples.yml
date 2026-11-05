@@ -1,0 +1,26 @@
+name: Voice samples
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  samples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install edge-tts
+      - name: Make samples
+        run: python -m animator.voice_samples voice_samples
+      - name: Publish as a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="voices-$(date +%Y%m%d-%H%M%S)"
+          gh release create "$TAG" voice_samples/*.mp3 --title "Voice samples" --notes "Listen to each file, then type the voice name (the file name without .mp3) in the Generate video workflow."

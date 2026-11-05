@@ -1,0 +1,8 @@
+{"title":"What if the Moon vanished?","description":"What would really happen if the Moon disappeared tomorrow?","hashtags":["#shorts","#space","#whatif"],
+"scenes":[
+{"say":"What if the Moon disappeared tomorrow?","type":"toon","data":{"cast":[{"who":"earth","mood":"happy","mood2":"shocked"},{"who":"moon","mood":"happy","act":"vanish"}],"layout":"orbit","at":0.55,"label":"NO MOON!"}},
+{"say":"Our nights would become much darker, but the stars would shine brighter.","type":"toon","data":{"cast":[{"who":"earth","mood":"worried","mood2":"thinking"}],"at":0.5}},
+{"say":"The Moon pulls the oceans, so tides would shrink to about a third.","type":"toon","data":{"cast":[{"who":"earth","mood":"happy","mood2":"scared","act":"shake"},{"who":"cloud","mood":"happy","mood2":"worried"}],"at":0.45}},
+{"say":"Earth's tilt could slowly wobble, and seasons would be harder to predict.","type":"toon","data":{"cast":[{"who":"earth","mood":"cool","mood2":"dizzy","act":"spin"}],"at":0.4}},
+{"say":"But do not worry, the Moon is not going anywhere.","type":"toon","data":{"cast":[{"who":"earth","mood":"love","mood2":"joy"},{"who":"moon","mood":"sleepy","mood2":"happy","act":"appear"}],"at":0.4}}
+]}

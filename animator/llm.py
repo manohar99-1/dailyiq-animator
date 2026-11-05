@@ -32,9 +32,9 @@ Return ONLY one JSON object, no markdown, in this shape:
 Rules:
 - {llm['scenes_min']} to {llm['scenes_max']} scenes. Each "say" is ONE complete sentence that sounds natural when read aloud. No symbols, no emojis, no abbreviations with dots, write numbers the way they are spoken.
 - Scene 1 is the hook: type "hook" (or "searchbar" for a what-if-X-disappeared topic) and its "say" must grab attention in the first seconds.
-- Every visual must illustrate what its sentence says. Use a variety of scene types, no type more than 3 times.
+- Every visual must illustrate what its sentence says. This channel's signature look is CARTOON CHARACTERS WITH EXPRESSIONS: make at least 60 percent of the scenes type "toon", with the characters' faces reacting to the sentence (calm or happy first, then shocked, scared, sad, angry, excited... at the moment the sentence says something dramatic; use act "vanish"/"fall"/"shake" for events). Use the other scene types (counter, bars, flow, steps, compare, keypoints...) only where a diagram or a number explains better. Never show the same toon cast and mood twice in a row.
 - The last scene is a takeaway, usually type "keypoints" or "alert" with kind "success".
-- Be accurate. Do not invent statistics, dates or company claims. If you are not sure of a number, do not use a counter or bars scene.
+- Be accurate. Think through cause and effect step by step so no sentence contradicts another (for example do not say the night sky gets brighter and then darker). Only state well-established facts and say 'would probably' for predictions. Do not invent statistics, dates or company claims. If you are not sure of a number, do not use a counter or bars scene.
 - Do not use brand logos or brand names as icons; use only the allowed generic icon names.
 - Keep all labels short (1-2 words) so they fit on a phone screen.
 {specmod.SCHEMA_HELP}"""
