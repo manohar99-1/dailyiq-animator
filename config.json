@@ -6,10 +6,15 @@
     "end_text": "Follow for more"
   },
   "voice": {
-    "name": "en-IN-NeerjaNeural",
-    "rate": "+6%",
+    "name": "kokoro:af_heart",
+    "speed": 1.0,
+    "rate": "+0%",
     "pitch": "+0Hz",
-    "fallback_names": ["en-IN-PrabhatNeural", "en-US-AriaNeural"]
+    "fallback_names": [
+      "en-IN-NeerjaExpressiveNeural",
+      "en-IN-NeerjaNeural",
+      "en-US-AriaNeural"
+    ]
   },
   "video": {
     "fps": 30,
@@ -23,9 +28,30 @@
   },
   "llm": {
     "providers": [
-      {"name": "openrouter", "models": ["deepseek/deepseek-chat-v3.1:free", "meta-llama/llama-3.3-70b-instruct:free", "google/gemini-2.0-flash-exp:free"]},
-      {"name": "groq", "models": ["openai/gpt-oss-120b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant", "openai/gpt-oss-20b"]},
-      {"name": "gemini", "models": ["gemini-2.0-flash", "gemini-1.5-flash"]}
+      {
+        "name": "openrouter",
+        "models": [
+          "deepseek/deepseek-chat-v3.1:free",
+          "meta-llama/llama-3.3-70b-instruct:free",
+          "google/gemini-2.0-flash-exp:free"
+        ]
+      },
+      {
+        "name": "groq",
+        "models": [
+          "openai/gpt-oss-120b",
+          "llama-3.3-70b-versatile",
+          "llama-3.1-8b-instant",
+          "openai/gpt-oss-20b"
+        ]
+      },
+      {
+        "name": "gemini",
+        "models": [
+          "gemini-2.0-flash",
+          "gemini-1.5-flash"
+        ]
+      }
     ],
     "scenes_min": 8,
     "scenes_max": 12,

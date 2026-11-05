@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: pip install edge-tts
+      - run: pip install edge-tts kokoro-onnx soundfile numpy
       - name: Make samples
         run: python -m animator.voice_samples voice_samples
       - name: Publish as a release
@@ -24,4 +24,4 @@ jobs:
         run: |
           TAG="voices-$(date +%Y%m%d-%H%M%S)"
           find voice_samples -size -2k -delete
-          gh release create "$TAG" voice_samples/*.mp3 --title "Voice samples" --notes "Listen to each file, then type the voice name (the file name without .mp3) in the Generate video workflow."
+          gh release create "$TAG" voice_samples/* --title "Voice samples" --notes "Listen to each file, then type the voice name : type the file name without the extension into the Generate video workflow (Kokoro files: type kokoro: and then the name, e.g. kokoro:af_bella)."

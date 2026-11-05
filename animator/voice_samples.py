@@ -10,6 +10,9 @@ PREFERRED = ["en-IN-NeerjaExpressiveNeural", "en-IN-NeerjaNeural", "en-IN-Prabha
              "en-GB-SoniaNeural", "en-GB-RyanNeural", "en-AU-NatashaNeural", "en-AU-WilliamNeural"]
 
 
+KOKORO = ["af_heart", "af_bella", "af_nicole", "af_sarah", "am_adam", "am_michael", "bf_emma", "bm_george", "bm_lewis"]
+
+
 async def main(out):
     import edge_tts
     out = Path(out); out.mkdir(parents=True, exist_ok=True)
@@ -25,5 +28,17 @@ async def main(out):
             (out / f"{n}.mp3").unlink(missing_ok=True)
 
 
+def kokoro_samples(out):
+    try:
+        from . import voice
+        for v in KOKORO:
+            voice._kokoro_clip(TEXT, v, 1.0, Path(out) / f"kokoro-{v}.wav", print)
+            print("ok kokoro", v)
+    except Exception as e:
+        print("kokoro samples failed", type(e).__name__, str(e)[:100])
+
+
 if __name__ == "__main__":
-    asyncio.run(main(sys.argv[1] if len(sys.argv) > 1 else "voice_samples"))
+    _o = sys.argv[1] if len(sys.argv) > 1 else "voice_samples"
+    asyncio.run(main(_o))
+    kokoro_samples(_o)

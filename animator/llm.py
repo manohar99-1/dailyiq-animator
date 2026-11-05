@@ -30,7 +30,7 @@ Return ONLY one JSON object, no markdown, in this shape:
 }}
 
 Rules:
-- {llm['scenes_min']} to {llm['scenes_max']} scenes. Each "say" is ONE complete sentence that sounds natural when read aloud. No symbols, no emojis, no abbreviations with dots, write numbers the way they are spoken.
+- EXACTLY between {llm['scenes_min']} and {llm['scenes_max']} scenes in the "scenes" array (a 45 second Short needs about 9 sentences; fewer than {llm['scenes_min']} is wrong). Each "say" is ONE complete sentence that sounds natural when read aloud. No symbols, no emojis, no abbreviations with dots, write numbers the way they are spoken.
 - Scene 1 is the hook: type "hook" (or "searchbar" for a what-if-X-disappeared topic) and its "say" must grab attention in the first seconds.
 - Every visual must illustrate what its sentence says. This channel's signature look is CARTOON CHARACTERS WITH EXPRESSIONS: make at least 60 percent of the scenes type "toon", with the characters' faces reacting to the sentence (calm or happy first, then shocked, scared, sad, angry, excited... at the moment the sentence says something dramatic; use act "vanish"/"fall"/"shake" for events). Use the other scene types (counter, bars, flow, steps, compare, keypoints...) only where a diagram or a number explains better. Never show the same toon cast and mood twice in a row.
 - The last scene is a takeaway, usually type "keypoints" or "alert" with kind "success".
@@ -116,8 +116,10 @@ def generate_spec(topic, cfg, log=print):
             for attempt in (1, 2):
                 try:
                     log(f"[llm] {name} / {model} ...")
-                    raw = _call(name, model, prompt, key)
+                    raw = _call(name, model, prompt if attempt == 1 else prompt + f"\n\nIMPORTANT: your previous answer was rejected (too few scenes). Return at least {cfg['llm']['scenes_min']} scenes in the \"scenes\" array.", key)
                     spec = specmod.validate(extract_json(raw), cfg["llm"]["scenes_max"] + 2)
+                    if len(spec["scenes"]) < max(5, cfg["llm"]["scenes_min"] - 2):
+                        raise ValueError(f"only {len(spec['scenes'])} scenes")
                     log(f"[llm] ok: {len(spec['scenes'])} scenes, title '{spec['title']}'")
                     return spec
                 except urllib.error.HTTPError as e:
