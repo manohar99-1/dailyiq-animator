@@ -107,7 +107,8 @@
       const blobs = ['M -80 -50 Q -50 -90 -20 -60 Q 0 -30 -30 -10 Q -60 10 -85 -20 Z', 'M 30 -70 Q 70 -85 90 -45 Q 80 -10 45 -25 Q 20 -40 30 -70 Z',
         'M -10 40 Q 30 20 55 50 Q 50 90 10 90 Q -25 85 -10 40 Z', 'M -95 40 Q -75 25 -55 45 Q -60 75 -85 70 Z'];
       [-200, 0, 200].forEach(dx => blobs.forEach(d => el('path', { d, fill: '#7bc74d', transform: `translate(${dx} 0)` }, lg)));
-      el('ellipse', { cx: -38, cy: -52, rx: 34, ry: 16, fill: '#fff', opacity: .22, transform: 'rotate(-30 -38 -52)' }, g);
+      el('circle', { r: 70, cy: 6, fill: '#58b6e8', opacity: .75 }, g);
+      el('ellipse', { cx: -38, cy: -62, rx: 30, ry: 12, fill: '#fff', opacity: .25, transform: 'rotate(-30 -38 -62)' }, g);
       return { fy: 2, fs: 1, top: -135, tick: t => lg.setAttribute('transform', `translate(${(t * 7) % 200} 0)`) };
     },
     moon(g, c) {
@@ -207,21 +208,21 @@
     const stars = []; for (let i = 0; i < 26; i++) stars.push({ e: el('circle', { cx: 20 + rnd(i + 3) * 680, cy: 60 + rnd(i + 9) * 1000, r: .8 + rnd(i + 21) * 2.2, fill: '#fff' }, bg), k: i });
     if (d.bg === 'day') { el('rect', { x: 0, y: 0, width: 720, height: 1228, fill: '#2d63b8', opacity: .55 }, bg); }
 
-    const CX = 360, CY = 560;
-    const pos = (n === 1 ? [[CX, CY, 2.0]] : n === 2 ? [[210, 650, 1.35], [510, 470, 1.3]] : [[CX, 420, 1.15], [195, 760, 1.15], [525, 760, 1.15]]);
+    const CX = 360, CY = 620;
+    const pos = (n === 1 ? [[CX, CY, 2.1]] : n === 2 ? [[215, 760, 1.65], [505, 470, 1.55]] : [[CX, 440, 1.3], [185, 820, 1.3], [535, 820, 1.3]]);
     const orbitG = el('g', {}, g);
     const orbs = [];
-    if (orbit) { const rx1 = 235, ry1 = 150; orbs.push([rx1, ry1]); el('ellipse', { cx: CX, cy: CY, rx: rx1, ry: ry1, fill: 'none', stroke: '#8fdcff', 'stroke-width': 3, 'stroke-dasharray': '4 14', 'stroke-linecap': 'round', opacity: .45 }, orbitG); }
+    if (orbit) { const rx1 = 250, ry1 = 190; orbs.push([rx1, ry1]); el('ellipse', { cx: CX, cy: CY, rx: rx1, ry: ry1, fill: 'none', stroke: '#8fdcff', 'stroke-width': 3, 'stroke-dasharray': '4 14', 'stroke-linecap': 'round', opacity: .45 }, orbitG); }
     const chars = cast.map((c, i) => {
       const w = who(c.who), cg = el('g', {}, g), body = el('g', {}, cg);
       const b = BODIES[w](body, typeof c.color === 'string' && /^#[0-9a-f]{3,8}$/i.test(c.color) ? c.color : null);
       const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = makeFace(fg);
       const ex = makeExtras(cg, b.top);
       const m1 = MOODS[c.mood] ? c.mood : 'happy', m2 = MOODS[c.mood2] ? c.mood2 : m1;
-      return { c, i, w, cg, b, face, ex, P1: moodP(m1), P2: moodP(m2), act: String(c.act || 'float').toLowerCase(), base: pos[i] || pos[0], size: Number(c.size) > 0 ? Number(c.size) : 1 };
+      return { c, i, w, cg, body, b, face, ex, P1: moodP(m1), P2: moodP(m2), act: String(c.act || 'float').toLowerCase(), base: pos[i] || pos[0], size: Number(c.size) > 0 ? Number(c.size) : 1 };
     });
     // poof (smoke) used by vanish / appear
-    const poofs = chars.map(() => { const pg = el('g', {}, g); const ps = []; for (let k = 0; k < 9; k++) ps.push({ e: el('circle', { fill: k % 3 === 0 ? '#ffd34d' : '#e9eefc' }, pg), a: k / 9 * 6.283 + rnd(k) * .6, s: 50 + rnd(k + 5) * 60 }); return { pg, ps }; });
+    const poofs = chars.map(() => { const pg = el('g', {}, g); const ps = []; for (let k = 0; k < 9; k++) ps.push({ e: el('circle', { fill: k % 3 === 0 ? '#ffd34d' : '#ffffff' }, pg), a: k / 9 * 6.283 + rnd(k) * .6, s: 50 + rnd(k + 5) * 60 }); return { pg, ps }; });
     let label = null;
     if (d.label) { label = text(g, String(d.label), 360, 190, 96, X.ORANGE, 900); X.fit(label, 640); }
 
@@ -234,18 +235,18 @@
       g.setAttribute('transform', `translate(360 614) scale(${zoom}) translate(-360 -614)`);
       const pts = [];
       chars.forEach((o, i) => {
-        let x = o.base[0], y = o.base[1], sc = o.base[2] * o.size, rot = 0, vis = 1;
+        let x = o.base[0], y = o.base[1], sc = o.base[2] * o.size, rot = 0, vis = 1, brot = 0;
         if (orbit) {
-          if (i === 0) { x = CX; y = CY; sc = (n === 3 ? 1.5 : 1.5) * o.size; }
-          else if (i === 1) { const a = T * .75 - 1.2; x = CX + Math.cos(a) * 235; y = CY + Math.sin(a) * 150; sc = (n === 3 ? .8 : .85) * o.size; }
-          else { const p1 = pts[1], a = T * 2.1; x = p1.x + Math.cos(a) * 95; y = p1.y + Math.sin(a) * 60; sc = .42 * o.size; }
+          if (i === 0) { x = CX; y = CY; sc = (n === 3 ? 1.1 : 1.7) * o.size; }
+          else if (i === 1) { const a = T * .75 - 1.2; x = CX + Math.cos(a) * 250; y = CY + Math.sin(a) * 190; sc = (n === 3 ? .8 : 1.0) * o.size; }
+          else { const p1 = pts[1], a = T * 2.1; x = p1.x + Math.cos(a) * 95; y = p1.y + Math.sin(a) * 60; sc = .5 * o.size; }
         }
         const after = T - tAt, ap = prog(after, 0, .35);
         let sx = 1, sy = 1;
         switch (o.act) {
           case 'hop': y -= Math.abs(Math.sin(T * 4.5)) * 46; sy = 1 + .06 * Math.cos(T * 9); break;
           case 'shake': x += Math.sin(T * 38) * 7 * (after > 0 ? 1.4 : .3); break;
-          case 'spin': rot = T * 200; break;
+          case 'spin': brot = T * 220; y += Math.sin(T * 6) * 8; break;
           case 'vanish': if (after >= 0) { const u = prog(after, 0, .3); sc *= (1 + .18 * Math.sin(u * 3.14) ) * (1 - eio(u)); vis = u >= 1 ? 0 : 1; } break;
           case 'appear': if (after < 0) { vis = 0; } else { sc *= eob(prog(after, 0, .5)); } break;
           case 'fall': if (after > 0) { y += 1100 * Math.pow(after / 1.3, 2); rot = after * 60; x += after * 30; } break;
@@ -261,7 +262,7 @@
         sc *= reveal;
         pts[i] = { x, y };
         o.cg.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(1)}) scale(${(sc * sx).toFixed(3)} ${(sc * sy).toFixed(3)})`);
-        X.show(o.cg, vis);
+        X.show(o.cg, vis); o.body.setAttribute('transform', `rotate(${brot.toFixed(1)})`);
         // expression
         const u = eio(prog(after, -.05, .25));
         const p = mix(o.P1, o.P2, u);
