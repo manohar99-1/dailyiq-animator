@@ -23,4 +23,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="voices-$(date +%Y%m%d-%H%M%S)"
+          find voice_samples -size -2k -delete
           gh release create "$TAG" voice_samples/*.mp3 --title "Voice samples" --notes "Listen to each file, then type the voice name (the file name without .mp3) in the Generate video workflow."

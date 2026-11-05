@@ -22,6 +22,7 @@ async def main(out):
             print("ok", n)
         except Exception as e:
             print("failed", n, type(e).__name__)
+            (out / f"{n}.mp3").unlink(missing_ok=True)
 
 
 if __name__ == "__main__":
