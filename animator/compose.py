@@ -62,13 +62,13 @@ def make_music(path, dur, rms_dbfs=-34.0, seed=7):
         w.writeframes(pcm.tobytes())
 
 
-def encode(frames_dir, fps, voice_wav, music_wav, out_mp4, main_end, total, silent=False, lufs=-14.0):
+def encode(frames_dir, fps, voice_wav, music_wav, out_mp4, main_end, total, silent=False, lufs=-11.0):
     """frames + voice (+ music ducked under the voice) -> H.264/AAC mp4. Music lifts after the narration ends (end card)."""
     inputs = ["-framerate", str(fps), "-i", f"{frames_dir}/f%05d.jpg", "-i", str(voice_wav)]
     if silent:
         voice = f"[1:a]aformat=sample_rates=44100:channel_layouts=stereo,apad=whole_dur={total:.3f}"
     else:
-        voice = f"[1:a]aformat=sample_rates=44100:channel_layouts=stereo,loudnorm=I={lufs}:TP=-1.0:LRA=9,aresample=44100,apad=whole_dur={total:.3f}"
+        voice = f"[1:a]aformat=sample_rates=44100:channel_layouts=stereo,acompressor=threshold=0.1:ratio=3:attack=8:release=120:makeup=2,loudnorm=I={lufs}:TP=-1.5:LRA=7,aresample=44100,apad=whole_dur={total:.3f}"
     if music_wav:
         inputs += ["-i", str(music_wav)]
         fc = (f"{voice},asplit=2[vmix][vkey];"
