@@ -24,7 +24,8 @@
     "end_card_seconds": 3.4,
     "title_in_video": true,
     "music": true,
-    "music_volume_db_under_voice": 15
+    "music_volume_db_under_voice": 15,
+    "loudness_lufs": -14
   },
   "llm": {
     "providers": [

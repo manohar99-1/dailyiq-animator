@@ -49,7 +49,7 @@ def generate(args):
     fps = int(cfg["video"]["fps"])
     n = render.render_frames(rt, work / "frames", fps, args.workers, log)
     mp4 = out / f"{slugify(sp['title'])}.mp4"
-    compose.encode(work / "frames", fps, work / "voice.wav", music, mp4, rt["T"], n / fps, silent)
+    compose.encode(work / "frames", fps, work / "voice.wav", music, mp4, rt["T"], n / fps, silent, float(cfg['video'].get('loudness_lufs', -14)))
     thumb_src = work / "frames" / f"f{min(n - 1, int(1.2 * fps)):05d}.jpg"
     if thumb_src.exists():
         shutil.copy(thumb_src, out / "thumbnail.jpg")

@@ -167,8 +167,125 @@
       return { fy: 0, fs: .9, top: -135, tick() {} };
     },
   };
+
+  /* ---------------------------------------------------------- sea life
+     Side-on bodies that face LEFT, each with a wagging tail / moving fins (tick). */
+  const tailG = (g, x, y) => { const o = el('g', { transform: `translate(${x} ${y})` }, g); return el('g', {}, o); };
+  BODIES.fish = function (g, c) {
+    const col = c || '#ff9f43', fin = '#ff7a1a';
+    const tail = tailG(g, 92, 0);
+    el('path', { d: 'M -8 0 L 74 -50 Q 56 0 74 50 Z', fill: fin }, tail);
+    el('path', { d: 'M -45 -70 Q 0 -128 52 -64 Z', fill: fin }, g);
+    el('ellipse', { rx: 108, ry: 82, fill: col }, g);
+    el('ellipse', { cx: 0, cy: 40, rx: 80, ry: 34, fill: '#fff', opacity: .2 }, g);
+    el('path', { d: 'M 46 -62 Q 66 0 46 62', fill: 'none', stroke: '#fff', 'stroke-width': 12, opacity: .55, 'stroke-linecap': 'round' }, g);
+    const sf = el('g', { transform: 'translate(20 34)' }, g); const sfi = el('g', {}, sf);
+    el('path', { d: 'M 0 0 Q 36 8 22 40 Q 0 24 0 0 Z', fill: fin }, sfi);
+    return { fy: -4, fs: .9, top: -130, tick: t => { tail.setAttribute('transform', `rotate(${Math.sin(t * 7) * 15})`); sfi.setAttribute('transform', `rotate(${Math.sin(t * 7 + 1) * 12})`); } };
+  };
+  BODIES.whale = function (g, c) {
+    const col = c || '#4a7bd0';
+    const tail = tailG(g, 118, -10);
+    el('path', { d: 'M 0 12 Q 34 -20 48 -70 Q 66 -40 106 -52 Q 92 -8 44 14 Z', fill: '#3b66b8' }, tail);
+    el('ellipse', { rx: 142, ry: 102, fill: col }, g);
+    el('ellipse', { cx: -4, cy: 56, rx: 120, ry: 44, fill: '#d6e6ff', opacity: .9 }, g);
+    for (let i = 0; i < 5; i++) el('line', { x1: -70 + i * 26, y1: 70, x2: -62 + i * 26, y2: 92, stroke: '#a9c3ee', 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
+    const fl = el('g', { transform: 'translate(40 62)' }, g); const fli = el('g', {}, fl);
+    el('path', { d: 'M 0 0 Q 50 20 36 66 Q 6 40 -6 6 Z', fill: '#3b66b8' }, fli);
+    const spout = el('g', {}, g); const drops = []; for (let i = 0; i < 5; i++) drops.push(el('circle', { r: 7, fill: '#bfe9ff' }, spout));
+    return { fy: -2, fs: 1.05, top: -150, tick: t => {
+      tail.setAttribute('transform', `rotate(${Math.sin(t * 3.2) * 10})`); fli.setAttribute('transform', `rotate(${Math.sin(t * 3 + 1) * 10})`);
+      drops.forEach((e, i) => { const u = ((t * .8 + i / 5) % 1); e.setAttribute('cx', (-6 + (i - 2) * 16 * u).toFixed(1)); e.setAttribute('cy', (-104 - u * 70 + u * u * 30).toFixed(1)); e.setAttribute('opacity', (Math.sin(u * 3.14) * .9).toFixed(2)); e.setAttribute('r', (6 + 3 * (1 - u)).toFixed(1)); });
+    } };
+  };
+  BODIES.dolphin = function (g, c) {
+    const col = c || '#6fa8dc';
+    const tail = tailG(g, 112, 0);
+    el('path', { d: 'M 0 0 Q 30 -26 52 -56 Q 62 -22 98 -34 Q 84 0 48 8 Q 82 20 98 46 Q 62 38 52 18 Q 30 20 0 8 Z', fill: '#558fc4' }, tail);
+    el('path', { d: 'M -20 -76 Q 10 -138 54 -66 Z', fill: '#558fc4' }, g);
+    el('ellipse', { rx: 120, ry: 84, fill: col }, g);
+    el('ellipse', { cx: -122, cy: 26, rx: 46, ry: 21, fill: '#8fbfe8' }, g);
+    el('ellipse', { cx: -4, cy: 44, rx: 100, ry: 34, fill: '#eaf4ff', opacity: .85 }, g);
+    const fl = el('g', { transform: 'translate(10 56)' }, g); const fli = el('g', {}, fl);
+    el('path', { d: 'M 0 0 Q 40 14 30 52 Q 4 34 -4 6 Z', fill: '#558fc4' }, fli);
+    return { fy: -8, fs: .9, top: -140, tick: t => { tail.setAttribute('transform', `rotate(${Math.sin(t * 6) * 16})`); fli.setAttribute('transform', `rotate(${Math.sin(t * 5) * 14})`); } };
+  };
+  BODIES.shark = function (g, c) {
+    const col = c || '#7b8ca3';
+    const tail = tailG(g, 116, 0);
+    el('path', { d: 'M 0 -6 L 84 -74 L 62 0 L 84 74 L 0 8 Z', fill: '#667690' }, tail);
+    el('path', { d: 'M -26 -72 L 22 -156 L 58 -66 Z', fill: '#667690' }, g);
+    el('ellipse', { rx: 130, ry: 82, fill: col }, g);
+    el('ellipse', { cx: -6, cy: 42, rx: 108, ry: 34, fill: '#e8eef6' }, g);
+    [0, 1, 2].forEach(i => el('path', { d: `M ${-86 + i * 12} -6 Q ${-92 + i * 12} 14 ${-86 + i * 12} 34`, fill: 'none', stroke: '#5a6a82', 'stroke-width': 4, 'stroke-linecap': 'round' }, g));
+    return { fy: -4, fs: .9, top: -170, tick: t => tail.setAttribute('transform', `rotate(${Math.sin(t * 5) * 14})`) };
+  };
+  BODIES.jellyfish = function (g, c) {
+    const col = c || '#ff8fd1';
+    const ten = el('g', {}, g); const ts = [];
+    for (let i = 0; i < 5; i++) ts.push(el('path', { fill: 'none', stroke: '#ffb3e1', 'stroke-width': 9, 'stroke-linecap': 'round', opacity: .9 }, ten));
+    const dome = el('g', {}, g);
+    el('path', { d: 'M -104 24 A 104 104 0 0 1 104 24 Q 62 46 0 30 Q -62 46 -104 24 Z', fill: col, opacity: .95 }, dome);
+    el('path', { d: 'M -78 -30 A 90 90 0 0 1 -10 -80', fill: 'none', stroke: '#fff', 'stroke-width': 9, 'stroke-linecap': 'round', opacity: .45 }, dome);
+    return { fy: -26, fs: .92, top: -150, tick: t => {
+      const k = 1 + .05 * Math.sin(t * 3); dome.setAttribute('transform', `scale(${(2 - k).toFixed(3)} ${k.toFixed(3)})`);
+      ts.forEach((e, i) => { const x = -70 + i * 35, s = Math.sin(t * 3 + i) * 16; e.setAttribute('d', `M ${x} 34 Q ${x + s} 80 ${x} 120 T ${x + s * .6} 190`); });
+    } };
+  };
+  BODIES.octopus = function (g, c) {
+    const col = c || '#a566e8';
+    const ts = []; const gt = el('g', {}, g);
+    for (let i = 0; i < 6; i++) ts.push(el('path', { fill: 'none', stroke: col, 'stroke-width': 24, 'stroke-linecap': 'round' }, gt));
+    el('circle', { cy: -12, r: 92, fill: col }, g);
+    [[-50, -62, 8], [40, -70, 6], [60, -30, 7]].forEach(([x, y, r]) => el('circle', { cx: x, cy: y, r, fill: '#c79bf5', opacity: .8 }, g));
+    el('path', { d: 'M -70 -50 A 84 84 0 0 1 -8 -92', fill: 'none', stroke: '#fff', 'stroke-width': 8, 'stroke-linecap': 'round', opacity: .35 }, g);
+    return { fy: -12, fs: 1, top: -130, tick: t => ts.forEach((e, i) => { const x = -80 + i * 32, s = Math.sin(t * 3 + i * 1.3) * 22; e.setAttribute('d', `M ${x * .8} 56 Q ${x + s} 110 ${x * 1.2 + s * .5} 150 T ${x * 1.3 - s * .4} 200`); }) };
+  };
+  BODIES.turtle = function (g, c) {
+    const fl = [-1, 1].map(s => { const o = el('g', { transform: `translate(${s * 96} 26)` }, g); const i = el('g', {}, o); el('ellipse', { rx: 44, ry: 18, fill: '#72cf86', transform: `rotate(${s * 22})` }, i); return { s, i }; });
+    el('circle', { r: 114, fill: '#3da35d' }, g);
+    el('circle', { r: 114, fill: 'none', stroke: '#2c8248', 'stroke-width': 6, 'stroke-dasharray': '34 14' }, g);
+    el('circle', { r: 92, fill: '#8fe3a0' }, g);
+    el('path', { d: 'M -70 -44 A 86 86 0 0 1 -6 -88', fill: 'none', stroke: '#fff', 'stroke-width': 8, 'stroke-linecap': 'round', opacity: .35 }, g);
+    return { fy: 2, fs: .95, top: -140, tick: t => fl.forEach(f => f.i.setAttribute('transform', `rotate(${f.s * Math.sin(t * 3) * 18})`)) };
+  };
+  BODIES.crab = function (g, c) {
+    const col = c || '#ef5b45', leg = '#d9402b';
+    [-1, 1].forEach(s => { [0, 1, 2].forEach(k => el('path', { d: `M ${s * 70} ${20 + k * 14} Q ${s * 120} ${24 + k * 18} ${s * 140} ${70 + k * 14}`, fill: 'none', stroke: leg, 'stroke-width': 9, 'stroke-linecap': 'round' }, g)); });
+    const cl = [-1, 1].map(s => { const o = el('g', { transform: `translate(${s * 118} -92)` }, g); const i = el('g', {}, o);
+      el('path', { d: `M ${-s * 38} 70 Q ${-s * 10} 30 0 0`, fill: 'none', stroke: leg, 'stroke-width': 12, 'stroke-linecap': 'round' }, i);
+      el('path', { d: 'M -26 -4 A 30 30 0 1 1 26 -4 L 8 -4 L 0 -26 L -8 -4 Z', fill: col }, i); return { s, i }; });
+    el('ellipse', { rx: 108, ry: 78, fill: col }, g);
+    el('ellipse', { cx: 0, cy: 44, rx: 80, ry: 26, fill: '#fff', opacity: .16 }, g);
+    return { fy: 4, fs: .95, top: -170, tick: t => cl.forEach(c2 => c2.i.setAttribute('transform', `rotate(${c2.s * (Math.sin(t * 5) * 12)})`)) };
+  };
+  BODIES.angler = function (g, c) {
+    const col = c || '#2b3a67';
+    const lure = el('g', {}, g);
+    el('path', { d: 'M -10 -84 Q -30 -170 -96 -150', fill: 'none', stroke: col, 'stroke-width': 8, 'stroke-linecap': 'round' }, lure);
+    const glow = el('circle', { cx: -96, cy: -150, r: 34, fill: '#fff6a8', opacity: .35 }, lure);
+    el('circle', { cx: -96, cy: -150, r: 15, fill: '#fff6a8' }, lure);
+    const tail = tailG(g, 100, 8);
+    el('path', { d: 'M 0 0 L 60 -34 L 52 0 L 60 34 Z', fill: '#223058' }, tail);
+    el('ellipse', { rx: 114, ry: 92, fill: col }, g);
+    el('ellipse', { cx: -4, cy: 52, rx: 90, ry: 30, fill: '#4a5c94', opacity: .7 }, g);
+    for (let i = 0; i < 7; i++) el('path', { d: `M ${-60 + i * 20} 74 l 6 -22 l 6 22 Z`, fill: '#fff' }, g);
+    return { fy: -6, fs: 1, top: -190, tick: t => { glow.setAttribute('r', (30 + 8 * Math.sin(t * 4)).toFixed(1)); glow.setAttribute('opacity', (.3 + .15 * Math.sin(t * 4)).toFixed(2)); tail.setAttribute('transform', `rotate(${Math.sin(t * 5) * 12})`); } };
+  };
+  BODIES.sub = function (g, c) {
+    const col = c || '#ffd23f';
+    const prop = el('g', { transform: 'translate(152 0)' }, g); const pi = el('ellipse', { rx: 8, ry: 40, fill: '#c98a00' }, prop);
+    el('rect', { x: 26, y: -118, width: 12, height: 52, rx: 5, fill: '#c98a00' }, g); el('rect', { x: 14, y: -122, width: 36, height: 12, rx: 6, fill: '#c98a00' }, g);
+    el('rect', { x: -136, y: -70, width: 276, height: 140, rx: 70, fill: col }, g);
+    el('rect', { x: -120, y: 34, width: 244, height: 26, rx: 13, fill: '#e6b52c' }, g);
+    el('circle', { cx: 100, cy: 8, r: 15, fill: '#9fe3ff', stroke: '#c98a00', 'stroke-width': 6 }, g);
+    el('path', { d: 'M -136 -10 L -230 -50 L -230 40 L -136 14 Z', fill: '#fff6a8', opacity: .22 }, g);
+    el('circle', { cx: -132, cy: 2, r: 9, fill: '#fff6a8' }, g);
+    return { fy: -2, fs: .74, top: -150, tick: t => pi.setAttribute('ry', (40 * Math.abs(Math.cos(t * 20)) + 6).toFixed(1)) };
+  };
+
   const WHO = Object.keys(BODIES);
-  const ALIAS = { robot: 'buddy', mascot: 'buddy', ai: 'buddy', sparkle: 'star', internet: 'cloud', wifi: 'cloud', google: 'buddy', rupee: 'coin', money: 'coin', mobile: 'phone', idea: 'bulb', light: 'bulb', computer: 'server', planet: 'earth' };
+  const ALIAS = { robot: 'buddy', mascot: 'buddy', ai: 'buddy', sparkle: 'star', internet: 'cloud', wifi: 'cloud', google: 'buddy', rupee: 'coin', money: 'coin', mobile: 'phone', idea: 'bulb', light: 'bulb', computer: 'server', planet: 'earth', orca: 'whale', squid: 'octopus', jelly: 'jellyfish', submarine: 'sub', goldfish: 'fish', lanternfish: 'angler', seaturtle: 'turtle' };
   const who = w => { w = String(w || 'buddy').toLowerCase().trim(); return BODIES[w] ? w : (ALIAS[w] || 'buddy'); };
   window.TOON = { WHO, MOOD_NAMES };
 
@@ -197,6 +314,47 @@
     ex.ques.setAttribute('opacity', p.ques.toFixed(3)); ex.ques.setAttribute('transform', `translate(${60} ${ex.top + 10}) scale(${(.5 + .5 * bounce) * (p.ques > .01 ? 1 : .01)}) rotate(${12 + Math.sin(t * 5) * 8})`);
   }
 
+
+  const STOPS = [[0, [88, 208, 244]], [150, [36, 150, 205]], [600, [16, 80, 150]], [1500, [9, 40, 100]], [4000, [5, 18, 55]], [11000, [2, 6, 22]]];
+  function oceanCol(dm) {
+    dm = Math.max(0, Math.min(11000, dm));
+    for (let i = 1; i < STOPS.length; i++) if (dm <= STOPS[i][0]) { const a = STOPS[i - 1], b = STOPS[i], u = (dm - a[0]) / (b[0] - a[0]); return a[1].map((v, k) => Math.round(v + (b[1][k] - v) * u)); }
+    return STOPS[STOPS.length - 1][1];
+  }
+  const rgb = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+  const fmtM = v => Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' m';
+  function makeOcean(parent, withGauge) {
+    const id = 'og' + (++UID);
+    const defs = el('defs', {}, parent);
+    const lg = el('linearGradient', { id, x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+    const s1 = el('stop', { offset: '0%' }, lg), s2 = el('stop', { offset: '100%' }, lg);
+    el('rect', { x: -40, y: -40, width: 800, height: 1310, fill: `url(#${id})` }, parent);
+    const rays = []; for (let i = 0; i < 4; i++) rays.push(el('path', { d: `M ${80 + i * 170} 0 L ${150 + i * 170} 0 L ${60 + i * 170} 900 L ${-50 + i * 170} 900 Z`, fill: '#fff' }, parent));
+    const snow = []; for (let i = 0; i < 46; i++) snow.push({ e: el('circle', { r: .8 + rnd(i + 70) * 2.2, fill: '#cfe8ff' }, parent), x: rnd(i + 31) * 720, o: rnd(i + 50) * 1300, k: .6 + rnd(i + 90) });
+    const bub = []; for (let i = 0; i < 14; i++) bub.push({ e: el('circle', { fill: 'none', stroke: '#fff', 'stroke-width': 2.5 }, parent), x: 30 + rnd(i + 11) * 660, o: rnd(i + 17) * 1400, r: 4 + rnd(i + 5) * 9, k: .5 + rnd(i + 3) * .9 });
+    const floor = el('path', { d: 'M 0 1228 L 0 1120 Q 90 1070 190 1116 T 400 1100 T 600 1086 T 720 1100 L 720 1228 Z', fill: '#0a1024' }, parent);
+    const gauge = el('g', {}, parent);
+    let mk, tx, rate = 0;
+    if (withGauge) {
+      el('line', { x1: 698, y1: 190, x2: 698, y2: 1010, stroke: '#fff', 'stroke-width': 3, opacity: .4, 'stroke-linecap': 'round' }, gauge);
+      [[0, '0'], [200, '200'], [1000, '1,000'], [4000, '4,000'], [11000, '11,000']].forEach(([m, l]) => { const y = 190 + 820 * Math.sqrt(m / 11000); el('line', { x1: 690, y1: y, x2: 706, y2: y, stroke: '#fff', 'stroke-width': 3, opacity: .5 }, gauge); X.text(gauge, l, 680, y + 6, 17, '#fff', 600, 'end', { opacity: .55 }); });
+      mk = el('path', { d: 'M 698 0 L 674 -13 L 674 13 Z', fill: X.ORANGE }, gauge);
+      tx = X.text(gauge, '', 666, 0, 30, '#fff', 800, 'end');
+    }
+    return { rays, update(dm, t, r) {
+      const top = oceanCol(dm), bot = oceanCol(dm + 700);
+      s1.setAttribute('stop-color', rgb(top)); s2.setAttribute('stop-color', rgb(bot));
+      const ro = Math.max(0, 1 - dm / 900) * .2;
+      rays.forEach((e, i) => { e.setAttribute('opacity', ro.toFixed(3)); e.setAttribute('transform', `skewX(${Math.sin(t * .5 + i) * 4})`); });
+      const sn = Math.min(1, Math.max(0, (dm - 80) / 300)); const v = 25 + 140 * Math.min(1, Math.abs(r));
+      snow.forEach(q => { const y = 1280 - ((q.o + t * v * q.k) % 1320); q.e.setAttribute('cx', (q.x + Math.sin(t + q.o) * 8).toFixed(1)); q.e.setAttribute('cy', y.toFixed(1)); q.e.setAttribute('opacity', (sn * .6).toFixed(2)); });
+      const bo = Math.max(0, 1 - dm / 1500);
+      bub.forEach(q => { const y = 1300 - ((q.o + t * 60 * q.k) % 1400); q.e.setAttribute('cx', (q.x + Math.sin(t * 2 + q.o) * 10).toFixed(1)); q.e.setAttribute('cy', y.toFixed(1)); q.e.setAttribute('r', q.r.toFixed(1)); q.e.setAttribute('opacity', (bo * .45).toFixed(2)); });
+      const fp = Math.min(1, Math.max(0, (dm - 10300) / 600)); floor.setAttribute('transform', `translate(0 ${(260 * (1 - fp)).toFixed(0)})`); floor.setAttribute('opacity', fp > 0 ? 1 : 0);
+      if (mk) { const y = 190 + 820 * Math.sqrt(Math.min(1, dm / 11000)); mk.setAttribute('transform', `translate(0 ${y.toFixed(1)})`); tx.setAttribute('y', (y + 10).toFixed(1)); tx.textContent = fmtM(dm); }
+    } };
+  }
+
   /* ----------------------------------------------------------------- scene */
   S.toon = function (g, d) {
     const cast = (Array.isArray(d.cast) && d.cast.length ? d.cast : [{ who: d.who || 'buddy', mood: d.mood || 'happy', mood2: d.mood2, act: d.act }]).slice(0, 3);
@@ -205,7 +363,9 @@
     const orbit = layout === 'orbit' && n >= 2;
     const bg = el('g', {}, g);
     // twinkling background stars
-    const stars = []; for (let i = 0; i < 26; i++) stars.push({ e: el('circle', { cx: 20 + rnd(i + 3) * 680, cy: 60 + rnd(i + 9) * 1000, r: .8 + rnd(i + 21) * 2.2, fill: '#fff' }, bg), k: i });
+    const ocean = d.bg === 'ocean' ? makeOcean(bg, d.depth !== undefined) : null;
+    const D0 = Number(d.depth) || 0, D1 = d.depth2 !== undefined ? Number(d.depth2) || 0 : D0;
+    const stars = []; for (let i = 0; i < (ocean ? 0 : 26); i++) stars.push({ e: el('circle', { cx: 20 + rnd(i + 3) * 680, cy: 60 + rnd(i + 9) * 1000, r: .8 + rnd(i + 21) * 2.2, fill: '#fff' }, bg), k: i });
     if (d.bg === 'day') { el('rect', { x: 0, y: 0, width: 720, height: 1228, fill: '#2d63b8', opacity: .55 }, bg); }
 
     const CX = 360, CY = 620;
@@ -219,7 +379,8 @@
       const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = makeFace(fg);
       const ex = makeExtras(cg, b.top);
       const m1 = MOODS[c.mood] ? c.mood : 'happy', m2 = MOODS[c.mood2] ? c.mood2 : m1;
-      return { c, i, w, cg, body, b, face, ex, P1: moodP(m1), P2: moodP(m2), act: String(c.act || 'float').toLowerCase(), base: pos[i] || pos[0], size: Number(c.size) > 0 ? Number(c.size) : 1 };
+      const act0 = String(c.act || 'float').toLowerCase(); const dir = String(c.dir || '').toLowerCase();
+      return { c, i, w, cg, body, b, face, ex, flip: dir === 'right' ? -1 : 1, dirr: dir, P1: moodP(m1), P2: moodP(m2), act: act0, base: pos[i] || pos[0], size: Number(c.size) > 0 ? Number(c.size) : 1 };
     });
     // poof (smoke) used by vanish / appear
     const poofs = chars.map(() => { const pg = el('g', {}, g); const ps = []; for (let k = 0; k < 9; k++) ps.push({ e: el('circle', { fill: k % 3 === 0 ? '#ffd34d' : '#ffffff' }, pg), a: k / 9 * 6.283 + rnd(k) * .6, s: 50 + rnd(k + 5) * 60 }); return { pg, ps }; });
@@ -230,6 +391,7 @@
       const tAt = at * dur, T = lt;
       bg.setAttribute('opacity', 1);
       stars.forEach(s => s.e.setAttribute('opacity', (.25 + .55 * Math.abs(Math.sin(T * 1.5 + s.k))).toFixed(3)));
+      if (ocean) ocean.update(lerp(D0, D1, eio(prog(lt, 0, dur))), T, (D1 - D0) / Math.max(1, dur) / 700);
       const reveal = eob(prog(lt, 0, .45)) ;
       const zoom = 1 + .05 * prog(lt, 0, dur);
       g.setAttribute('transform', `translate(360 614) scale(${zoom}) translate(-360 -614)`);
@@ -241,11 +403,36 @@
           else if (i === 1) { const a = T * .75 - 1.2; x = CX + Math.cos(a) * 250; y = CY + Math.sin(a) * 190; sc = (n === 3 ? .8 : 1.0) * o.size; }
           else { const p1 = pts[1], a = T * 2.1; x = p1.x + Math.cos(a) * 95; y = p1.y + Math.sin(a) * 60; sc = .5 * o.size; }
         }
+
+        let moving = false, tiltDeg = 0;
+        const anchor = (nm, def) => {
+          if (Array.isArray(nm) && nm.length === 2) return [Number(nm[0]) || 0, Number(nm[1]) || 0];
+          switch (String(nm || def)) {
+            case 'left': return [-200, o.base[1]]; case 'right': return [920, o.base[1]]; case 'top': return [o.base[0], -200]; case 'bottom': return [o.base[0], 1450];
+            case 'high': return [o.base[0], 250]; case 'deep': return [o.base[0], 960]; case 'center': return [CX, CY]; default: return [o.base[0], o.base[1]];
+          }
+        };
+        if (o.act === 'swim' || o.act === 'dive' || o.act === 'rise' || o.act === 'sink') {
+          const c = o.c; const goingLeft = o.dirr === 'left' || (!o.dirr && (c.from === 'right' || (c.to === 'left' && !c.from)));
+          const vert = o.act !== 'swim';
+          const A = anchor(c.from, vert ? (o.act === 'rise' ? 'deep' : 'high') : (goingLeft ? 'right' : 'left'));
+          const B = anchor(c.to, vert ? (o.act === 'rise' ? 'high' : 'deep') : (goingLeft ? 'left' : 'right'));
+          const s0 = clamp(Number(c.start) || 0, 0, .95) * dur, e0 = clamp(Number(c.end) > 0 ? Number(c.end) : 1, .05, 1) * dur;
+          const at_ = tt => { const u = prog(tt, s0, Math.max(s0 + .3, e0)); const k = vert ? eio(u) : u; return [A[0] + (B[0] - A[0]) * k, A[1] + (B[1] - A[1]) * k]; };
+          const P = at_(T), Q = at_(T + .08);
+          x = P[0] + (vert ? Math.sin(T * 2.2) * 24 : 0); y = P[1] + (vert ? 0 : Math.sin(T * 3 + i) * 26);
+          const vx = (Q[0] - P[0]) / .08, vy = (Q[1] - P[1]) / .08;
+          if (Math.abs(vx) > 8) o.flip = vx > 0 ? -1 : 1; else if (vert && !o.dirr) o.flip = o.flip || 1;
+          tiltDeg = clamp(Math.atan2(vy, Math.abs(vx) + 24) * 57.3 * .75, -40, 40);
+          moving = Math.hypot(vx, vy) > 20;
+        }
+        if (o.act === 'circle') { const a = T * 1.1 + i * 2; x = CX + Math.cos(a) * 210; y = CY + Math.sin(a) * 130; o.flip = -Math.sign(-Math.sin(a)) || 1; moving = true; }
         const after = T - tAt, ap = prog(after, 0, .35);
         let sx = 1, sy = 1;
         switch (o.act) {
           case 'hop': y -= Math.abs(Math.sin(T * 4.5)) * 46; sy = 1 + .06 * Math.cos(T * 9); break;
           case 'shake': x += Math.sin(T * 38) * 7 * (after > 0 ? 1.4 : .3); break;
+          case 'wiggle': brot = Math.sin(T * 4) * 12; break;
           case 'spin': brot = T * 220; y += Math.sin(T * 6) * 8; break;
           case 'vanish': if (after >= 0) { const u = prog(after, 0, .3); sc *= (1 + .18 * Math.sin(u * 3.14) ) * (1 - eio(u)); vis = u >= 1 ? 0 : 1; } break;
           case 'appear': if (after < 0) { vis = 0; } else { sc *= eob(prog(after, 0, .5)); } break;
@@ -254,7 +441,7 @@
           case 'shrink': sc *= 1 - .55 * prog(lt, 0, dur); break;
         }
         // idle life: bob + breathe + reaction squash when the mood changes
-        y += Math.sin(T * 2.1 + i * 1.7) * 9;
+        if (!moving) y += Math.sin(T * 2.1 + i * 1.7) * 9;
         const br = 1 + .02 * Math.sin(T * 3 + i);
         const pulse = Math.exp(-Math.max(0, after) * 7) * (after >= 0 ? 1 : 0);
         sx = br * (1 - .08 * pulse) * (1 + .0); sy = sy * br * (1 + .14 * pulse);
@@ -262,7 +449,7 @@
         sc *= reveal;
         pts[i] = { x, y };
         o.cg.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(1)}) scale(${(sc * sx).toFixed(3)} ${(sc * sy).toFixed(3)})`);
-        X.show(o.cg, vis); o.body.setAttribute('transform', `rotate(${brot.toFixed(1)})`);
+        X.show(o.cg, vis); o.body.setAttribute('transform', `scale(${o.flip || 1} 1) rotate(${(brot - tiltDeg).toFixed(1)})`);
         // expression
         const u = eio(prog(after, -.05, .25));
         const p = mix(o.P1, o.P2, u);
@@ -273,7 +460,7 @@
         if (other < 0) { look.x = Math.sin(T * .9) * .5; look.y = .1; }
         o.face(p, T, look, blink);
         tickExtras(o.ex, p, T, o.act === 'vanish' ? 1 : eob(prog(T, 0, .5)));
-        o.b.tick(T);
+        o.b.tick(moving ? T * 1.7 : T);
       });
       // smoke puffs
       chars.forEach((o, i) => {
