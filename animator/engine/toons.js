@@ -12,7 +12,7 @@
 
   /* ------------------------------------------------------------ expressions */
   const P0 = { eye: 1, pup: .55, open: 1, arc: 0, brow: 0, browY: 0, mw: 26, curve: .8, mo: 0, blush: .5, tongue: 0,
-    sweat: 0, tears: 0, zzz: 0, hearts: 0, stars: 0, shades: 0, excl: 0, ques: 0, tremble: 0, dizzy: 0, lookUp: 0 };
+    sweat: 0, tears: 0, zzz: 0, hearts: 0, stars: 0, shades: 0, excl: 0, ques: 0, tremble: 0, dizzy: 0, lookUp: 0, wink: 0 };
   const MOODS = {
     happy:    {},
     joy:      { arc: 1, mw: 34, curve: 1, mo: .55, blush: 1, stars: 1 },
@@ -27,6 +27,13 @@
     love:     { arc: 1, mw: 28, curve: 1, mo: .2, blush: 1, hearts: 1 },
     dizzy:    { eye: 1.1, pup: .35, mw: 20, curve: -.2, mo: .5, blush: .3, dizzy: 1, stars: 1 },
     cool:     { mw: 28, curve: .6, shades: 1, blush: .2 },
+    determined: { eye: 1.05, pup: .7, brow: -16, browY: 3, mw: 24, curve: .45, mo: 0, blush: .3 },
+    proud:    { eye: .95, pup: .6, browY: -6, mw: 30, curve: 1, mo: .1, blush: .8, stars: .7, lookUp: .6 },
+    yawn:     { open: .15, arc: .5, mw: 22, curve: 0, mo: 1.3, blush: .3, zzz: .6 },
+    giggle:   { arc: 1, mw: 36, curve: 1, mo: .9, blush: 1 },
+    hopeful:  { eye: 1.25, pup: .78, brow: 8, browY: -7, mw: 20, curve: .7, mo: .1, blush: .5, stars: 1, lookUp: 1 },
+    wink:     { wink: 1, mw: 32, curve: 1, mo: .5, blush: .8 },
+    tired:    { open: .55, pup: .5, brow: 12, mw: 20, curve: -.3, mo: .15, blush: .2, sweat: .6 },
     thinking: { pup: .5, brow: 10, browY: -4, mw: 14, curve: 0, mo: 0, blush: .2, ques: 1, lookUp: 1 },
   };
   const MOOD_NAMES = Object.keys(MOODS);
@@ -41,7 +48,7 @@
       const g = el('g', {}, f);
       const white = el('circle', { r: 17, fill: '#fff' }, g);
       const pup = el('circle', { r: 9, fill: '#1b1f3a' }, g);
-      const hi = el('circle', { r: 3.4, fill: '#fff' }, g);
+      const hi = el('circle', { r: 3.4, fill: '#fff' }, g); el('circle', { cx: 3, cy: 3, r: 1.6, fill: '#fff', opacity: .7 }, g);
       const arc = el('path', { d: 'M -16 5 Q 0 -17 16 5', fill: 'none', stroke: INK, 'stroke-width': 6.5, 'stroke-linecap': 'round' }, g);
       return { s, g, white, pup, hi, arc };
     });
@@ -61,11 +68,12 @@
       eyes.forEach(e => {
         const lx = (look.x + (p.dizzy ? Math.cos(t * 9 + e.s) * .9 : 0)) * 6, ly = (look.y - p.lookUp * .9 + (p.dizzy ? Math.sin(t * 9 + e.s) * .9 : 0)) * 6;
         e.g.setAttribute('transform', `translate(${e.s * 34} -8) scale(${p.eye} ${(p.eye * Math.max(.06, oy)).toFixed(3)})`);
-        e.white.setAttribute('opacity', (1 - p.arc).toFixed(3));
+        const ar = e.s === 1 ? Math.max(p.arc, p.wink) : p.arc;
+        e.white.setAttribute('opacity', (1 - ar).toFixed(3));
         e.pup.setAttribute('r', (17 * p.pup).toFixed(2)); e.pup.setAttribute('cx', lx.toFixed(2)); e.pup.setAttribute('cy', ly.toFixed(2));
-        e.pup.setAttribute('opacity', (1 - p.arc).toFixed(3));
-        e.hi.setAttribute('cx', (lx - 4).toFixed(2)); e.hi.setAttribute('cy', (ly - 5).toFixed(2)); e.hi.setAttribute('opacity', (1 - p.arc).toFixed(3));
-        e.arc.setAttribute('opacity', p.arc.toFixed(3));
+        e.pup.setAttribute('opacity', (1 - ar).toFixed(3));
+        e.hi.setAttribute('cx', (lx - 4).toFixed(2)); e.hi.setAttribute('cy', (ly - 5).toFixed(2)); e.hi.setAttribute('opacity', (1 - ar).toFixed(3));
+        e.arc.setAttribute('opacity', ar.toFixed(3));
       });
       brows.forEach(b => {
         b.e.setAttribute('transform', `translate(${b.s * 34} ${-40 + p.browY}) rotate(${b.s * p.brow})`);
@@ -284,10 +292,75 @@
     return { fy: -2, fs: .74, top: -150, tick: t => pi.setAttribute('ry', (40 * Math.abs(Math.cos(t * 20)) + 6).toFixed(1)) };
   };
 
+  window.TOON = window.TOON || {};
+
+  /* ------------------------------------------------------- garden friends */
+  BODIES.seed = function (g, c) {
+    const col = c || '#b9783f';
+    el('path', { d: 'M -12 -98 Q 0 -134 14 -98 Z', fill: '#8f5a2c' }, g);
+    el('ellipse', { rx: 86, ry: 106, fill: col }, g);
+    el('path', { d: 'M 10 -102 Q 76 -62 60 30 Q 44 88 -8 104 Q 58 66 52 -10 Q 50 -62 10 -102 Z', fill: '#8f5a2c', opacity: .42 }, g);
+    el('path', { d: 'M -62 -14 Q -54 -80 -10 -94 Q -50 -52 -46 -6 Z', fill: '#fff', opacity: .3 }, g);
+    [[-40, 70, 5], [-18, 84, 4], [52, -70, 4]].forEach(([x, y, r]) => el('circle', { cx: x, cy: y, r, fill: '#8f5a2c', opacity: .5 }, g));
+    return { fy: 6, fs: .95, top: -158, tick() {} };
+  };
+  BODIES.sprout = function (g, c) {
+    const col = c || '#86e05a';
+    el('ellipse', { cx: 0, cy: 100, rx: 138, ry: 48, fill: '#6f4423' }, g);
+    el('ellipse', { cx: 0, cy: 92, rx: 126, ry: 40, fill: '#9a6236' }, g);
+    [[-70, 96, 7], [64, 100, 6], [18, 112, 5], [-30, 112, 4]].forEach(([x, y, r]) => el('circle', { cx: x, cy: y, r, fill: '#6f4423' }, g));
+    el('rect', { x: -17, y: 50, width: 34, height: 56, fill: '#5fc84a' }, g);
+    const lv = [-1, 1].map(s => { const o = el('g', { transform: `translate(${s * 8} -66)` }, g); const i = el('g', {}, o);
+      el('path', { d: `M 0 0 Q ${s * 70} -92 ${s * 132} -48 Q ${s * 96} 14 0 0 Z`, fill: '#4fc13d' }, i);
+      el('path', { d: `M 4 -4 Q ${s * 60} -50 ${s * 112} -42`, fill: 'none', stroke: '#8cec6a', 'stroke-width': 5, 'stroke-linecap': 'round' }, i); return { s, i }; });
+    el('circle', { r: 84, fill: col }, g);
+    el('path', { d: 'M -62 -34 A 78 78 0 0 1 -8 -80', fill: 'none', stroke: '#fff', 'stroke-width': 10, 'stroke-linecap': 'round', opacity: .4 }, g);
+    return { fy: 2, fs: .92, top: -170, tick: t => lv.forEach(l => l.i.setAttribute('transform', `rotate(${l.s * (Math.sin(t * 2.6) * 7 + 3)})`)) };
+  };
+  BODIES.flower = function (g, c) {
+    const col = c || '#ffd23f';
+    el('rect', { x: -12, y: 70, width: 24, height: 150, rx: 8, fill: '#4fc13d' }, g);
+    [-1, 1].forEach(s => el('path', { d: `M ${s * 8} 170 Q ${s * 90} 100 ${s * 150} 142 Q ${s * 100} 206 ${s * 8} 180 Z`, fill: '#5fd24a' }, g));
+    const pet = el('g', {}, g);
+    for (let i = 0; i < 14; i++) el('ellipse', { cx: 0, cy: -108, rx: 24, ry: 46, fill: i % 2 ? col : '#ffc21a', transform: `rotate(${i * 360 / 14})` }, pet);
+    el('circle', { r: 92, fill: '#a8703a' }, g);
+    el('circle', { r: 82, fill: '#d09a5a' }, g);
+    el('path', { d: 'M -60 -36 A 74 74 0 0 1 -8 -74', fill: 'none', stroke: '#fff', 'stroke-width': 8, 'stroke-linecap': 'round', opacity: .35 }, g);
+    return { fy: 2, fs: .95, top: -175, tick: t => pet.setAttribute('transform', `rotate(${Math.sin(t * .8) * 6})`) };
+  };
+  BODIES.drop = function (g, c) {
+    el('path', { d: 'M 0 -138 C 44 -66 96 -14 96 44 A 96 96 0 0 1 -96 44 C -96 -14 -44 -66 0 -138 Z', fill: c || '#4cc3ff' }, g);
+    el('path', { d: 'M 40 -20 C 66 20 70 60 46 96 C 78 70 84 20 40 -20 Z', fill: '#1f8fd6', opacity: .35 }, g);
+    el('path', { d: 'M -58 20 Q -66 56 -44 80', fill: 'none', stroke: '#fff', 'stroke-width': 11, 'stroke-linecap': 'round', opacity: .6 }, g);
+    return { fy: 38, fs: .88, top: -170, tick() {} };
+  };
+  BODIES.worm = function (g, c) {
+    const col = c || '#ff9aa8', segs = [];
+    for (let i = 4; i >= 1; i--) segs.push(el('circle', { r: 50 - i * 4, fill: i % 2 ? '#ff8c9d' : col }, g));
+    el('circle', { r: 76, fill: col }, g);
+    el('ellipse', { cx: 0, cy: 46, rx: 54, ry: 18, fill: '#fff', opacity: .18 }, g);
+    el('path', { d: 'M -52 -38 A 66 66 0 0 1 -6 -68', fill: 'none', stroke: '#fff', 'stroke-width': 8, 'stroke-linecap': 'round', opacity: .45 }, g);
+    return { fy: 2, fs: .88, top: -120, tick: t => segs.forEach((e, k) => { const i = 4 - k; e.setAttribute('cx', 62 + (i - 1) * 46 + i * 6); e.setAttribute('cy', (Math.sin(t * 4 - i * .9) * 14 + 22 + i * 2).toFixed(1)); }) };
+  };
+  BODIES.soil = function (g, c) {
+    const col = c || '#8a5a32';
+    el('path', { d: 'M -156 96 Q -150 -42 0 -54 Q 150 -42 156 96 Z', fill: col }, g);
+    el('path', { d: 'M -120 -6 Q -90 -40 -30 -44 Q -80 -22 -112 20 Z', fill: '#c28a58', opacity: .6 }, g);
+    [[-96, 60, 9], [104, 40, 7], [74, 78, 10], [-52, 80, 6], [20, 86, 5]].forEach(([x, y, r]) => el('circle', { cx: x, cy: y, r, fill: '#6b4325' }, g));
+    [[-30, -50, -16], [0, -54, 0], [30, -50, 16]].forEach(([x, y, a]) => el('path', { d: 'M -7 0 Q 0 -44 7 0 Z', fill: '#6ccf4c', transform: `translate(${x} ${y}) rotate(${a})` }, g));
+    return { fy: 8, fs: .95, top: -130, tick() {} };
+  };
+  window.TOON.draw = function (parent, w, mood, t, color) {
+    w = who(w); const cg = el('g', {}, parent), body = el('g', {}, cg);
+    const b = BODIES[w](body, color || null);
+    const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = makeFace(fg), ex = makeExtras(cg, b.top), p = moodP(mood);
+    face(p, t, { x: .2, y: .1 }, 1); tickExtras(ex, p, t, 1); b.tick(t); return cg;
+  };
+
   const WHO = Object.keys(BODIES);
-  const ALIAS = { robot: 'buddy', mascot: 'buddy', ai: 'buddy', sparkle: 'star', internet: 'cloud', wifi: 'cloud', google: 'buddy', rupee: 'coin', money: 'coin', mobile: 'phone', idea: 'bulb', light: 'bulb', computer: 'server', planet: 'earth', orca: 'whale', squid: 'octopus', jelly: 'jellyfish', submarine: 'sub', goldfish: 'fish', lanternfish: 'angler', seaturtle: 'turtle' };
+  const ALIAS = { robot: 'buddy', mascot: 'buddy', ai: 'buddy', sparkle: 'star', internet: 'cloud', wifi: 'cloud', google: 'buddy', rupee: 'coin', money: 'coin', mobile: 'phone', idea: 'bulb', light: 'bulb', computer: 'server', planet: 'earth', water: 'drop', raindrop: 'drop', sunflower: 'flower', plant: 'flower', seedling: 'sprout', ground: 'soil', earthworm: 'worm', orca: 'whale', squid: 'octopus', jelly: 'jellyfish', submarine: 'sub', goldfish: 'fish', lanternfish: 'angler', seaturtle: 'turtle' };
   const who = w => { w = String(w || 'buddy').toLowerCase().trim(); return BODIES[w] ? w : (ALIAS[w] || 'buddy'); };
-  window.TOON = { WHO, MOOD_NAMES };
+  Object.assign(window.TOON, { WHO, MOOD_NAMES });
 
   /* ----------------------------------------------------------- extras above the head */
   function makeExtras(parent, top) {

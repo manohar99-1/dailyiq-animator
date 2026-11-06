@@ -1,0 +1,34 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  @font-face{font-family:'InterBundled';font-weight:700;src:url('../fonts/Inter-Bold.otf')}
+  @font-face{font-family:'InterBundled';font-weight:900;src:url('../fonts/Inter-Black.otf')}
+  html,body{margin:0;background:#f7f0e1}
+</style></head>
+<body><svg id="s" width="1080" height="1400" viewBox="0 0 1080 1400" xmlns="http://www.w3.org/2000/svg"></svg>
+<script src="icons.js"></script><script src="engine.js"></script><script src="scenes.js"></script><script src="toons.js"></script>
+<script>
+// window.SHEET = [{title, rows:[{who, name, note, scale, dy, moods:[..4]}]}]
+window.drawSheet = function (sheet) {
+  const X = window.X, svg = document.getElementById('s'); svg.innerHTML = '';
+  const el = (n, a, p) => X.el(n, a, p || svg);
+  const rowH = 300, top = 150, H = top + sheet.rows.length * rowH + 30;
+  svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 1080 ${H}`);
+  el('rect', { width: 1080, height: H, fill: '#f7f0e1' });
+  X.text(svg, sheet.title, 540, 72, 54, '#14213d', 900); el('rect', { x: 490, y: 90, width: 100, height: 6, rx: 3, fill: '#ff8a1f' });
+  X.text(svg, sheet.sub, 540, 128, 24, '#5a6479', 700);
+  sheet.rows.forEach((r, ri) => {
+    const y0 = top + ri * rowH;
+    const cid = 'rc' + ri; const cp = el('clipPath', { id: cid }); el('rect', { x: 24, y: y0, width: 1032, height: rowH - 18, rx: 28 }, cp);
+    el('rect', { x: 24, y: y0, width: 1032, height: rowH - 18, rx: 28, fill: r.bg || '#d9f1ff', stroke: '#14213d', 'stroke-width': 3 });
+    X.text(svg, r.name, 190, y0 + 58, 40, '#14213d', 900, 'middle');
+    const note = r.note.split('|'); note.forEach((ln, k) => X.text(svg, ln, 190, y0 + 100 + k * 28, 21, '#5a6479', 700, 'middle'));
+    r.moods.forEach((m, mi) => {
+      const cx = 420 + mi * 160 + (mi ? 0 : 0), cy = y0 + (rowH - 18) / 2 + (r.dy || 0);
+      const g0 = el('g', { 'clip-path': `url(#${cid})` }); const g = el('g', { transform: `translate(${cx + (r.dx || 0)} ${cy}) scale(${r.scale || .66})` }, g0);
+      window.TOON.draw(g, r.who, m, 1.3 + mi * .37, r.color);
+      X.text(svg, m, cx, y0 + rowH - 34, 22, '#14213d', 800);
+    });
+  });
+};
+</script></body></html>
