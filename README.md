@@ -36,3 +36,14 @@ No internet or key? Try a silent draft from a ready-made script:
 - New scene types: add a function in `animator/engine/scenes.js` and its name to `animator/spec.py`.
 
 Notes: free LLM model names change; edit `config.json` if one stops working. Upload checklist is saved in `metadata.json` (mark as AI-generated/synthetic on YouTube).
+
+## Story scenes with your own character art ("From Seed to Plant")
+
+Scene type `story` plays glossy PNG characters on painted backgrounds: each character has expressions
+(1 happy, 2 talking "ah", 3 surprised "o", 4 sad/worried, 5 eyes closed). The mouth follows the real voice, characters blink,
+react to the story (hop, shake, swell, morph into the next growth stage), and the scene has rain, sparkles, light rays, roots, camera moves and step badges.
+
+- Example script: `examples/seed_to_plant_voice.json`. Run it from your phone: **Actions -> Generate video -> Run workflow**, `spec` = `examples/seed_to_plant_voice.json`.
+- Sprites live in `animator/engine/assets/seed/` (characters `seedy`, `sprouty`, `bloom`, `drippy`, `ray`, `cloud`, `soil`, `wiggly`; backgrounds `soil`, `sunny`, `rainy`).
+- New raw art? Unzip it into one folder and run `python tools/process_seed_assets.py RAW_DIR animator/engine/assets/seed` (needs `opencv-python-headless scipy pillow`). It removes the background, aligns expressions, matches colours and writes the manifest.
+- Writing a story: see the comment at the top of `animator/engine/story.js` (cast, lines, `do` acts, `fx`, `chips`, camera).

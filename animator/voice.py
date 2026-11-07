@@ -93,6 +93,20 @@ def synthesize(spec, cfg, workdir, voice_name=None, log=print):
     out = []
     for i, sc in enumerate(spec["scenes"]):
         say = sc["say"]
+        if sc["type"] == "story":      # one clip per line, so each speaker's mouth follows its own sentence
+            parts = []
+            for j, L in enumerate(sc["data"]["lines"]):
+                if silent:
+                    parts.append({"wav": None, "dur": max(1.2, len(L["text"].split()) / wps)})
+                    continue
+                mp3, wav = workdir / f"s{i:02d}_{j:02d}.src", workdir / f"s{i:02d}_{j:02d}.wav"
+                used = _tts_clip(L["text"], cfg, mp3, log)
+                trim = "silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.04"
+                _ff("-i", str(mp3), "-af", f"{trim},areverse,{trim},areverse", "-ar", str(SR), "-ac", "1", "-c:a", "pcm_s16le", str(wav))
+                parts.append({"wav": wav, "dur": _wav_len(wav)})
+                log(f"[voice] scene {i + 1}/{len(spec['scenes'])} line {j + 1}: {parts[-1]['dur']:4.1f}s ({used})")
+            out.append({"wav": None, "dur": sum(p["dur"] for p in parts), "lines": parts})
+            continue
         if silent:
             if sc["type"] == "talk":   # reading time for each line of a conversation, plus a beat between speakers
                 d = sum(len(L["text"].split()) / wps + .45 for L in sc["data"]["lines"])

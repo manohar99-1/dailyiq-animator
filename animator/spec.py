@@ -2,7 +2,7 @@
 This module defines the allowed scene types, cleans up whatever an LLM returns, and explains the schema to the LLM."""
 import re
 
-SCENE_TYPES = ["hook", "searchbar", "flow", "network", "hub", "grid", "counter", "compare", "steps", "alert", "bars", "collapse", "keypoints", "toon", "talk"]
+SCENE_TYPES = ["hook", "searchbar", "flow", "network", "hub", "grid", "counter", "compare", "steps", "alert", "bars", "collapse", "keypoints", "toon", "talk", "story"]
 
 ICON_NAMES = ("search mail map play video phone laptop cab car truck shop bell cloud server database lock wifi globe battery chip robot shield user users "
               "cart bag bank qr rupee money bolt clock calendar fire heart star camera music chat thumb home code plane gear warning check x question power link").split()
@@ -141,6 +141,25 @@ def _clean_talk(d):
     return out
 
 
+def _clean_story(d):
+    """Image-based story scene (see engine/story.js). Cast / props / effects are passed through; text is cleaned."""
+    out = {k: v for k, v in d.items() if k not in ("lines",)}
+    out["cast"] = [c for c in (d.get("cast") or []) if isinstance(c, dict)][:8]
+    lines = []
+    for L in (d.get("lines") if isinstance(d.get("lines"), list) else [])[:16]:
+        if not isinstance(L, dict):
+            continue
+        text = re.sub(r"\s+", " ", _BAD_CHARS.sub("", str(L.get("text") or "")).replace("&", " and ").replace("%", " percent")).strip()
+        if not text:
+            continue
+        e = dict(L)
+        e["text"] = text
+        lines.append(e)
+    out["lines"] = lines
+    out.setdefault("bg", "soil")
+    return out
+
+
 def validate(spec, max_scenes=14):
     """Return a cleaned copy of the spec. Never raises for fixable problems; raises ValueError if nothing usable is left."""
     if not isinstance(spec, dict):
@@ -151,6 +170,12 @@ def validate(spec, max_scenes=14):
             continue
         typ = str(sc.get("type") or "").strip().lower()
         data = sc.get("data") if isinstance(sc.get("data"), dict) else {}
+        if typ == "story":
+            data = _clean_story(data)
+            if not data["lines"]:
+                continue
+            scenes.append({"say": " ".join(L["text"] for L in data["lines"]), "type": "story", "data": data})
+            continue
         if typ == "talk":
             data = _clean_talk(data)
             if not data["lines"]:

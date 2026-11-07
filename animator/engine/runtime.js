@@ -28,12 +28,13 @@
     await document.fonts.ready;
     const sg = $('scenes'); sg.innerHTML = ''; inst = [];
     sp.scenes.forEach((s, i) => {
-      const grp = X.el('g', { display: 'inline' }, sg), inner = X.el('g', { filter: 'url(#fx)' }, grp);
+      const grp = X.el('g', { display: 'inline' }, sg), inner = X.el('g', s.type === 'story' ? {} : { filter: 'url(#fx)' }, grp);
       let upd;
       try { upd = (S[s.type] || S.keypoints)(inner, s.data || {}); }
       catch (e) { console.error('scene ' + i + ' (' + s.type + ') failed: ' + e); inner.innerHTML = ''; upd = S.keypoints(inner, { points: [String(s.say || '')] }); }
       grp.setAttribute('display', 'none'); inst.push({ grp, upd, s });
     });
+    if (X.preload) await Promise.all(X.preload);
     const pg = $('parts'); pg.innerHTML = ''; parts = [];
     for (let i = 0; i < 22; i++) parts.push({ c: X.el('circle', { r: 1.5 + X.rnd(i) * 2.2, fill: i % 4 ? X.CYAN : X.ORANGE, 'fill-opacity': .35 }, pg), x: X.rnd(i + 9) * 720, y: X.rnd(i + 3) * 1228, s: 6 + X.rnd(i + 5) * 14 });
     const tt = $('title'); const tx = tt.querySelector('.t'); tx.textContent = sp.title || ''; tx.style.fontSize = '43px';
@@ -50,8 +51,14 @@
     $('turb').setAttribute('seed', 1 + Math.floor(t * 9) % 8);
     parts.forEach((p, i) => { p.c.setAttribute('cx', (p.x + Math.sin(t * .6 + i) * 14) % 720); p.c.setAttribute('cy', ((p.y - t * p.s) % 1228 + 1228) % 1228); });
     $('stage').style.transform = `scale(${(640 / 720) * (1 + .05 * cl(t / T))})`;
-    inst.forEach(o => {
-      const s = o.s, op = Math.min(prog(t, s.start - .12, s.start + .12), 1 - prog(t, s.end - .12, s.end + .12));
+    inst.forEach((o, idx) => {
+      const s = o.s, nx = spec.scenes[idx + 1], pv = spec.scenes[idx - 1];
+      let op = Math.min(prog(t, s.start - .12, s.start + .12), 1 - prog(t, s.end - .12, s.end + .12));
+      if (s.type === 'story') {   // story -> story: dissolve the new scene in over the old one (no dark dip)
+        const fin = pv && pv.type === 'story' ? prog(t, s.start - .02, s.start + .4) : prog(t, s.start - .12, s.start + .12);
+        const fout = nx && nx.type === 'story' ? 1 : 1 - prog(t, s.end - .12, s.end + .12);
+        op = Math.min(fin, fout);
+      }
       X.show(o.grp, op); if (op <= 0) return;
       o.upd(Math.max(0, t - s.start), s.end - s.start, f);
     });

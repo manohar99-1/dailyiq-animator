@@ -1,0 +1,1079 @@
+{
+ "title": "From Seed to Plant",
+ "description": "How does a tiny seed become a flower? Meet Seedy, Sprouty and friends and see water, air, warmth, roots, sunlight and food at work.",
+ "hashtags": [
+  "#shorts",
+  "#plants",
+  "#science",
+  "#kids"
+ ],
+ "scenes": [
+  {
+   "type": "story",
+   "data": {
+    "bg": "soil",
+    "cam": {
+     "z0": 1.0,
+     "z1": 1.08,
+     "x": 0.5,
+     "y": 0.5
+    },
+    "cast": [
+     {
+      "id": "seedy",
+      "char": "seedy",
+      "x": 0.4,
+      "y": 0.6,
+      "h": 0.3,
+      "mood": "sleepy"
+     },
+     {
+      "id": "soil",
+      "char": "soil",
+      "x": 0.74,
+      "y": 0.86,
+      "h": 0.17,
+      "mood": "happy"
+     },
+     {
+      "id": "wiggly",
+      "char": "wiggly",
+      "x": -0.2,
+      "y": 0.87,
+      "h": 0.15,
+      "mood": "happy",
+      "hidden": true
+     }
+    ],
+    "lines": [
+     {
+      "who": "seedy",
+      "mood": "happy",
+      "pause": 1.0,
+      "text": "Hi! I'm Seedy, a tiny seed, napping deep in the soil.",
+      "do": [
+       {
+        "id": "seedy",
+        "type": "hop",
+        "dt": -0.15,
+        "dur": 0.6,
+        "n": 1
+       }
+      ]
+     },
+     {
+      "who": "soil",
+      "mood": "happy",
+      "text": "And I'm Mr. Soil. I hold water and minerals for little plants.",
+      "do": [
+       {
+        "id": "soil",
+        "type": "hop",
+        "dt": 0,
+        "dur": 0.6,
+        "n": 1
+       }
+      ]
+     },
+     {
+      "who": "seedy",
+      "mood": "worried",
+      "text": "But I'm not growing yet. What am I waiting for?"
+     },
+     {
+      "who": "soil",
+      "mood": "happy",
+      "set": {
+       "seedy": "thinking"
+      },
+      "text": "Three things! Water, air, and warmth.",
+      "hold": 0.7,
+      "chips": [
+       {
+        "icon": "drop",
+        "text": "WATER",
+        "dt": 1.0
+       },
+       {
+        "icon": "air",
+        "text": "AIR",
+        "dt": 1.45
+       },
+       {
+        "icon": "warm",
+        "text": "WARMTH",
+        "dt": 1.9
+       }
+      ]
+     },
+     {
+      "who": "wiggly",
+      "mood": "excited",
+      "set": {
+       "seedy": "happy"
+      },
+      "chips": [],
+      "text": "Hi, I'm Wiggly the worm! My tunnels bring fresh air to your seed.",
+      "do": [
+       {
+        "id": "wiggly",
+        "type": "appear",
+        "dt": -0.8,
+        "dur": 0.5
+       },
+       {
+        "id": "wiggly",
+        "type": "move",
+        "dt": -0.8,
+        "dur": 1.0,
+        "to": [
+         0.3,
+         0.87
+        ],
+        "ease": "eo"
+       }
+      ],
+      "fx": [
+       {
+        "type": "swirl",
+        "x": 0.4,
+        "y": 0.5,
+        "dt": 2.2,
+        "dur": 3.0
+       }
+      ]
+     },
+     {
+      "who": "seedy",
+      "mood": "excited",
+      "text": "Ooh, fresh air! Thank you, Wiggly!",
+      "do": [
+       {
+        "id": "seedy",
+        "type": "hop",
+        "dt": 0,
+        "dur": 0.7,
+        "n": 2
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "story",
+   "data": {
+    "bg": "rainy",
+    "cam": {
+     "z0": 1.0,
+     "z1": 1.1,
+     "x": 0.5,
+     "y": 0.5
+    },
+    "cast": [
+     {
+      "id": "cloud",
+      "char": "cloud",
+      "x": 0.5,
+      "y": 0.27,
+      "h": 0.17,
+      "mood": "joy"
+     },
+     {
+      "id": "drippy",
+      "char": "drippy",
+      "x": 0.5,
+      "y": 0.1,
+      "h": 0.22,
+      "mood": "excited",
+      "hidden": true
+     }
+    ],
+    "lines": [
+     {
+      "who": "cloud",
+      "mood": "joy",
+      "pause": 0.3,
+      "label": "RAIN TIME",
+      "text": "Rain, rain, here I come!",
+      "do": [
+       {
+        "id": "cloud",
+        "type": "hop",
+        "dt": 0,
+        "dur": 0.6,
+        "n": 1
+       }
+      ],
+      "fx": [
+       {
+        "type": "rain",
+        "x0": 30,
+        "x1": 690,
+        "y0": 0.22,
+        "y1": 0.88,
+        "n": 30,
+        "dt": -0.2,
+        "dur": 9
+       }
+      ]
+     },
+     {
+      "who": "drippy",
+      "mood": "excited",
+      "text": "I'm Drippy! Watch me soak into the ground and find the seed.",
+      "do": [
+       {
+        "id": "drippy",
+        "type": "appear",
+        "dt": -0.2,
+        "dur": 0.4
+       },
+       {
+        "id": "drippy",
+        "type": "move",
+        "dt": -0.2,
+        "dur": 1.7,
+        "to": [
+         0.5,
+         0.78
+        ],
+        "ease": "bounce"
+       },
+       {
+        "id": "drippy",
+        "type": "vanish",
+        "dt": 3.0,
+        "dur": 0.5
+       }
+      ],
+      "fx": [
+       {
+        "type": "ripple",
+        "x": 0.5,
+        "y": 0.8,
+        "dt": 1.5,
+        "dur": 1.8,
+        "R": 110
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "story",
+   "data": {
+    "bg": "soil",
+    "cam": {
+     "z0": 1.0,
+     "z1": 1.07,
+     "x": 0.5,
+     "y": 0.55
+    },
+    "cast": [
+     {
+      "id": "plant",
+      "char": "seedy",
+      "x": 0.4,
+      "y": 0.6,
+      "h": 0.3,
+      "mood": "worried"
+     },
+     {
+      "id": "soil",
+      "char": "soil",
+      "x": 0.76,
+      "y": 0.87,
+      "h": 0.17,
+      "mood": "happy"
+     },
+     {
+      "id": "drippy",
+      "char": "drippy",
+      "x": 0.62,
+      "y": 0.3,
+      "h": 0.2,
+      "mood": "excited",
+      "hidden": true
+     }
+    ],
+    "props": [
+     {
+      "type": "root",
+      "follow": "plant",
+      "line": 3,
+      "dt": 0.5,
+      "dur": 1.9,
+      "paths": [
+       [
+        [
+         0,
+         -38
+        ],
+        [
+         8,
+         60
+        ],
+        [
+         -10,
+         130
+        ],
+        [
+         2,
+         215
+        ]
+       ],
+       [
+        [
+         0,
+         70
+        ],
+        [
+         -55,
+         105
+        ],
+        [
+         -92,
+         160
+        ]
+       ],
+       [
+        [
+         -3,
+         125
+        ],
+        [
+         58,
+         150
+        ],
+        [
+         92,
+         205
+        ]
+       ]
+      ]
+     }
+    ],
+    "lines": [
+     {
+      "who": "drippy",
+      "mood": "excited",
+      "set": {
+       "plant": "hopeful"
+      },
+      "label": "STEP 1: WATER",
+      "text": "Found you, Seedy! Your hard shell soaks me up like a sponge.",
+      "do": [
+       {
+        "id": "drippy",
+        "type": "appear",
+        "dt": -0.3,
+        "dur": 0.4
+       },
+       {
+        "id": "drippy",
+        "type": "move",
+        "dt": -0.3,
+        "dur": 1.0,
+        "to": [
+         0.63,
+         0.62
+        ],
+        "ease": "eo"
+       }
+      ],
+      "fx": [
+       {
+        "type": "ripple",
+        "x": 0.4,
+        "y": 0.6,
+        "dt": 1.6,
+        "dur": 3.2,
+        "R": 130
+       }
+      ]
+     },
+     {
+      "who": "plant",
+      "mood": "shocked",
+      "text": "Whoa! I'm getting bigger!",
+      "do": [
+       {
+        "id": "plant",
+        "type": "scale",
+        "dt": 0,
+        "dur": 1.2,
+        "to": 1.18,
+        "ease": "eob"
+       }
+      ]
+     },
+     {
+      "who": "drippy",
+      "mood": "proud",
+      "text": "Soon your shell will crack!",
+      "do": [
+       {
+        "id": "plant",
+        "type": "shake",
+        "dt": 1.0,
+        "dur": 0.8
+       }
+      ],
+      "hold": 0.3
+     },
+     {
+      "who": "plant",
+      "mood": "excited",
+      "label": "STEP 2: ROOTS",
+      "text": "Crack! My first root is growing down!",
+      "do": [
+       {
+        "id": "plant",
+        "type": "hop",
+        "dt": 0,
+        "dur": 0.6,
+        "n": 1
+       }
+      ],
+      "fx": [
+       {
+        "type": "dust",
+        "x": 0.4,
+        "y": 0.64,
+        "dt": 0.3,
+        "dur": 1.0
+       }
+      ]
+     },
+     {
+      "who": "drippy",
+      "mood": "happy",
+      "text": "Roots drink water for you, and hold you steady.",
+      "fx": [
+       {
+        "type": "bubbles",
+        "x": 0.4,
+        "y0": 0.85,
+        "y1": 0.52,
+        "dt": 0.8,
+        "dur": 3.6,
+        "n": 6
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "story",
+   "data": {
+    "bg": "soil",
+    "cam": {
+     "z0": 1.07,
+     "z1": 1.07,
+     "x": 0.5,
+     "y": 0.55
+    },
+    "cast": [
+     {
+      "id": "plant",
+      "char": "seedy",
+      "x": 0.4,
+      "y": 0.6,
+      "h": 0.3,
+      "mood": "excited",
+      "s0": 1.18
+     },
+     {
+      "id": "soil",
+      "char": "soil",
+      "x": 0.76,
+      "y": 0.87,
+      "h": 0.17,
+      "mood": "happy"
+     },
+     {
+      "id": "ray",
+      "char": "ray",
+      "x": 0.8,
+      "y": 0.19,
+      "h": 0.13,
+      "mood": "happy",
+      "hidden": true
+     }
+    ],
+    "props": [
+     {
+      "type": "root",
+      "follow": "plant",
+      "line": 0,
+      "dt": -4,
+      "dur": 0.01,
+      "paths": [
+       [
+        [
+         0,
+         -38
+        ],
+        [
+         8,
+         60
+        ],
+        [
+         -10,
+         130
+        ],
+        [
+         2,
+         215
+        ]
+       ],
+       [
+        [
+         0,
+         70
+        ],
+        [
+         -55,
+         105
+        ],
+        [
+         -92,
+         160
+        ]
+       ],
+       [
+        [
+         -3,
+         125
+        ],
+        [
+         58,
+         150
+        ],
+        [
+         92,
+         205
+        ]
+       ]
+      ]
+     }
+    ],
+    "lines": [
+     {
+      "who": "plant",
+      "mood": "excited",
+      "label": "STEP 3: SHOOT",
+      "text": "Next, my shoot pushes up, up, up through the soil!",
+      "do": [
+       {
+        "id": "plant",
+        "type": "morph",
+        "dt": 0.2,
+        "dur": 0.8,
+        "to": "sprouty",
+        "h": 0.3
+       },
+       {
+        "id": "plant",
+        "type": "scale",
+        "dt": 0.2,
+        "dur": 0.8,
+        "to": 1.0
+       },
+       {
+        "id": "plant",
+        "type": "move",
+        "dt": 1.0,
+        "dur": 3.4,
+        "to": [
+         0.4,
+         0.43
+        ],
+        "ease": "eio"
+       }
+      ],
+      "cam": {
+       "z": 1.14,
+       "y": 0.38,
+       "dt": 1.0,
+       "dur": 3.2
+      },
+      "fx": [
+       {
+        "type": "dust",
+        "x": 0.4,
+        "y": 0.62,
+        "dt": 1.0,
+        "dur": 1.2
+       }
+      ]
+     },
+     {
+      "who": "ray",
+      "mood": "happy",
+      "text": "Hello, Sprouty! I'm Sunny Ray. Open your leaves wide!",
+      "do": [
+       {
+        "id": "ray",
+        "type": "appear",
+        "dt": -0.3,
+        "dur": 0.5
+       }
+      ],
+      "fx": [
+       {
+        "type": "rays",
+        "x": 0.8,
+        "y": 0.1,
+        "dt": 0,
+        "dur": 6,
+        "under": true
+       }
+      ]
+     },
+     {
+      "who": "plant",
+      "mood": "joy",
+      "text": "Wow! Sunshine feels great!",
+      "do": [
+       {
+        "id": "plant",
+        "type": "hop",
+        "dt": 0,
+        "dur": 0.7,
+        "n": 2
+       }
+      ],
+      "hold": 0.2
+     }
+    ]
+   }
+  },
+  {
+   "type": "story",
+   "data": {
+    "bg": "sunny",
+    "cam": {
+     "z0": 1.0,
+     "z1": 1.06,
+     "x": 0.5,
+     "y": 0.5
+    },
+    "cast": [
+     {
+      "id": "plant",
+      "char": "sprouty",
+      "x": 0.5,
+      "y": 0.81,
+      "h": 0.34,
+      "mood": "happy"
+     },
+     {
+      "id": "ray",
+      "char": "ray",
+      "x": 0.52,
+      "y": 0.155,
+      "h": 0.17,
+      "mood": "happy"
+     }
+    ],
+    "props": [
+     {
+      "type": "mound",
+      "x": 0.5,
+      "y": 0.84,
+      "w": 250,
+      "line": 0,
+      "dt": -4
+     }
+    ],
+    "lines": [
+     {
+      "who": "ray",
+      "mood": "happy",
+      "pause": 0.3,
+      "text": "Plants make their own food, and my light helps!",
+      "fx": [
+       {
+        "type": "rays",
+        "x": 0.52,
+        "y": 0.09,
+        "dt": 0,
+        "dur": 5,
+        "under": true
+       }
+      ]
+     },
+     {
+      "who": "plant",
+      "mood": "happy",
+      "label": "STEP 4: FOOD",
+      "text": "My leaves catch your sunlight.",
+      "chips": [
+       {
+        "icon": "sun",
+        "text": "SUNLIGHT",
+        "dt": 0.6
+       },
+       {
+        "icon": "drop",
+        "text": "WATER",
+        "line": 2,
+        "dt": 1.5
+       },
+       {
+        "icon": "co2",
+        "text": "CO2",
+        "line": 2,
+        "dt": 3.0
+       },
+       {
+        "icon": "sugar",
+        "text": "SUGAR",
+        "line": 3,
+        "dt": 0.8
+       }
+      ]
+     },
+     {
+      "who": "plant",
+      "mood": "thinking",
+      "text": "They mix it with water from my roots, and carbon dioxide from the air."
+     },
+     {
+      "who": "plant",
+      "mood": "excited",
+      "text": "Then, poof! They make sugar, which is my food!",
+      "do": [
+       {
+        "id": "plant",
+        "type": "hop",
+        "dt": 0.9,
+        "dur": 0.7,
+        "n": 2
+       }
+      ],
+      "fx": [
+       {
+        "type": "sparkle",
+        "x": 0.5,
+        "y": 0.5,
+        "dt": 0.9,
+        "dur": 1.2
+       }
+      ]
+     },
+     {
+      "who": "plant",
+      "mood": "happy",
+      "chips": [],
+      "text": "And I breathe out fresh oxygen for you!",
+      "fx": [
+       {
+        "type": "swirl",
+        "x": 0.5,
+        "y": 0.5,
+        "dt": 0.3,
+        "dur": 3.0
+       }
+      ]
+     }
+    ],
+    "label_y": 235,
+    "chips_y": 370
+   }
+  },
+  {
+   "type": "story",
+   "data": {
+    "bg": "sunny",
+    "cam": {
+     "z0": 1.0,
+     "z1": 1.04,
+     "x": 0.5,
+     "y": 0.55
+    },
+    "cast": [
+     {
+      "id": "plant",
+      "char": "sprouty",
+      "x": 0.5,
+      "y": 0.81,
+      "h": 0.34,
+      "mood": "happy"
+     },
+     {
+      "id": "ray",
+      "char": "ray",
+      "x": 0.52,
+      "y": 0.155,
+      "h": 0.17,
+      "mood": "happy"
+     },
+     {
+      "id": "cloud",
+      "char": "cloud",
+      "x": 0.5,
+      "y": 0.3,
+      "h": 0.16,
+      "mood": "joy",
+      "hidden": true
+     },
+     {
+      "id": "drippy",
+      "char": "drippy",
+      "x": 0.2,
+      "y": 0.88,
+      "h": 0.17,
+      "mood": "happy",
+      "hidden": true
+     },
+     {
+      "id": "wiggly",
+      "char": "wiggly",
+      "x": 0.76,
+      "y": 0.9,
+      "h": 0.13,
+      "mood": "happy",
+      "hidden": true
+     }
+    ],
+    "props": [
+     {
+      "type": "mound",
+      "x": 0.5,
+      "y": 0.84,
+      "w": 250,
+      "line": 0,
+      "dt": -4
+     }
+    ],
+    "lines": [
+     {
+      "who": "ray",
+      "mood": "happy",
+      "pause": 0.2,
+      "text": "Day after day, I keep shining.",
+      "do": [
+       {
+        "id": "plant",
+        "type": "scale",
+        "dt": 0,
+        "dur": 3.0,
+        "to": 1.12,
+        "ease": "eio"
+       }
+      ],
+      "fx": [
+       {
+        "type": "rays",
+        "x": 0.52,
+        "y": 0.09,
+        "dt": 0,
+        "dur": 4,
+        "under": true
+       }
+      ]
+     },
+     {
+      "who": "cloud",
+      "mood": "joy",
+      "bg": "rainy",
+      "bg_dt": -0.2,
+      "text": "And I keep the rain coming!",
+      "do": [
+       {
+        "id": "ray",
+        "type": "vanish",
+        "dt": -0.3,
+        "dur": 0.4
+       },
+       {
+        "id": "cloud",
+        "type": "appear",
+        "dt": -0.3,
+        "dur": 0.4
+       }
+      ],
+      "fx": [
+       {
+        "type": "rain",
+        "x0": 30,
+        "x1": 690,
+        "y0": 0.32,
+        "y1": 0.88,
+        "n": 24,
+        "dt": -0.2,
+        "dur": 4
+       }
+      ]
+     },
+     {
+      "who": "plant",
+      "mood": "joy",
+      "bg": "sunny",
+      "bg_dt": -0.2,
+      "text": "Slurp! Thank you both!",
+      "do": [
+       {
+        "id": "cloud",
+        "type": "vanish",
+        "dt": -0.3,
+        "dur": 0.4
+       },
+       {
+        "id": "ray",
+        "type": "appear",
+        "dt": -0.3,
+        "dur": 0.4
+       },
+       {
+        "id": "plant",
+        "type": "scale",
+        "dt": 0,
+        "dur": 1.6,
+        "to": 1.28,
+        "ease": "eio"
+       },
+       {
+        "id": "plant",
+        "type": "hop",
+        "dt": 0.1,
+        "dur": 0.7,
+        "n": 2
+       }
+      ]
+     },
+     {
+      "who": "plant",
+      "mood": "excited",
+      "text": "Look, I'm growing taller, with more leaves!",
+      "do": [
+       {
+        "id": "plant",
+        "type": "scale",
+        "dt": 0,
+        "dur": 2.6,
+        "to": 1.42,
+        "ease": "eio"
+       }
+      ],
+      "fx": [
+       {
+        "type": "sparkle",
+        "x": 0.5,
+        "y": 0.45,
+        "dt": 1.6,
+        "dur": 1.1
+       }
+      ]
+     },
+     {
+      "who": "plant",
+      "mood": "joy",
+      "label": "WEEKS LATER",
+      "text": "Weeks later... ta-da! A flower!",
+      "do": [
+       {
+        "id": "plant",
+        "type": "morph",
+        "dt": 1.1,
+        "dur": 0.9,
+        "to": "bloom",
+        "h": 0.44
+       },
+       {
+        "id": "plant",
+        "type": "scale",
+        "dt": 1.1,
+        "dur": 0.9,
+        "to": 1.0
+       }
+      ],
+      "hold": 0.3
+     },
+     {
+      "who": "plant",
+      "mood": "joy",
+      "text": "I'm Sunny Bloom! I started as one tiny seed.",
+      "do": [
+       {
+        "id": "plant",
+        "type": "hop",
+        "dt": 0,
+        "dur": 0.8,
+        "n": 2
+       }
+      ],
+      "cam": {
+       "z": 1.12,
+       "y": 0.62,
+       "dt": 0,
+       "dur": 2.5
+      }
+     },
+     {
+      "who": "plant",
+      "mood": "love",
+      "text": "Soon I'll make new seeds, and the story starts again!",
+      "hold": 1.0,
+      "do": [
+       {
+        "id": "drippy",
+        "type": "appear",
+        "dt": 0.5,
+        "dur": 0.5
+       },
+       {
+        "id": "wiggly",
+        "type": "appear",
+        "dt": 0.9,
+        "dur": 0.5
+       },
+       {
+        "id": "drippy",
+        "type": "hop",
+        "dt": 1.6,
+        "dur": 0.8,
+        "n": 2
+       },
+       {
+        "id": "wiggly",
+        "type": "wiggle",
+        "dt": 1.8,
+        "dur": 1.0
+       },
+       {
+        "id": "plant",
+        "type": "hop",
+        "dt": 2.0,
+        "dur": 0.8,
+        "n": 2
+       }
+      ],
+      "fx": [
+       {
+        "type": "sparkle",
+        "x": 0.5,
+        "y": 0.5,
+        "dt": 1.8,
+        "dur": 1.4
+       }
+      ],
+      "cam": {
+       "z": 1.0,
+       "y": 0.5,
+       "dt": 1.4,
+       "dur": 1.8
+      }
+     }
+    ],
+    "label_y": 235,
+    "chips_y": 370
+   }
+  }
+ ]
+}
