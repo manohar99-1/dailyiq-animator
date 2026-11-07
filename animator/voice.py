@@ -88,12 +88,17 @@ def synthesize(spec, cfg, workdir, voice_name=None, log=print):
     workdir.mkdir(parents=True, exist_ok=True)
     if voice_name:
         cfg = dict(cfg); cfg["voice"] = dict(cfg["voice"], name=voice_name)
-    silent = cfg["voice"]["name"].lower() == "none"
+    silent = cfg["voice"]["name"].lower() == "none" or bool(spec.get("silent"))
+    wps = float(cfg["video"].get("silent_wps", 2.6))
     out = []
     for i, sc in enumerate(spec["scenes"]):
         say = sc["say"]
         if silent:
-            out.append({"wav": None, "dur": max(1.4, len(say.split()) / 2.7)})
+            if sc["type"] == "talk":   # reading time for each line of a conversation, plus a beat between speakers
+                d = sum(len(L["text"].split()) / wps + .45 for L in sc["data"]["lines"])
+            else:
+                d = len(say.split()) / wps
+            out.append({"wav": None, "dur": max(1.4, d)})
             continue
         mp3, wav = workdir / f"s{i:02d}.src", workdir / f"s{i:02d}.wav"
         used = _tts_clip(say, cfg, mp3, log)

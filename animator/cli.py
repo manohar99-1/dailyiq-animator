@@ -44,7 +44,7 @@ def generate(args):
     music = None
     if cfg["video"]["music"] and not args.no_music:
         music = work / "music.wav"
-        compose.make_music(music, total, rms_dbfs=-19.0 - float(cfg["video"]["music_volume_db_under_voice"]))
+        compose.make_music(music, total, rms_dbfs=(-21.0 if silent else -19.0 - float(cfg["video"]["music_volume_db_under_voice"])))
 
     fps = int(cfg["video"]["fps"])
     n = render.render_frames(rt, work / "frames", fps, args.workers, log)

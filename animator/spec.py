@@ -2,7 +2,7 @@
 This module defines the allowed scene types, cleans up whatever an LLM returns, and explains the schema to the LLM."""
 import re
 
-SCENE_TYPES = ["hook", "searchbar", "flow", "network", "hub", "grid", "counter", "compare", "steps", "alert", "bars", "collapse", "keypoints", "toon"]
+SCENE_TYPES = ["hook", "searchbar", "flow", "network", "hub", "grid", "counter", "compare", "steps", "alert", "bars", "collapse", "keypoints", "toon", "talk"]
 
 ICON_NAMES = ("search mail map play video phone laptop cab car truck shop bell cloud server database lock wifi globe battery chip robot shield user users "
               "cart bag bank qr rupee money bolt clock calendar fire heart star camera music chat thumb home code plane gear warning check x question power link").split()
@@ -99,6 +99,48 @@ def _clean_toon(d):
     return out
 
 
+TALK_WHO = TOON_WHO + "buddy earth moon sun cloud soil worm drop seed sprout flower".split()
+
+
+def _clean_talk(d):
+    cast = []
+    for c in (d.get("cast") if isinstance(d.get("cast"), list) else [])[:3]:
+        if not isinstance(c, dict):
+            continue
+        mood = str(c.get("mood") or "happy").lower()
+        e = {"who": str(c.get("who") or "buddy").lower(), "mood": mood if mood in TOON_MOODS else "happy"}
+        if str(c.get("where", "")).lower() in ("ground", "under", "sky"):
+            e["where"] = str(c["where"]).lower()
+        if c.get("name"):
+            e["name"] = str(c["name"])[:14]
+        cast.append(e)
+    if not cast:
+        cast = [{"who": "buddy", "mood": "happy"}]
+    n = len(cast)
+    lines = []
+    for L in (d.get("lines") if isinstance(d.get("lines"), list) else [])[:10]:
+        if not isinstance(L, dict):
+            continue
+        text = _BAD_CHARS.sub("", str(L.get("text") or "")).strip()
+        if not text:
+            continue
+        who = L.get("who", 0)
+        if not isinstance(who, int):
+            who = next((i for i, c in enumerate(cast) if str(who).lower() in (c["who"], str(c.get("name", "")).lower())), 0)
+        e = {"who": max(0, min(n - 1, who)), "text": text[:110]}
+        if str(L.get("mood", "")).lower() in TOON_MOODS:
+            e["mood"] = str(L["mood"]).lower()
+        if isinstance(L.get("react"), dict):
+            e["react"] = {str(k): v for k, v in L["react"].items() if str(v).lower() in TOON_MOODS}
+        if isinstance(L.get("change"), dict):
+            e["change"] = {str(k): str(v).lower() for k, v in L["change"].items()}
+        lines.append(e)
+    out = {"cast": cast, "lines": lines, "bg": d.get("bg") if d.get("bg") in ("garden", "cutaway", "rain") else "garden"}
+    if d.get("label"):
+        out["label"] = str(d["label"]).upper()[:26]
+    return out
+
+
 def validate(spec, max_scenes=14):
     """Return a cleaned copy of the spec. Never raises for fixable problems; raises ValueError if nothing usable is left."""
     if not isinstance(spec, dict):
@@ -107,11 +149,17 @@ def validate(spec, max_scenes=14):
     for sc in (spec.get("scenes") or [])[:max_scenes]:
         if not isinstance(sc, dict):
             continue
+        typ = str(sc.get("type") or "").strip().lower()
+        data = sc.get("data") if isinstance(sc.get("data"), dict) else {}
+        if typ == "talk":
+            data = _clean_talk(data)
+            if not data["lines"]:
+                continue
+            scenes.append({"say": " ".join(L["text"] for L in data["lines"]), "type": "talk", "data": data})
+            continue
         say = clean_say(sc.get("say") or sc.get("narration") or sc.get("text"))
         if not say:
             continue
-        typ = str(sc.get("type") or "").strip().lower()
-        data = sc.get("data") if isinstance(sc.get("data"), dict) else {}
         if typ not in SCENE_TYPES:
             typ, data = "keypoints", {"points": [_short(say, 5)]}
         if typ == "toon":
@@ -122,4 +170,7 @@ def validate(spec, max_scenes=14):
     title = re.sub(r"\s+", " ", _BAD_CHARS.sub("", str(spec.get("title") or "Untitled"))).strip()[:60]
     tags = [("#" + re.sub(r"\W", "", str(t).lstrip("#"))) for t in (spec.get("hashtags") or []) if re.sub(r"\W", "", str(t))]
     tags = list(dict.fromkeys(tags))[:5] or ["#shorts"]
-    return {"title": title, "description": str(spec.get("description") or "")[:400].strip(), "hashtags": tags, "scenes": scenes}
+    out = {"title": title, "description": str(spec.get("description") or "")[:400].strip(), "hashtags": tags, "scenes": scenes}
+    if spec.get("silent"):
+        out["silent"] = True
+    return out

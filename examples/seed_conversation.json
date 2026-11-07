@@ -1,0 +1,330 @@
+{
+ "title": "From Seed to Plant",
+ "silent": true,
+ "description": "A seed wakes up underground and grows into a flower: germination explained as a chat between friends.",
+ "hashtags": [
+  "#shorts",
+  "#plants",
+  "#science"
+ ],
+ "scenes": [
+  {
+   "type": "talk",
+   "data": {
+    "bg": "cutaway",
+    "cast": [
+     {
+      "who": "seed",
+      "mood": "sleepy",
+      "where": "under"
+     },
+     {
+      "who": "soil",
+      "mood": "happy",
+      "where": "under"
+     }
+    ],
+    "lines": [
+     {
+      "who": 0,
+      "text": "Yaaawn... Where am I? It is so dark in here!",
+      "mood": "yawn"
+     },
+     {
+      "who": 1,
+      "text": "Good morning, little seed! I am Mr. Soil, and this is your cozy bed.",
+      "mood": "giggle",
+      "react": {
+       "0": "happy"
+      }
+     },
+     {
+      "who": 0,
+      "text": "But I feel stuck. When will I grow big?",
+      "mood": "worried"
+     },
+     {
+      "who": 1,
+      "text": "Be patient! A seed needs water, air and warmth to wake up.",
+      "mood": "happy"
+     }
+    ]
+   }
+  },
+  {
+   "type": "talk",
+   "data": {
+    "bg": "cutaway",
+    "cast": [
+     {
+      "who": "worm",
+      "mood": "happy",
+      "where": "under"
+     },
+     {
+      "who": "seed",
+      "mood": "worried",
+      "where": "under"
+     }
+    ],
+    "lines": [
+     {
+      "who": 0,
+      "text": "Hi Seedy! I am Wiggly. I dig tunnels so air can reach you!",
+      "mood": "excited"
+     },
+     {
+      "who": 1,
+      "text": "Air? Oh wow, that tickles!",
+      "mood": "giggle"
+     }
+    ]
+   }
+  },
+  {
+   "type": "talk",
+   "data": {
+    "bg": "rain",
+    "label": "RAIN TIME",
+    "cast": [
+     {
+      "who": "cloud",
+      "mood": "joy",
+      "where": "sky"
+     },
+     {
+      "who": "drop",
+      "mood": "excited",
+      "where": "under"
+     },
+     {
+      "who": "seed",
+      "mood": "hopeful",
+      "where": "under"
+     }
+    ],
+    "lines": [
+     {
+      "who": 0,
+      "text": "Do not worry, Seedy! I am bringing you a drink!",
+      "mood": "joy"
+     },
+     {
+      "who": 1,
+      "text": "Splash! I am Drippy. I sneak through the soil to reach you!",
+      "mood": "excited"
+     },
+     {
+      "who": 2,
+      "text": "Whoa! I am drinking water and getting bigger!",
+      "mood": "shocked",
+      "react": {
+       "1": "giggle"
+      }
+     },
+     {
+      "who": 1,
+      "text": "Yes! Your seed coat soaks it up and swells.",
+      "mood": "proud"
+     }
+    ]
+   }
+  },
+  {
+   "type": "talk",
+   "data": {
+    "bg": "cutaway",
+    "cast": [
+     {
+      "who": "seed",
+      "mood": "determined",
+      "where": "under"
+     },
+     {
+      "who": "drop",
+      "mood": "happy",
+      "where": "under"
+     }
+    ],
+    "lines": [
+     {
+      "who": 0,
+      "text": "Ooh, I feel a crack! Something is pushing out!",
+      "mood": "shocked"
+     },
+     {
+      "who": 1,
+      "text": "That is your first root! It drinks water and holds you tight.",
+      "mood": "excited"
+     }
+    ]
+   }
+  },
+  {
+   "type": "talk",
+   "data": {
+    "bg": "cutaway",
+    "cast": [
+     {
+      "who": "sun",
+      "mood": "joy",
+      "where": "sky"
+     },
+     {
+      "who": "seed",
+      "mood": "hopeful",
+      "where": "under"
+     },
+     {
+      "who": "soil",
+      "mood": "happy",
+      "where": "under"
+     }
+    ],
+    "lines": [
+     {
+      "who": 0,
+      "text": "Hello down there! Grow upwards, little one!",
+      "mood": "wink"
+     },
+     {
+      "who": 1,
+      "text": "Which way is up?",
+      "mood": "thinking"
+     },
+     {
+      "who": 2,
+      "text": "Follow the light. A shoot always grows up.",
+      "mood": "happy"
+     },
+     {
+      "who": 1,
+      "text": "Here I come... push... push... POP!",
+      "mood": "determined",
+      "change": {
+       "1": "sprout"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "type": "talk",
+   "data": {
+    "bg": "garden",
+    "cast": [
+     {
+      "who": "sprout",
+      "mood": "shocked"
+     },
+     {
+      "who": "sun",
+      "mood": "joy",
+      "where": "sky"
+     }
+    ],
+    "lines": [
+     {
+      "who": 0,
+      "text": "Whoa! It is so bright out here!",
+      "mood": "shocked"
+     },
+     {
+      "who": 1,
+      "text": "Welcome, Sprouty! Let me warm your leaves.",
+      "mood": "wink"
+     },
+     {
+      "who": 0,
+      "text": "My first leaves are opening!",
+      "mood": "joy"
+     },
+     {
+      "who": 1,
+      "text": "With light, leaves make food from air and water. That is photosynthesis!",
+      "mood": "proud"
+     }
+    ]
+   }
+  },
+  {
+   "type": "talk",
+   "data": {
+    "bg": "garden",
+    "label": "A FEW WEEKS LATER",
+    "cast": [
+     {
+      "who": "sprout",
+      "mood": "happy"
+     },
+     {
+      "who": "worm",
+      "mood": "happy"
+     },
+     {
+      "who": "cloud",
+      "mood": "joy",
+      "where": "sky"
+     }
+    ],
+    "lines": [
+     {
+      "who": 1,
+      "text": "Look how tall you have grown!",
+      "mood": "excited"
+     },
+     {
+      "who": 0,
+      "text": "My stem gets stronger every day!",
+      "mood": "proud"
+     },
+     {
+      "who": 0,
+      "text": "Ta-daa! I am a flower now. Call me Sunny Bloom!",
+      "mood": "giggle",
+      "change": {
+       "0": "flower"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "type": "talk",
+   "data": {
+    "bg": "garden",
+    "cast": [
+     {
+      "who": "flower",
+      "mood": "love",
+      "scale": 0.95
+     },
+     {
+      "who": "worm",
+      "mood": "happy"
+     }
+    ],
+    "lines": [
+     {
+      "who": 0,
+      "text": "And inside my flower, I make new seeds.",
+      "mood": "love"
+     },
+     {
+      "who": 1,
+      "text": "New seeds? So the story starts all over again!",
+      "mood": "shocked",
+      "react": {
+       "0": "happy"
+      }
+     },
+     {
+      "who": 0,
+      "text": "Exactly! From seed to plant, and back to seed.",
+      "mood": "wink"
+     }
+    ]
+   }
+  }
+ ]
+}

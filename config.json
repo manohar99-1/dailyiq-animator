@@ -25,7 +25,8 @@
     "title_in_video": true,
     "music": true,
     "music_volume_db_under_voice": 15,
-    "loudness_lufs": -11
+    "loudness_lufs": -11,
+    "silent_wps": 3.0
   },
   "llm": {
     "providers": [

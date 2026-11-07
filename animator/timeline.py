@@ -50,7 +50,8 @@ def build(spec, cfg, clips):
         dur = clip["dur"]
         sdur = max(min_s, PAD + dur + gap) + (tail if i == len(clips) - 1 else 0)
         start, end = t, t + sdur
-        caps += _caption_times(sc["say"], start + PAD, dur, end, v["caption_words"])
+        if sc["type"] != "talk":      # conversations show their words in speech bubbles instead
+            caps += _caption_times(sc["say"], start + PAD, dur, end, v["caption_words"])
         scenes.append({"type": sc["type"], "data": sc["data"], "say": sc["say"], "start": round(start, 3), "end": round(end, 3),
                        "voice_at": round(start + PAD, 3), "wav": clip["wav"]})
         t = end

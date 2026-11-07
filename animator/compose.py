@@ -74,7 +74,7 @@ def encode(frames_dir, fps, voice_wav, music_wav, out_mp4, main_end, total, sile
         fc = (f"{voice},asplit=2[vmix][vkey];"
               f"[2:a]atrim=0:{total:.3f},volume=1.4,volume='1+1*clip((t-{main_end:.3f})/1.0,0,1)':eval=frame[mus];"
               "[mus][vkey]sidechaincompress=threshold=0.06:ratio=3:attack=30:release=600:makeup=1[md];"
-              "[vmix][md]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95,aresample=48000[aout]")
+              "[vmix][md]amix=inputs=2:duration=first:normalize=0" + (",loudnorm=I=-15:TP=-1.5:LRA=9" if silent else "") + ",alimiter=limit=0.95,aresample=48000[aout]")
     else:
         fc = f"{voice},aresample=48000[aout]"
     cmd = ["ffmpeg", "-v", "error", "-y", *inputs, "-filter_complex", fc, "-map", "0:v", "-map", "[aout]",

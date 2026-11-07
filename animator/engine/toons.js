@@ -12,7 +12,7 @@
 
   /* ------------------------------------------------------------ expressions */
   const P0 = { eye: 1, pup: .55, open: 1, arc: 0, brow: 0, browY: 0, mw: 26, curve: .8, mo: 0, blush: .5, tongue: 0,
-    sweat: 0, tears: 0, zzz: 0, hearts: 0, stars: 0, shades: 0, excl: 0, ques: 0, tremble: 0, dizzy: 0, lookUp: 0, wink: 0 };
+    sweat: 0, tears: 0, zzz: 0, hearts: 0, stars: 0, shades: 0, excl: 0, ques: 0, tremble: 0, dizzy: 0, lookUp: 0, wink: 0, talk: 0 };
   const MOODS = {
     happy:    {},
     joy:      { arc: 1, mw: 34, curve: 1, mo: .55, blush: 1, stars: 1 },
@@ -79,7 +79,8 @@
         b.e.setAttribute('transform', `translate(${b.s * 34} ${-40 + p.browY}) rotate(${b.s * p.brow})`);
         b.e.setAttribute('opacity', p.shades > .5 ? 0 : 1);
       });
-      const w = p.mw, my = 28, c = p.curve, o = p.mo;
+      const tk = p.talk, syl = tk * (.25 + .75 * Math.abs(Math.sin(t * 10.3)) * (.6 + .4 * Math.abs(Math.sin(t * 3.1))));
+      const w = p.mw * (1 + tk * .08), my = 28, c = lerp(p.curve, Math.max(.3, p.curve), tk), o = p.mo * (1 - tk * .5) + syl * 1.1;
       const top = my + 22 * c, bot = my + 22 * c + o * 46;
       mouth.setAttribute('d', `M ${-w} ${my} Q 0 ${top} ${w} ${my} Q 0 ${bot} ${-w} ${my} Z`);
       mouth.setAttribute('fill', o > .08 ? '#5a1a2b' : 'none');
@@ -549,6 +550,177 @@
         orbitG.setAttribute('opacity', gone ? Math.max(0, 1 - prog(after, .3, .8)) : 1);
       }
       if (label) { const p = prog(lt, .25, .7); label.setAttribute('opacity', p.toFixed(3)); X.pop(label, 360, 190, .6 + .4 * eob(p)); }
+    };
+  };
+
+  /* ============================================================================
+     CONVERSATION scenes (type "talk"): characters speak in speech bubbles, mouths move, no voice needed.
+     data = { bg: garden|cutaway|rain, label, cast:[{who, mood, where: ground|under|sky, name, x, scale}],
+              lines:[{who: index, text, mood, react:{idx:mood}, change:{idx:'sprout'}}] }
+     ============================================================================ */
+  const limbify = (name, cfg) => {
+    const orig = BODIES[name];
+    BODIES[name] = function (g, c) {
+      const arms = [-1, 1].map(s => {
+        const o = el('g', { transform: `translate(${s * cfg.ax} ${cfg.ay})` }, g), i = el('g', {}, o);
+        el('path', { d: `M 0 0 Q ${s * 28} ${cfg.dy} ${s * cfg.len} ${cfg.dy2}`, fill: 'none', stroke: cfg.col, 'stroke-width': 16, 'stroke-linecap': 'round' }, i);
+        el('circle', { cx: s * cfg.len, cy: cfg.dy2, r: 15, fill: cfg.col }, i); return { s, i };
+      });
+      if (cfg.legs) [-1, 1].forEach(s => {
+        el('rect', { x: s * cfg.lx - 9, y: cfg.ly, width: 18, height: 36, rx: 8, fill: cfg.col }, g);
+        el('ellipse', { cx: s * cfg.lx - s * 8, cy: cfg.ly + 38, rx: 24, ry: 12, fill: cfg.col2 || cfg.col }, g);
+      });
+      const b = orig(g, c), t0 = b.tick;
+      b.tick = (t, st) => { t0(t); const a = (st && st.arm) || 0;
+        arms.forEach((m, k) => m.i.setAttribute('transform', `rotate(${(-m.s * (6 + Math.sin(t * 2.2 + k * 2) * 5 + a * (50 + 30 * Math.sin(t * 7 + k * 1.7)))).toFixed(1)})`)); };
+      return b;
+    };
+  };
+  limbify('seed', { ax: 80, ay: 10, len: 54, dy: 20, dy2: 14, col: '#8f5a2c', legs: true, lx: 36, ly: 96, col2: '#6e4220' });
+  limbify('sprout', { ax: 78, ay: 8, len: 52, dy: 18, dy2: 12, col: '#6fd04a' });
+  limbify('drop', { ax: 84, ay: 56, len: 50, dy: 18, dy2: 12, col: '#2aa8ee', legs: true, lx: 38, ly: 128, col2: '#1f86d0' });
+
+  const TNAME = { seed: 'Seedy', sprout: 'Sprouty', flower: 'Sunny Bloom', drop: 'Drippy', sun: 'Sunny Ray', cloud: 'Rainy Cloud', soil: 'Mr. Soil', worm: 'Wiggly', moon: 'Moony', earth: 'Earthy', buddy: 'Buddy', fish: 'Finn', whale: 'Willa', dolphin: 'Dolly', jellyfish: 'Jelly', octopus: 'Inky', turtle: 'Shelly', crab: 'Crabby', shark: 'Sharky', angler: 'Glow', sub: 'Subby', star: 'Twinkle', phone: 'Phoney', bulb: 'Bulby', server: 'Servo', coin: 'Coiny' };
+  const TCOL = { seed: '#a8642f', sprout: '#3f9a2e', flower: '#d99100', drop: '#1f86d0', sun: '#e07a00', cloud: '#5b6fc9', soil: '#7a4a28', worm: '#d9506c', moon: '#8a7f5a', earth: '#1f7fbf', buddy: '#4a63e0' };
+  const BOT = { seed: 146, sprout: 150, flower: 290, drop: 168, sun: 110, cloud: 78, soil: 100, worm: 98, moon: 100, earth: 100, buddy: 100, star: 120, phone: 120, bulb: 112, server: 112, coin: 104, fish: 82, whale: 102, dolphin: 86, shark: 82, jellyfish: 190, octopus: 200, turtle: 114, crab: 90, angler: 92, sub: 70 };
+
+  function makeGarden(parent, kind) {
+    const defs = el('defs', {}, parent), id = 'sk' + (++UID), id2 = 'sl' + UID;
+    const rain = kind === 'rain';
+    const lg = el('linearGradient', { id, x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+    el('stop', { offset: '0%', 'stop-color': rain ? '#5d6e93' : '#6fcfff' }, lg); el('stop', { offset: '100%', 'stop-color': rain ? '#b7c5dc' : '#dcf5ff' }, lg);
+    const sg = el('linearGradient', { id: id2, x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+    el('stop', { offset: '0%', 'stop-color': '#9a6636' }, sg); el('stop', { offset: '100%', 'stop-color': '#4d2f18' }, sg);
+    const horizon = kind === 'cutaway' ? 330 : 960;
+    el('rect', { x: -40, y: -40, width: 800, height: horizon + 60, fill: `url(#${id})` }, parent);
+    if (!rain) { el('circle', { cx: 590, cy: 130, r: 120, fill: '#fff6b0', opacity: .35 }, parent); el('circle', { cx: 590, cy: 130, r: 70, fill: '#fff09a', opacity: .75 }, parent); }
+    const hy = horizon - 4;
+    el('path', { d: `M -20 ${hy} Q 90 ${hy - 120} 230 ${hy - 40} T 470 ${hy - 50} T 760 ${hy - 70} L 760 ${hy + 10} L -20 ${hy + 10} Z`, fill: rain ? '#6f9a73' : '#93dc7c' }, parent);
+    const clouds = [];
+    for (let i = 0; i < 4; i++) {
+      const cg = el('g', {}, parent), col = rain ? '#8d99b3' : '#ffffff';
+      [[-34, 6, 30], [0, -8, 40], [38, 4, 32]].forEach(([x, y, r]) => el('circle', { cx: x, cy: y, r, fill: col, opacity: .95 }, cg));
+      el('rect', { x: -66, y: 4, width: 132, height: 34, rx: 17, fill: col, opacity: .95 }, cg);
+      clouds.push({ cg, x: rnd(i + 4) * 900, y: 60 + rnd(i + 14) * (kind === 'cutaway' ? 120 : 200), s: .7 + rnd(i + 24) * .6, v: 6 + rnd(i + 34) * 8 });
+    }
+    // ground
+    el('rect', { x: -40, y: horizon, width: 800, height: 1300 - horizon, fill: `url(#${id2})` }, parent);
+    for (let i = 0; i < 26; i++) el('circle', { cx: rnd(i + 60) * 720, cy: horizon + 50 + rnd(i + 80) * (1228 - horizon - 70), r: 4 + rnd(i + 99) * 9, fill: i % 3 ? '#6b4325' : '#b88454', opacity: .6 }, parent);
+    if (kind === 'cutaway') {
+      el('path', { d: 'M -20 520 Q 150 480 260 560 T 520 600 T 760 540', fill: 'none', stroke: '#3b2412', 'stroke-width': 34, 'stroke-linecap': 'round', opacity: .22 }, parent);
+      el('path', { d: 'M -20 880 Q 120 840 300 900 T 620 860 T 760 900', fill: 'none', stroke: '#3b2412', 'stroke-width': 30, 'stroke-linecap': 'round', opacity: .2 }, parent);
+    }
+    el('rect', { x: -40, y: horizon - 8, width: 800, height: 40, fill: '#58c23f' }, parent);
+    for (let i = 0; i < 36; i++) el('path', { d: 'M -6 0 L 0 -16 L 6 0 Z', fill: i % 2 ? '#6fd653' : '#49b032', transform: `translate(${i * 21 + rnd(i) * 10} ${horizon - 6})` }, parent);
+    for (let i = 0; i < 6; i++) { const fx = 40 + rnd(i + 120) * 640, fy = horizon + 6; el('line', { x1: fx, y1: fy, x2: fx, y2: fy - 20, stroke: '#3f9a2e', 'stroke-width': 3 }, parent); el('circle', { cx: fx, cy: fy - 24, r: 7, fill: ['#ff7aa8', '#ffd23f', '#fff', '#b88aff'][i % 4] }, parent); }
+    const streaks = []; if (rain) for (let i = 0; i < 40; i++) streaks.push({ e: el('line', { stroke: '#d6ecff', 'stroke-width': 3, 'stroke-linecap': 'round', opacity: .6 }, parent), x: rnd(i + 5) * 760, o: rnd(i + 7) * 1300, v: 700 + rnd(i + 8) * 400 });
+    return { update(t) {
+      clouds.forEach(c => c.cg.setAttribute('transform', `translate(${((c.x + t * c.v) % 900) - 90} ${c.y}) scale(${c.s})`));
+      streaks.forEach(q => { const y = ((q.o + t * q.v) % 1300) - 40; q.e.setAttribute('x1', q.x); q.e.setAttribute('y1', y); q.e.setAttribute('x2', q.x - 8); q.e.setAttribute('y2', y + 34); });
+    } };
+  }
+
+  S.talk = function (g, d) {
+    const cast = (Array.isArray(d.cast) ? d.cast : []).slice(0, 3); if (!cast.length) cast.push({ who: 'buddy' });
+    const n = cast.length, kind = ['garden', 'cutaway', 'rain'].includes(d.bg) ? d.bg : 'garden';
+    const scene = makeGarden(g, kind);
+    const defs = el('defs', {}, g), fid = 'ol' + (++UID), f = el('filter', { id: fid, x: '-25%', y: '-25%', width: '150%', height: '150%' }, defs);
+    el('feMorphology', { in: 'SourceAlpha', operator: 'dilate', radius: 3.4, result: 'd' }, f);
+    el('feFlood', { 'flood-color': '#47281a', result: 'c' }, f);
+    el('feComposite', { in: 'c', in2: 'd', operator: 'in', result: 'o' }, f);
+    const mg = el('feMerge', {}, f); el('feMergeNode', { in: 'o' }, mg); el('feMergeNode', { in: 'SourceGraphic' }, mg);
+    const XS = n === 1 ? [360] : n === 2 ? [195, 525] : [120, 360, 600], SC = n === 1 ? 1.7 : n === 2 ? 1.4 : 1.05;
+    const GY = kind === 'cutaway' ? 365 : 960, bubTop = kind === 'cutaway';
+
+    // lines
+    const idxOf = v => { if (typeof v === 'number') return clamp(Math.round(v), 0, n - 1); const s = String(v || '').toLowerCase(); const k = cast.findIndex(c => String(c.name || '').toLowerCase() === s || who(c.who) === s); return k >= 0 ? k : 0; };
+    const lines = (Array.isArray(d.lines) ? d.lines : []).slice(0, 10).map(L => ({
+      sp: idxOf(L.who), text: String(L.text || '').trim(), mood: MOODS[L.mood] ? L.mood : null, react: L.react || {}, change: L.change || {}, words: String(L.text || '').trim().split(/\s+/).length }));
+    // characters (+ every body they can change into)
+    const chars = cast.map((c, i) => {
+      const sc = (Number(c.scale) > 0 ? Number(c.scale) : (c.where === 'sky' ? .8 : SC)), x = Number.isFinite(Number(c.x)) && c.x !== undefined ? Number(c.x) : XS[i];
+      const where = c.where || (kind === 'cutaway' ? 'under' : 'ground');
+      const names = new Set([who(c.who)]); lines.forEach(L => { if (L.change[i]) names.add(who(L.change[i])); });
+      const v = {}; names.forEach(nm => {
+        const cg = el('g', {}, g), body = el('g', { filter: `url(#${fid})` }, cg), b = BODIES[nm](body, null);
+        const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = makeFace(fg), ex = makeExtras(cg, b.top);
+        v[nm] = { cg, b, face, ex };
+      });
+      return { c, i, sc, x, where, v, w0: who(c.who), m0: MOODS[c.mood] ? c.mood : 'happy', poof: null };
+    });
+    const poofs = chars.map(() => { const pg = el('g', {}, g), ps = []; for (let k = 0; k < 9; k++) ps.push({ e: el('circle', { fill: k % 3 === 0 ? '#ffd34d' : '#fff' }, pg), a: k / 9 * 6.283 + rnd(k) * .6, s: 50 + rnd(k + 5) * 60 }); return { pg, ps }; });
+    const posY = (o, nm) => o.where === 'sky' ? 225 : (o.where === 'under' ? 850 : GY) - (o.where === 'sky' ? 0 : (BOT[nm] || 110) * o.sc);
+
+    // speech bubbles (one per line, built once)
+    const bubbles = []; const who_ = chars.map(o => o.w0);
+    lines.forEach((L, k) => {
+      Object.keys(L.change).forEach(ci => { who_[ci] = who(L.change[ci]); });
+      const nm = who_[L.sp], bg = el('g', {}, g);
+      const wl = X.wrap(L.text, 24), h = 44 + wl.length * 54, W = 640, x0 = 40;
+      const by = bubTop ? 905 : 520 - h, spk = chars[L.sp];
+      const tipX = clamp(spk.x, 110, 610), far = spk.where === 'sky' && bubTop;
+      const tipY = bubTop ? by - 52 : by + h + 56;
+      if (!far) el('path', { d: bubTop ? `M ${tipX - 24} ${by + 4} L ${tipX} ${tipY} L ${tipX + 24} ${by + 4} Z` : `M ${tipX - 24} ${by + h - 4} L ${tipX} ${tipY} L ${tipX + 24} ${by + h - 4} Z`, fill: '#fff', stroke: '#14213d', 'stroke-width': 5, 'stroke-linejoin': 'round' }, bg);
+      el('rect', { x: x0, y: by, width: W, height: h, rx: 36, fill: '#fff', stroke: '#14213d', 'stroke-width': 5 }, bg);
+      if (!far) el('rect', { x: tipX - 20, y: bubTop ? by - 2 : by + h - 8, width: 40, height: 10, fill: '#fff' }, bg);
+      const col = TCOL[nm] || '#4a63e0', name = (chars[L.sp].c.name && !L.change[L.sp]) ? chars[L.sp].c.name : (TNAME[nm] || nm);
+      const cw = Math.max(120, name.length * 17 + 44);
+      el('rect', { x: x0 + 18, y: by - 22, width: cw, height: 40, rx: 20, fill: col, stroke: '#14213d', 'stroke-width': 4 }, bg);
+      X.text(bg, name, x0 + 18 + cw / 2, by + 6, 24, '#fff', 800);
+      const txt = wl.map((ln, li) => ({ ln, words: ln.split(' '), e: X.text(bg, '', x0 + 38, by + 62 + li * 54, 40, '#1b2440', 800, 'start') }));
+      bubbles.push({ bg, txt, tipX, tipY: far ? by + h / 2 : tipY, total: L.words });
+      bg.setAttribute('opacity', 0);
+    });
+    let label = null;
+    if (d.label) { label = text(g, String(d.label), 360, 62, 60, X.ORANGE, 900); X.fit(label, 640); }
+
+    return function (lt, dur) {
+      const T = lt, t0 = .3, usable = Math.max(2, dur - .9);
+      const W = lines.map(L => L.words + 1.4), tot = W.reduce((a, b) => a + b, 0) || 1;
+      let acc = 0; const st = lines.map((L, k) => { const s = t0 + acc / tot * usable; acc += W[k]; return { s, e: t0 + acc / tot * usable }; });
+      let idx = -1; for (let k = 0; k < lines.length; k++) if (T >= st[k].s) idx = k;
+      scene.update(T);
+      if (label) { const p = prog(lt, .2, .6); label.setAttribute('opacity', p.toFixed(3)); X.pop(label, 360, 62, .6 + .4 * eob(p)); }
+      bubbles.forEach((B, k) => {
+        const on = k === idx; X.show(B.bg, on ? 1 : 0); if (!on) return;
+        const L = st[k], span = L.e - L.s, r = clamp((T - L.s) / (span * .78), 0, 1), vis = Math.ceil(r * B.total);
+        let left = vis; B.txt.forEach(tl => { const kk = Math.min(left, tl.words.length); tl.e.textContent = tl.words.slice(0, kk).join(' '); left -= kk; });
+        const pp = eob(prog(T - L.s, 0, .2)), s = .8 + .2 * pp;
+        B.bg.setAttribute('transform', `translate(${B.tipX} ${B.tipY}) scale(${s.toFixed(3)}) translate(${-B.tipX} ${-B.tipY})`);
+      });
+      const spkNow = idx >= 0 ? lines[idx] : null, talking = spkNow ? (T - st[idx].s) < (st[idx].e - st[idx].s) * .8 : false;
+      const pos = chars.map(o => ({ x: o.x, y: 0 }));
+      chars.forEach((o, i) => {
+        // state from the dialogue so far
+        let mood = o.m0, prev = o.m0, moodT = 0, wNow = o.w0, chT = -9;
+        for (let k = 0; k <= idx; k++) {
+          const L = lines[k]; let m = null; if (L.sp === i) m = L.mood; else if (L.react[i]) m = L.react[i];
+          if (m && MOODS[m] && m !== mood) { prev = mood; mood = m; moodT = st[k].s; }
+          if (L.change[i]) { wNow = who(L.change[i]); chT = st[k].s; }
+        }
+        const speaking = !!spkNow && spkNow.sp === i && talking;
+        const p = mix(moodP(prev), moodP(mood), eio(prog(T, moodT, moodT + .3)));
+        p.talk = speaking ? 1 : 0; o._talk = lerp(o._talk || 0, p.talk, .35);
+        p.talk = o._talk;
+        const y = posY(o, wNow); pos[i].y = y;
+        const pop = eob(prog(T, chT, chT + .45)) , reveal = eob(prog(T, 0, .5));
+        const bob = Math.sin(T * 2 + i * 1.9) * 7 + (speaking ? Math.abs(Math.sin(T * 9)) * -9 : 0);
+        for (const nm in o.v) {
+          const V = o.v[nm], shown = nm === wNow;
+          X.show(V.cg, shown ? 1 : 0); if (!shown) continue;
+          const sc = o.sc * reveal * (chT > -1 ? pop : 1) * (1 + (speaking ? .03 * Math.sin(T * 9) : 0));
+          V.cg.setAttribute('transform', `translate(${o.x.toFixed(1)} ${(y + bob).toFixed(1)}) rotate(${(speaking ? Math.sin(T * 5) * 2.5 : Math.sin(T * 1.5 + i) * 1.2).toFixed(2)}) scale(${sc.toFixed(3)})`);
+          let tx = 360, ty = 500; if (spkNow && spkNow.sp !== i) { tx = chars[spkNow.sp].x; ty = posY(chars[spkNow.sp], wNow) } else { const q = chars[(i + 1) % n]; tx = q.x; ty = y; }
+          const dx = tx - o.x, dy = ty - y, Ln = Math.hypot(dx, dy) || 1;
+          const bl = (T + i * .9) % 3.4, blink = bl < .13 ? 1 - Math.sin(bl / .13 * 3.14) * .95 : 1;
+          V.face(p, T, { x: dx / Ln * .8, y: dy / Ln * .6 }, blink);
+          tickExtras(V.ex, p, T, 1);
+          V.b.tick(T, { arm: Math.max(speaking ? .55 : 0, (/^(joy|excited|giggle|proud|love)$/.test(mood) ? .5 : 0)) });
+        }
+        // poof when the body changes (seed -> sprout -> flower)
+        const pg = poofs[i], u = chT > -1 ? prog(T - chT, 0, .7) : 0; X.show(pg.pg, u > 0 && u < 1 ? 1 : 0);
+        if (u > 0 && u < 1) pg.ps.forEach(q => { q.e.setAttribute('cx', (o.x + Math.cos(q.a) * eo(u) * q.s * 1.6).toFixed(1)); q.e.setAttribute('cy', (y - 40 + Math.sin(q.a) * eo(u) * q.s * 1.2).toFixed(1)); q.e.setAttribute('r', (q.s * (.3 + eo(u)) * .6).toFixed(1)); q.e.setAttribute('opacity', (.9 * (1 - u)).toFixed(3)); });
+      });
     };
   };
 })();
