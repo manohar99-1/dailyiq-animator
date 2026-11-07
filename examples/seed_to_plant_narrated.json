@@ -1,0 +1,939 @@
+{
+ "title": "From Seed to Plant",
+ "description": "How does a tiny seed grow into a flower? Water, air and warmth wake the seed, roots grow down, and leaves turn sunlight into food.",
+ "hashtags": [
+  "#shorts",
+  "#plants",
+  "#science",
+  "#kids"
+ ],
+ "scenes": [
+  {
+   "type": "story",
+   "data": {
+    "label_style": "headline",
+    "bg": "soil",
+    "label_y": 100,
+    "chips_y": 250,
+    "cam": {
+     "z0": 1.0,
+     "z1": 1.08,
+     "x": 0.5,
+     "y": 0.5
+    },
+    "cast": [
+     {
+      "id": "seedy",
+      "char": "seedy",
+      "x": 0.42,
+      "y": 0.62,
+      "h": 0.34,
+      "mood": "sleepy"
+     },
+     {
+      "id": "soil",
+      "char": "soil",
+      "x": 0.76,
+      "y": 0.87,
+      "h": 0.17,
+      "mood": "happy"
+     },
+     {
+      "id": "wiggly",
+      "char": "wiggly",
+      "x": -0.2,
+      "y": 0.87,
+      "h": 0.15,
+      "mood": "happy",
+      "hidden": true
+     }
+    ],
+    "lines": [
+     {
+      "pause": 0.8,
+      "label": "SEED TO PLANT",
+      "text": "How does a tiny seed grow into a flower? Let's find out."
+     },
+     {
+      "set": {
+       "seedy": "thinking"
+      },
+      "label": "",
+      "text": "Deep in the soil, a seed waits for three things.",
+      "do": [
+       {
+        "id": "soil",
+        "type": "hop",
+        "dt": 0.2,
+        "dur": 0.6,
+        "n": 1
+       }
+      ]
+     },
+     {
+      "label": "WAKE-UP RECIPE",
+      "text": "Water, air, and warmth.",
+      "hold": 0.5,
+      "chips": [
+       {
+        "icon": "drop",
+        "text": "WATER",
+        "dt": 0.1
+       },
+       {
+        "icon": "air",
+        "text": "AIR",
+        "dt": 0.7
+       },
+       {
+        "icon": "warm",
+        "text": "WARMTH",
+        "dt": 1.2
+       }
+      ]
+     },
+     {
+      "set": {
+       "seedy": "happy",
+       "wiggly": "excited"
+      },
+      "chips": [],
+      "label": "FRESH AIR",
+      "text": "Worms dig tunnels that let fresh air reach the seed.",
+      "do": [
+       {
+        "id": "seedy",
+        "type": "hop",
+        "dt": 0,
+        "dur": 0.6,
+        "n": 1
+       },
+       {
+        "id": "wiggly",
+        "type": "appear",
+        "dt": -0.6,
+        "dur": 0.5
+       },
+       {
+        "id": "wiggly",
+        "type": "move",
+        "dt": -0.6,
+        "dur": 1.0,
+        "to": [
+         0.3,
+         0.87
+        ],
+        "ease": "eo"
+       }
+      ],
+      "fx": [
+       {
+        "type": "swirl",
+        "x": 0.42,
+        "y": 0.52,
+        "dt": 1.6,
+        "dur": 3.0
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "story",
+   "data": {
+    "label_style": "headline",
+    "bg": "rainy",
+    "label_y": 100,
+    "cam": {
+     "z0": 1.0,
+     "z1": 1.1,
+     "x": 0.5,
+     "y": 0.5
+    },
+    "cast": [
+     {
+      "id": "cloud",
+      "char": "cloud",
+      "x": 0.5,
+      "y": 0.3,
+      "h": 0.17,
+      "mood": "joy"
+     },
+     {
+      "id": "drippy",
+      "char": "drippy",
+      "x": 0.5,
+      "y": 0.1,
+      "h": 0.22,
+      "mood": "excited",
+      "hidden": true
+     }
+    ],
+    "lines": [
+     {
+      "pause": 0.3,
+      "label": "RAIN TIME",
+      "text": "Then rain falls, and the water soaks down through the soil.",
+      "do": [
+       {
+        "id": "cloud",
+        "type": "hop",
+        "dt": 0,
+        "dur": 0.6,
+        "n": 1
+       },
+       {
+        "id": "drippy",
+        "type": "appear",
+        "dt": 0.6,
+        "dur": 0.4
+       },
+       {
+        "id": "drippy",
+        "type": "move",
+        "dt": 0.6,
+        "dur": 1.7,
+        "to": [
+         0.5,
+         0.78
+        ],
+        "ease": "bounce"
+       },
+       {
+        "id": "drippy",
+        "type": "vanish",
+        "dt": 3.2,
+        "dur": 0.5
+       }
+      ],
+      "fx": [
+       {
+        "type": "rain",
+        "x0": 30,
+        "x1": 690,
+        "y0": 0.24,
+        "y1": 0.88,
+        "n": 30,
+        "dt": -0.2,
+        "dur": 5
+       },
+       {
+        "type": "ripple",
+        "x": 0.5,
+        "y": 0.8,
+        "dt": 2.1,
+        "dur": 1.8,
+        "R": 110
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "story",
+   "data": {
+    "label_style": "headline",
+    "bg": "soil",
+    "label_y": 100,
+    "chips_y": 250,
+    "cam": {
+     "z0": 1.0,
+     "z1": 1.07,
+     "x": 0.5,
+     "y": 0.55
+    },
+    "cast": [
+     {
+      "id": "plant",
+      "char": "seedy",
+      "x": 0.42,
+      "y": 0.6,
+      "h": 0.32,
+      "mood": "hopeful"
+     },
+     {
+      "id": "soil",
+      "char": "soil",
+      "x": 0.78,
+      "y": 0.87,
+      "h": 0.17,
+      "mood": "happy"
+     },
+     {
+      "id": "drippy",
+      "char": "drippy",
+      "x": 0.64,
+      "y": 0.3,
+      "h": 0.2,
+      "mood": "excited",
+      "hidden": true
+     }
+    ],
+    "props": [
+     {
+      "type": "root",
+      "follow": "plant",
+      "line": 1,
+      "dt": 0.9,
+      "dur": 2.0,
+      "paths": [
+       [
+        [
+         0,
+         -38
+        ],
+        [
+         8,
+         60
+        ],
+        [
+         -10,
+         130
+        ],
+        [
+         2,
+         215
+        ]
+       ],
+       [
+        [
+         0,
+         70
+        ],
+        [
+         -55,
+         105
+        ],
+        [
+         -92,
+         160
+        ]
+       ],
+       [
+        [
+         -3,
+         125
+        ],
+        [
+         58,
+         150
+        ],
+        [
+         92,
+         205
+        ]
+       ]
+      ]
+     }
+    ],
+    "lines": [
+     {
+      "label": "SWELL AND CRACK",
+      "text": "The seed drinks the water and swells up, until its hard shell cracks.",
+      "do": [
+       {
+        "id": "drippy",
+        "type": "appear",
+        "dt": -0.3,
+        "dur": 0.4
+       },
+       {
+        "id": "drippy",
+        "type": "move",
+        "dt": -0.3,
+        "dur": 1.0,
+        "to": [
+         0.65,
+         0.62
+        ],
+        "ease": "eo"
+       },
+       {
+        "id": "plant",
+        "type": "scale",
+        "dt": 1.2,
+        "dur": 1.8,
+        "to": 1.18,
+        "ease": "eob"
+       },
+       {
+        "id": "plant",
+        "type": "mood",
+        "dt": 1.5,
+        "dur": 0.1,
+        "mood": "shocked"
+       },
+       {
+        "id": "plant",
+        "type": "shake",
+        "dt": 3.0,
+        "dur": 0.8
+       }
+      ],
+      "fx": [
+       {
+        "type": "ripple",
+        "x": 0.42,
+        "y": 0.6,
+        "dt": 1.0,
+        "dur": 3.2,
+        "R": 130
+       }
+      ]
+     },
+     {
+      "label": "ROOTS FIRST",
+      "set": {
+       "plant": "excited",
+       "drippy": "happy"
+      },
+      "text": "Out comes the first root, growing down to drink water and hold the plant steady.",
+      "do": [
+       {
+        "id": "plant",
+        "type": "hop",
+        "dt": 0.3,
+        "dur": 0.6,
+        "n": 1
+       }
+      ],
+      "fx": [
+       {
+        "type": "dust",
+        "x": 0.42,
+        "y": 0.64,
+        "dt": 0.8,
+        "dur": 1.0
+       },
+       {
+        "type": "bubbles",
+        "x": 0.42,
+        "y0": 0.85,
+        "y1": 0.52,
+        "dt": 2.4,
+        "dur": 3.4,
+        "n": 6
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "story",
+   "data": {
+    "label_style": "headline",
+    "bg": "soil",
+    "label_y": 100,
+    "cam": {
+     "z0": 1.07,
+     "z1": 1.07,
+     "x": 0.5,
+     "y": 0.55
+    },
+    "cast": [
+     {
+      "id": "plant",
+      "char": "seedy",
+      "x": 0.42,
+      "y": 0.6,
+      "h": 0.32,
+      "mood": "excited",
+      "s0": 1.18
+     },
+     {
+      "id": "soil",
+      "char": "soil",
+      "x": 0.78,
+      "y": 0.87,
+      "h": 0.17,
+      "mood": "happy"
+     },
+     {
+      "id": "ray",
+      "char": "ray",
+      "x": 0.8,
+      "y": 0.19,
+      "h": 0.13,
+      "mood": "happy",
+      "hidden": true
+     }
+    ],
+    "props": [
+     {
+      "type": "root",
+      "follow": "plant",
+      "line": 0,
+      "dt": -4,
+      "dur": 0.01,
+      "paths": [
+       [
+        [
+         0,
+         -38
+        ],
+        [
+         8,
+         60
+        ],
+        [
+         -10,
+         130
+        ],
+        [
+         2,
+         215
+        ]
+       ],
+       [
+        [
+         0,
+         70
+        ],
+        [
+         -55,
+         105
+        ],
+        [
+         -92,
+         160
+        ]
+       ],
+       [
+        [
+         -3,
+         125
+        ],
+        [
+         58,
+         150
+        ],
+        [
+         92,
+         205
+        ]
+       ]
+      ]
+     }
+    ],
+    "lines": [
+     {
+      "label": "SHOOT UP",
+      "text": "Next, a shoot pushes up through the soil, toward the light.",
+      "hold": 0.4,
+      "do": [
+       {
+        "id": "plant",
+        "type": "morph",
+        "dt": 0.4,
+        "dur": 0.8,
+        "to": "sprouty",
+        "h": 0.32
+       },
+       {
+        "id": "plant",
+        "type": "scale",
+        "dt": 0.4,
+        "dur": 0.8,
+        "to": 1.0
+       },
+       {
+        "id": "plant",
+        "type": "move",
+        "dt": 1.2,
+        "dur": 3.0,
+        "to": [
+         0.42,
+         0.43
+        ],
+        "ease": "eio"
+       },
+       {
+        "id": "ray",
+        "type": "appear",
+        "dt": 2.6,
+        "dur": 0.5
+       },
+       {
+        "id": "plant",
+        "type": "mood",
+        "dt": 3.6,
+        "dur": 0.1,
+        "mood": "joy"
+       },
+       {
+        "id": "plant",
+        "type": "hop",
+        "dt": 3.7,
+        "dur": 0.7,
+        "n": 2
+       }
+      ],
+      "cam": {
+       "z": 1.14,
+       "y": 0.38,
+       "dt": 1.2,
+       "dur": 3.0
+      },
+      "fx": [
+       {
+        "type": "dust",
+        "x": 0.42,
+        "y": 0.62,
+        "dt": 1.2,
+        "dur": 1.2
+       },
+       {
+        "type": "rays",
+        "x": 0.8,
+        "y": 0.1,
+        "dt": 2.6,
+        "dur": 3,
+        "under": true
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "story",
+   "data": {
+    "label_style": "headline",
+    "bg": "sunny",
+    "label_y": 240,
+    "chips_y": 380,
+    "cam": {
+     "z0": 1.0,
+     "z1": 1.06,
+     "x": 0.5,
+     "y": 0.5
+    },
+    "cast": [
+     {
+      "id": "plant",
+      "char": "sprouty",
+      "x": 0.5,
+      "y": 0.81,
+      "h": 0.36,
+      "mood": "happy"
+     },
+     {
+      "id": "ray",
+      "char": "ray",
+      "x": 0.52,
+      "y": 0.155,
+      "h": 0.17,
+      "mood": "happy"
+     }
+    ],
+    "props": [
+     {
+      "type": "mound",
+      "x": 0.5,
+      "y": 0.84,
+      "w": 260,
+      "line": 0,
+      "dt": -4
+     }
+    ],
+    "lines": [
+     {
+      "pause": 0.3,
+      "label": "MAKING FOOD",
+      "text": "Once its leaves open, the plant makes its own food, using sunlight, water, and air.",
+      "chips": [
+       {
+        "icon": "sun",
+        "text": "SUNLIGHT",
+        "dt": 3.6
+       },
+       {
+        "icon": "drop",
+        "text": "WATER",
+        "dt": 4.4
+       },
+       {
+        "icon": "co2",
+        "text": "CO2",
+        "dt": 5.2
+       },
+       {
+        "icon": "sugar",
+        "text": "SUGAR",
+        "line": 1,
+        "dt": 0.6
+       }
+      ],
+      "fx": [
+       {
+        "type": "rays",
+        "x": 0.52,
+        "y": 0.09,
+        "dt": 0,
+        "dur": 6,
+        "under": true
+       }
+      ]
+     },
+     {
+      "set": {
+       "plant": "excited"
+      },
+      "text": "The food is sugar, and the plant gives out fresh oxygen for us to breathe.",
+      "do": [
+       {
+        "id": "plant",
+        "type": "hop",
+        "dt": 0.6,
+        "dur": 0.7,
+        "n": 2
+       }
+      ],
+      "fx": [
+       {
+        "type": "sparkle",
+        "x": 0.5,
+        "y": 0.5,
+        "dt": 0.7,
+        "dur": 1.2
+       },
+       {
+        "type": "swirl",
+        "x": 0.5,
+        "y": 0.5,
+        "dt": 3.2,
+        "dur": 3.0
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "story",
+   "data": {
+    "label_style": "headline",
+    "bg": "sunny",
+    "label_y": 240,
+    "cam": {
+     "z0": 1.0,
+     "z1": 1.04,
+     "x": 0.5,
+     "y": 0.55
+    },
+    "cast": [
+     {
+      "id": "plant",
+      "char": "sprouty",
+      "x": 0.5,
+      "y": 0.81,
+      "h": 0.36,
+      "mood": "happy"
+     },
+     {
+      "id": "ray",
+      "char": "ray",
+      "x": 0.52,
+      "y": 0.155,
+      "h": 0.17,
+      "mood": "happy"
+     },
+     {
+      "id": "cloud",
+      "char": "cloud",
+      "x": 0.5,
+      "y": 0.3,
+      "h": 0.16,
+      "mood": "joy",
+      "hidden": true
+     },
+     {
+      "id": "drippy",
+      "char": "drippy",
+      "x": 0.2,
+      "y": 0.88,
+      "h": 0.17,
+      "mood": "happy",
+      "hidden": true
+     },
+     {
+      "id": "wiggly",
+      "char": "wiggly",
+      "x": 0.76,
+      "y": 0.9,
+      "h": 0.13,
+      "mood": "happy",
+      "hidden": true
+     }
+    ],
+    "props": [
+     {
+      "type": "mound",
+      "x": 0.5,
+      "y": 0.84,
+      "w": 260,
+      "line": 0,
+      "dt": -4
+     }
+    ],
+    "lines": [
+     {
+      "label": "DAY AFTER DAY",
+      "text": "With sunshine and rain, it keeps growing, day after day.",
+      "do": [
+       {
+        "id": "plant",
+        "type": "scale",
+        "dt": 0,
+        "dur": 4.0,
+        "to": 1.35,
+        "ease": "eio"
+       },
+       {
+        "id": "ray",
+        "type": "vanish",
+        "dt": 1.7,
+        "dur": 0.4
+       },
+       {
+        "id": "cloud",
+        "type": "appear",
+        "dt": 1.7,
+        "dur": 0.4
+       }
+      ],
+      "fx": [
+       {
+        "type": "rays",
+        "x": 0.52,
+        "y": 0.09,
+        "dt": 0,
+        "dur": 1.9,
+        "under": true
+       },
+       {
+        "type": "rain",
+        "x0": 30,
+        "x1": 690,
+        "y0": 0.32,
+        "y1": 0.88,
+        "n": 24,
+        "dt": 1.8,
+        "dur": 2.4
+       }
+      ]
+     },
+     {
+      "bg": "sunny",
+      "bg_dt": -0.2,
+      "label": "A FLOWER!",
+      "text": "Weeks later, it blooms into a bright, beautiful flower!",
+      "hold": 0.3,
+      "do": [
+       {
+        "id": "cloud",
+        "type": "vanish",
+        "dt": -0.3,
+        "dur": 0.4
+       },
+       {
+        "id": "ray",
+        "type": "appear",
+        "dt": -0.3,
+        "dur": 0.4
+       },
+       {
+        "id": "plant",
+        "type": "morph",
+        "dt": 1.8,
+        "dur": 0.9,
+        "to": "bloom",
+        "h": 0.44
+       },
+       {
+        "id": "plant",
+        "type": "scale",
+        "dt": 1.8,
+        "dur": 0.9,
+        "to": 1.0
+       },
+       {
+        "id": "plant",
+        "type": "mood",
+        "dt": 2.0,
+        "dur": 0.1,
+        "mood": "joy"
+       }
+      ],
+      "cam": {
+       "z": 1.1,
+       "y": 0.6,
+       "dt": 1.5,
+       "dur": 2.5
+      }
+     },
+     {
+      "set": {
+       "plant": "love"
+      },
+      "label": "",
+      "text": "And soon, the flower will make new seeds, and the story begins again.",
+      "hold": 1.0,
+      "do": [
+       {
+        "id": "drippy",
+        "type": "appear",
+        "dt": 1.0,
+        "dur": 0.5
+       },
+       {
+        "id": "wiggly",
+        "type": "appear",
+        "dt": 1.4,
+        "dur": 0.5
+       },
+       {
+        "id": "drippy",
+        "type": "hop",
+        "dt": 2.2,
+        "dur": 0.8,
+        "n": 2
+       },
+       {
+        "id": "wiggly",
+        "type": "wiggle",
+        "dt": 2.4,
+        "dur": 1.0
+       },
+       {
+        "id": "plant",
+        "type": "hop",
+        "dt": 2.8,
+        "dur": 0.8,
+        "n": 2
+       }
+      ],
+      "fx": [
+       {
+        "type": "sparkle",
+        "x": 0.5,
+        "y": 0.5,
+        "dt": 2.6,
+        "dur": 1.4
+       }
+      ],
+      "cam": {
+       "z": 1.0,
+       "y": 0.5,
+       "dt": 1.6,
+       "dur": 2.0
+      }
+     }
+    ]
+   }
+  }
+ ]
+}

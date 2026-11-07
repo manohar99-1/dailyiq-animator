@@ -170,7 +170,9 @@
     const LY = d.label_y || 88, CY = d.chips_y || 210;
     const labelG = el('g', {}, overG), chipG = el('g', {}, overG);
     const labelBg = el('rect', { rx: 30, ry: 30, height: 60, fill: 'rgba(20,33,61,.86)', stroke: '#ffb627', 'stroke-width': 4 }, labelG);
+    const HEAD = d.label_style === 'headline';   // big orange headline text (like the ocean video) instead of a small pill
     const labelTx = X.text(labelG, '', W / 2, 0, 34, '#fff', 800, 'middle', { 'letter-spacing': 2 });
+    if (HEAD) { labelTx.setAttribute('fill', '#ff8a1f'); labelTx.setAttribute('stroke', '#14213d'); labelTx.setAttribute('stroke-width', 11); labelTx.setAttribute('paint-order', 'stroke'); labelTx.setAttribute('stroke-linejoin', 'round'); labelTx.setAttribute('font-weight', 900); }
     const labelTrack = []; const chipTrack = [];
     lines.forEach((L, i) => {
       if (L.label != null) labelTrack.push({ t: L.t0 + (L.label_dt || 0), text: String(L.label) });
@@ -380,8 +382,10 @@
       /* label */
       let lab = ''; let lt = 0; labelTrack.forEach(l => { if (t >= l.t) { lab = l.text; lt = t - l.t; } });
       if (lab) {
-        labelG.setAttribute('display', 'inline'); labelTx.textContent = lab; const w = Math.min(660, labelTx.getComputedTextLength() + 70); labelTx.setAttribute('y', LY + 12);
-        labelBg.setAttribute('x', W / 2 - w / 2); labelBg.setAttribute('width', w); labelBg.setAttribute('y', LY - 30);
+        labelG.setAttribute('display', 'inline'); labelTx.textContent = lab;
+        if (HEAD) { labelTx.setAttribute('font-size', 70); X.fit(labelTx, 660); }
+        const w = Math.min(660, labelTx.getComputedTextLength() + 70); labelTx.setAttribute('y', HEAD ? LY + 24 : LY + 12);
+        labelBg.setAttribute('display', HEAD ? 'none' : 'inline'); labelBg.setAttribute('x', W / 2 - w / 2); labelBg.setAttribute('width', w); labelBg.setAttribute('y', LY - 30);
         const k = eob(clamp(lt / .35)); labelG.setAttribute('transform', `translate(${W / 2} ${LY}) scale(${k.toFixed(3)}) translate(${-W / 2} ${-LY})`); labelG.setAttribute('display', 'inline');
       } else labelG.setAttribute('display', 'none');
       /* chips */
