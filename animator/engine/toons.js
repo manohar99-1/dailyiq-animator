@@ -672,7 +672,7 @@
       bg.setAttribute('opacity', 0);
     });
     let label = null;
-    if (d.label) { label = text(g, String(d.label), 360, 62, 60, X.ORANGE, 900); X.fit(label, 640); }
+    if (d.label) { label = text(g, String(d.label), 360, 100, 56, X.ORANGE, 900); X.fit(label, 640); }
 
     return function (lt, dur) {
       const T = lt, t0 = .3, usable = Math.max(2, dur - .9);
@@ -680,7 +680,7 @@
       let acc = 0; const st = lines.map((L, k) => { const s = t0 + acc / tot * usable; acc += W[k]; return { s, e: t0 + acc / tot * usable }; });
       let idx = -1; for (let k = 0; k < lines.length; k++) if (T >= st[k].s) idx = k;
       scene.update(T);
-      if (label) { const p = prog(lt, .2, .6); label.setAttribute('opacity', p.toFixed(3)); X.pop(label, 360, 62, .6 + .4 * eob(p)); }
+      if (label) { const p = prog(lt, .2, .6); label.setAttribute('opacity', p.toFixed(3)); X.pop(label, 360, 100, .6 + .4 * eob(p)); }
       bubbles.forEach((B, k) => {
         const on = k === idx; X.show(B.bg, on ? 1 : 0); if (!on) return;
         const L = st[k], span = L.e - L.s, r = clamp((T - L.s) / (span * .78), 0, 1), vis = Math.ceil(r * B.total);
