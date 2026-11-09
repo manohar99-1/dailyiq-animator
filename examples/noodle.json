@@ -1,0 +1,277 @@
+{
+ "title": "What If You Were a Noodle? 🍜",
+ "description": "You wake up as a noodle. Splat, chopsticks, boiling water, sauce... and cheese. What would a day in the life of a noodle really be like?\n#shorts #whatif #noodle #funny",
+ "hashtags": [
+  "#shorts",
+  "#whatif",
+  "#noodle",
+  "#funny"
+ ],
+ "scenes": [
+  {
+   "say": "You wake up one morning... and something feels very, very wrong. You look down. And you are... a noodle.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "noodle",
+      "mood": "worried",
+      "mood2": "shocked",
+      "act": "wiggle",
+      "pos": [
+       360,
+       760,
+       1.6
+      ]
+     }
+    ],
+    "at": 0.45,
+    "layout": "auto",
+    "label": "YOU'RE A NOODLE?!",
+    "bg": "kitchen"
+   }
+  },
+  {
+   "say": "Long. Slippery. Wobbly. You try to stand up... take one step... and SPLAT.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "noodle",
+      "mood": "happy",
+      "mood2": "shocked",
+      "act": "splat",
+      "pos": [
+       360,
+       640,
+       1.4
+      ],
+      "start": 0.55
+     }
+    ],
+    "at": 0.55,
+    "layout": "auto",
+    "label": "SPLAT!",
+    "bg": "kitchen"
+   }
+  },
+  {
+   "say": "But that is not the scary part. Something is coming. A giant pair of chopsticks... and they are reaching for YOU.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "noodle",
+      "mood": "scared",
+      "mood2": "scared",
+      "act": "shake",
+      "pos": [
+       360,
+       840,
+       1.3
+      ]
+     },
+     {
+      "who": "chopsticks",
+      "mood": "happy",
+      "act": "float",
+      "pos": [
+       360,
+       720,
+       0.85
+      ]
+     }
+    ],
+    "at": 0.5,
+    "layout": "auto",
+    "label": "CHOPSTICKS!",
+    "bg": "kitchen"
+   }
+  },
+  {
+   "say": "Next stop? A pot of boiling water. Will you survive? Here's the strange part... the longer you boil, the softer you get.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "noodle",
+      "mood": "worried",
+      "mood2": "scared",
+      "act": "shake",
+      "pos": [
+       360,
+       640,
+       1.3
+      ]
+     },
+     {
+      "who": "pot",
+      "mood": "happy",
+      "act": "float",
+      "pos": [
+       360,
+       860,
+       1.6
+      ]
+     }
+    ],
+    "at": 0.5,
+    "layout": "auto",
+    "label": "BOILING HOT",
+    "bg": "kitchen"
+   }
+  },
+  {
+   "say": "Then comes a plot twist. You are pulled out, smothered in sauce... and dropped into a bowl.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "noodle",
+      "mood": "scared",
+      "mood2": "worried",
+      "act": "wiggle",
+      "pos": [
+       360,
+       690,
+       1.3
+      ]
+     },
+     {
+      "who": "bowl",
+      "mood": "happy",
+      "act": "float",
+      "pos": [
+       360,
+       880,
+       1.5
+      ]
+     }
+    ],
+    "at": 0.5,
+    "layout": "auto",
+    "label": "SAUCY!",
+    "bg": "kitchen"
+   }
+  },
+  {
+   "say": "The chopsticks return. Closer. And closer. Is there any way out? ... No.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "noodle",
+      "mood": "scared",
+      "mood2": "scared",
+      "act": "shake",
+      "pos": [
+       360,
+       740,
+       1.25
+      ]
+     },
+     {
+      "who": "bowl",
+      "mood": "happy",
+      "act": "float",
+      "pos": [
+       360,
+       940,
+       1.5
+      ]
+     },
+     {
+      "who": "chopsticks",
+      "mood": "happy",
+      "act": "float",
+      "pos": [
+       420,
+       640,
+       0.85
+      ]
+     }
+    ],
+    "at": 0.5,
+    "layout": "auto",
+    "label": "NO ESCAPE",
+    "bg": "kitchen"
+   }
+  },
+  {
+   "say": "And just when you think it cannot get worse... someone adds... cheese.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "noodle",
+      "mood": "shocked",
+      "mood2": "worried",
+      "act": "shake",
+      "pos": [
+       300,
+       720,
+       1.2
+      ]
+     },
+     {
+      "who": "bowl",
+      "mood": "happy",
+      "act": "float",
+      "pos": [
+       360,
+       940,
+       1.5
+      ]
+     },
+     {
+      "who": "cheese",
+      "mood": "happy",
+      "act": "float",
+      "pos": [
+       470,
+       470,
+       1.7
+      ]
+     }
+    ],
+    "at": 0.5,
+    "layout": "auto",
+    "label": "CHEESE?!",
+    "bg": "kitchen"
+   }
+  },
+  {
+   "say": "Congratulations. You are now officially... a delicious noodle.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "noodle",
+      "mood": "love",
+      "mood2": "happy",
+      "act": "hop",
+      "pos": [
+       360,
+       700,
+       1.4
+      ]
+     },
+     {
+      "who": "bowl",
+      "mood": "happy",
+      "act": "float",
+      "pos": [
+       360,
+       960,
+       1.4
+      ]
+     }
+    ],
+    "at": 0.45,
+    "layout": "auto",
+    "label": "DELICIOUS!",
+    "bg": "kitchen"
+   }
+  }
+ ]
+}

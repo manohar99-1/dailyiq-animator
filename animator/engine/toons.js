@@ -383,6 +383,72 @@
     return { fy: 0, fs: 0, top: -150, noface: true, tick: t => { g.setAttribute('transform', 'rotate(-16)'); streaks.forEach((e, i) => e.setAttribute('stroke-dashoffset', (-t * (90 + i * 40)).toFixed(1))); } };
   };
 
+
+  /* ------------------------------------------------------- kitchen friends (noodle video) */
+  const NOOD = '#f7d065', NOOD2 = '#e3a93a', OLK = '#3a2412';
+  const wavy = (x0, y0, y1, amp, k, ph, step) => { let d = ''; const n = Math.max(2, Math.ceil(Math.abs(y1 - y0) / (step || 8))); for (let i = 0; i <= n; i++) { const y = y0 + (y1 - y0) * i / n, u = i / n; d += (i ? 'L' : 'M') + (x0 + amp * Math.sin(y * k + ph) * (.25 + u)).toFixed(1) + ' ' + y.toFixed(1) + ' '; } return d; };
+  BODIES.noodle = function (g, c) {
+    const col = c || NOOD;
+    const body = el('g', {}, g);
+    const tube = (parent, w, stroke) => el('path', { fill: 'none', stroke, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, parent);
+    const bOut = tube(body, 56, OLK), bIn = tube(body, 44, col), bHi = tube(body, 8, '#fff3b8'); bHi.setAttribute('opacity', .7);
+    const arms = [-1, 1].map(sg => ({ sg, o: tube(body, 24, OLK), i: tube(body, 14, col) }));
+    const hairs = [-1, 1].map(sg => ({ sg, o: tube(body, 20, OLK), i: tube(body, 11, col) }));
+    // head: the thick end of the noodle
+    el('ellipse', { cy: -50, rx: 84, ry: 76, fill: OLK }, g);
+    el('ellipse', { cy: -50, rx: 78, ry: 70, fill: col }, g);
+    el('path', { d: 'M -52 -92 Q -30 -116 4 -116', fill: 'none', stroke: '#fff3b8', 'stroke-width': 9, 'stroke-linecap': 'round', opacity: .75 }, g);
+    [[-54, -20, 5], [54, -60, 4], [20, 4, 4], [-30, -90, 3.5]].forEach(([x, y, r]) => el('circle', { cx: x, cy: y, r, fill: NOOD2, opacity: .55 }, g));
+    return { fy: -48, fs: .9, top: -150, tick: (t, p) => {
+      const f = p ? Math.max(p.tremble || 0, p.excl * .6 || 0) : 0, wob = 1 + f * 1.2, ph = -t * (3 + f * 7);
+      const d = wavy(0, 10, 180, 15 * wob, 1 / 22, ph); [bOut, bIn, bHi].forEach(e => e.setAttribute('d', d));
+      bHi.setAttribute('transform', 'translate(-10 0)');
+      arms.forEach(a => { const d2 = wavy(a.sg * 70, -8, 82, 12 * wob, 1 / 14, ph * 1.3 + a.sg); const dd = 'M' + (a.sg * 70) + ' -8 ' + d2.slice(1); [a.o, a.i].forEach(e => { e.setAttribute('d', dd); e.setAttribute('transform', `rotate(${a.sg * (-28 - f * 40)} ${a.sg * 66} -8)`); }); });
+      hairs.forEach(h => { const dd = wavy(h.sg * 18, -112, -150, 10, 1 / 9, ph * 2 + h.sg); [h.o, h.i].forEach(e => { e.setAttribute('d', dd); }); });
+    } };
+  };
+  BODIES.pot = function (g, c) {
+    const id = 'pt' + (++UID);
+    el('path', { d: 'M -150 -40 L -150 120 Q -150 160 -110 160 L 110 160 Q 150 160 150 120 L 150 -40 Z', fill: '#98a2b5', stroke: OLK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
+    el('path', { d: 'M -128 -20 L -128 120 Q -128 142 -108 142', fill: 'none', stroke: '#fff', 'stroke-width': 10, 'stroke-linecap': 'round', opacity: .35 }, g);
+    [-1, 1].forEach(sg => { el('rect', { x: sg > 0 ? 148 : -184, y: -20, width: 36, height: 24, rx: 10, fill: '#5a6275', stroke: OLK, 'stroke-width': 5 }, g); });
+    el('ellipse', { cy: -40, rx: 150, ry: 34, fill: '#7c869b', stroke: OLK, 'stroke-width': 6 }, g);
+    el('ellipse', { cy: -38, rx: 132, ry: 26, fill: '#4aa8e8' }, g);
+    const bubs = [0, 1, 2, 3, 4, 5].map(i => el('circle', { fill: '#cfeeff', stroke: '#fff', 'stroke-width': 2 }, g));
+    const steam = [0, 1, 2].map(i => el('path', { d: 'M 0 0 Q 18 -26 0 -52 Q -18 -78 0 -104', fill: 'none', stroke: '#fff', 'stroke-width': 12, 'stroke-linecap': 'round' }, g));
+    return { fy: 0, fs: 0, top: -190, noface: true, tick: t => {
+      bubs.forEach((b, i) => { const u = (t * .8 + i * .17) % 1; b.setAttribute('cx', (-100 + i * 40 + Math.sin(t * 3 + i) * 8).toFixed(1)); b.setAttribute('cy', (-38 - Math.sin(u * 3.14) * 10 - 10 * u).toFixed(1)); b.setAttribute('r', (3 + 8 * Math.sin(u * 3.14)).toFixed(1)); });
+      steam.forEach((s, i) => { const u = (t * .5 + i / 3) % 1; s.setAttribute('transform', `translate(${-70 + i * 70} ${-50 - u * 70})`); s.setAttribute('opacity', (.8 * Math.sin(u * 3.14)).toFixed(2)); });
+    } };
+  };
+  BODIES.bowl = function (g, c) {
+    el('path', { d: 'M -170 -10 L 170 -10 Q 160 150 60 178 L -60 178 Q -160 150 -170 -10 Z', fill: '#f4f4f8', stroke: OLK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
+    el('path', { d: 'M -156 40 Q 0 74 156 40 L 150 70 Q 0 108 -150 70 Z', fill: '#e8483f' }, g);
+    el('path', { d: 'M -60 178 L 60 178 L 70 200 L -70 200 Z', fill: '#c9ccd8', stroke: OLK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
+    el('path', { d: 'M -140 10 Q -130 110 -60 150', fill: 'none', stroke: '#fff', 'stroke-width': 9, 'stroke-linecap': 'round', opacity: .7 }, g);
+    el('ellipse', { cy: -10, rx: 170, ry: 36, fill: '#5a2a18', stroke: OLK, 'stroke-width': 6 }, g);
+    el('ellipse', { cy: -14, rx: 150, ry: 26, fill: '#c9501f' }, g);
+    [[-90, -14], [-30, -6], [40, -16], [100, -8]].forEach(([x, y], i) => { el('circle', { cx: x, cy: y, r: 6, fill: '#ffd9a0', opacity: .7 }, g); });
+    el('path', { d: 'M 60 -16 q 16 -22 34 -6 q -10 12 -34 6 Z', fill: '#4fae4f', stroke: OLK, 'stroke-width': 3 }, g);
+    const steam = [0, 1, 2].map(() => el('path', { d: 'M 0 0 Q 16 -22 0 -44 Q -16 -66 0 -88', fill: 'none', stroke: '#fff', 'stroke-width': 10, 'stroke-linecap': 'round' }, g));
+    return { fy: 0, fs: 0, top: -200, noface: true, tick: t => steam.forEach((s, i) => { const u = (t * .45 + i / 3) % 1; s.setAttribute('transform', `translate(${-80 + i * 80} ${-40 - u * 60})`); s.setAttribute('opacity', (.7 * Math.sin(u * 3.14)).toFixed(2)); }) };
+  };
+  BODIES.chopsticks = function (g, c) {
+    const sticks = [-1, 1].map(sg => { const o = el('g', {}, g);
+      el('path', { d: 'M -7 0 L 7 0 L 12 -420 L -12 -420 Z', fill: '#d8a05a', stroke: OLK, 'stroke-width': 4, 'stroke-linejoin': 'round' }, o);
+      el('path', { d: 'M -9 -330 L 9 -330 L 12 -420 L -12 -420 Z', fill: '#b02a2a' }, o);
+      el('path', { d: 'M -2 -20 L -4 -310', stroke: '#fff', 'stroke-width': 3, opacity: .5, 'stroke-linecap': 'round' }, o);
+      return { sg, o }; });
+    return { fy: 0, fs: 0, top: -450, noface: true, tick: (t, p) => { const open = 11 + 6 * Math.sin(t * 2.2); sticks.forEach(s => s.o.setAttribute('transform', `rotate(${s.sg * open})`)); } };
+  };
+  BODIES.cheese = function (g, c) {
+    el('path', { d: 'M -130 70 L 130 70 L 130 -10 Q 20 -110 -130 -40 Z', fill: '#ffcb2e', stroke: OLK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
+    el('path', { d: 'M -130 -40 Q 20 -110 130 -10 L 130 20 Q 20 -70 -130 4 Z', fill: '#ffe27a' }, g);
+    [[-86, 34, 14], [60, 40, 18], [90, 6, 10], [-20, 46, 9]].forEach(([x, y, r]) => el('ellipse', { cx: x, cy: y, rx: r, ry: r * .8, fill: '#e09f10', stroke: OLK, 'stroke-width': 3 }, g));
+    return { fy: 10, fs: .5, top: -110, tick() {} };
+  };
+  BODIES.chef = null; delete BODIES.chef;
+
   /* Human-shaped cartoon astronaut (reference style): thick outlines, glass helmet with a human face inside, white suit with orange
      stripes, grey gloves and boots, backpack. Arms and legs react to the mood (calm drift -> scared reaching and flailing). */
   BODIES.astronaut = function (g, c) {
@@ -565,7 +631,13 @@
     // twinkling background stars
     const ocean = d.bg === 'ocean' ? makeOcean(bg, d.depth !== undefined) : null;
     const D0 = Number(d.depth) || 0, D1 = d.depth2 !== undefined ? Number(d.depth2) || 0 : D0;
-    const stars = []; for (let i = 0; i < (ocean ? 0 : 26); i++) stars.push({ e: el('circle', { cx: 20 + rnd(i + 3) * 680, cy: 60 + rnd(i + 9) * 1000, r: .8 + rnd(i + 21) * 2.2, fill: '#fff' }, bg), k: i });
+    const stars = []; for (let i = 0; i < (ocean || d.bg === 'kitchen' ? 0 : 26); i++) stars.push({ e: el('circle', { cx: 20 + rnd(i + 3) * 680, cy: 60 + rnd(i + 9) * 1000, r: .8 + rnd(i + 21) * 2.2, fill: '#fff' }, bg), k: i });
+    if (d.bg === 'kitchen') {
+      el('rect', { x: 0, y: 0, width: 720, height: 1228, fill: '#ffe9c4' }, bg);
+      for (let r = 0; r < 14; r++) for (let c = 0; c < 8; c++) el('rect', { x: c * 100 - (r % 2 ? 50 : 0) + 4, y: r * 70 + 4, width: 92, height: 62, rx: 8, fill: (r + c) % 2 ? '#fff3dc' : '#ffe2b0' }, bg);
+      el('rect', { x: 0, y: 900, width: 720, height: 330, fill: '#b9794a' }, bg); el('rect', { x: 0, y: 890, width: 720, height: 26, fill: '#e2a870' }, bg);
+      for (let i = 0; i < 5; i++) el('path', { d: `M ${i * 160} 930 L ${i * 160} 1228`, stroke: '#a26636', 'stroke-width': 4, opacity: .6 }, bg);
+    }
     if (d.bg === 'day') { el('rect', { x: 0, y: 0, width: 720, height: 1228, fill: '#2d63b8', opacity: .55 }, bg); }
 
     const CX = 360, CY = 620;
@@ -649,6 +721,7 @@
             x = hx + Math.cos(a) * r; y = hy + Math.sin(a) * r * .55;
             const rx = hx - x, ry = hy - y; rot = Math.atan2(-rx, ry) * 57.3 * Math.min(1, k * 3);
             sy *= 1 + 2.4 * kk; sx *= 1 - .5 * kk; sc *= 1 - .9 * Math.pow(k, 1.4); if (k >= .985) vis = 0; break; }
+          case 'splat': { const k = prog(lt, (Number(o.c.start) || .5) * dur, (Number(o.c.start) || .5) * dur + .18); y += 95 * k; sy *= 1 - .65 * k; sx *= 1 + .55 * k; if (k >= 1) sx *= 1 + .04 * Math.sin((lt - (Number(o.c.start) || .5) * dur) * 14) * Math.exp(-(lt - (Number(o.c.start) || .5) * dur) * 3); break; }
           case 'shrink': sc *= 1 - .55 * prog(lt, 0, dur); break;
         }
         // idle life: bob + breathe + reaction squash when the mood changes
