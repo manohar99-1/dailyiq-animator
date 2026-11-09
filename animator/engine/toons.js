@@ -391,20 +391,16 @@
     const col = c || NOOD;
     const body = el('g', {}, g);
     const tube = (parent, w, stroke) => el('path', { fill: 'none', stroke, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, parent);
-    const bOut = tube(body, 56, OLK), bIn = tube(body, 44, col), bHi = tube(body, 8, '#fff3b8'); bHi.setAttribute('opacity', .7);
-    const arms = [-1, 1].map(sg => ({ sg, o: tube(body, 24, OLK), i: tube(body, 14, col) }));
     const hairs = [-1, 1].map(sg => ({ sg, o: tube(body, 20, OLK), i: tube(body, 11, col) }));
-    // head: the thick end of the noodle
-    el('ellipse', { cy: -50, rx: 84, ry: 76, fill: OLK }, g);
-    el('ellipse', { cy: -50, rx: 78, ry: 70, fill: col }, g);
-    el('path', { d: 'M -52 -92 Q -30 -116 4 -116', fill: 'none', stroke: '#fff3b8', 'stroke-width': 9, 'stroke-linecap': 'round', opacity: .75 }, g);
-    [[-54, -20, 5], [54, -60, 4], [20, 4, 4], [-30, -90, 3.5]].forEach(([x, y, r]) => el('circle', { cx: x, cy: y, r, fill: NOOD2, opacity: .55 }, g));
-    return { fy: -48, fs: .9, top: -150, tick: (t, p) => {
+    const arms = [-1, 1].map(sg => ({ sg, o: tube(body, 24, OLK), i: tube(body, 14, col) }));
+    const bOut = tube(body, 92, OLK), bIn = tube(body, 80, col), bHi = tube(body, 10, '#fff3b8'); bHi.setAttribute('opacity', .75);
+    [[-26, -50, 5], [30, -64, 4], [8, 40, 4], [-20, 100, 4], [26, 130, 3.5]].forEach(([x, y, r]) => el('circle', { cx: x, cy: y, r, fill: NOOD2, opacity: .5 }, g));
+    return { fy: -40, fs: .86, top: -150, tick: (t, p) => {
       const f = p ? Math.max(p.tremble || 0, p.excl * .6 || 0) : 0, wob = 1 + f * 1.2, ph = -t * (3 + f * 7);
-      const d = wavy(0, 10, 180, 15 * wob, 1 / 22, ph); [bOut, bIn, bHi].forEach(e => e.setAttribute('d', d));
-      bHi.setAttribute('transform', 'translate(-10 0)');
-      arms.forEach(a => { const d2 = wavy(a.sg * 70, -8, 82, 12 * wob, 1 / 14, ph * 1.3 + a.sg); const dd = 'M' + (a.sg * 70) + ' -8 ' + d2.slice(1); [a.o, a.i].forEach(e => { e.setAttribute('d', dd); e.setAttribute('transform', `rotate(${a.sg * (-28 - f * 40)} ${a.sg * 66} -8)`); }); });
-      hairs.forEach(h => { const dd = wavy(h.sg * 18, -112, -150, 10, 1 / 9, ph * 2 + h.sg); [h.o, h.i].forEach(e => { e.setAttribute('d', dd); }); });
+      const d = wavy(0, -40, 210, 30 * wob, 1 / 22, ph, 6).replace(/L([-\d.]+) ([-\d.]+)/g, (m, x, y) => 'L' + (x * Math.min(1, Math.max(0, (Number(y) + 40) / 120))).toFixed(1) + ' ' + y);
+      [bOut, bIn].forEach(e => e.setAttribute('d', d)); bHi.setAttribute('d', d); bHi.setAttribute('transform', 'translate(-22 0)'); bHi.setAttribute('stroke-dasharray', '0 120 90 400'); 
+      arms.forEach(a => { const d2 = wavy(a.sg * 40, 20, 110, 10 * wob, 1 / 14, ph * 1.3 + a.sg); const dd = 'M' + (a.sg * 40) + ' 20 ' + d2.slice(1); [a.o, a.i].forEach(e => { e.setAttribute('d', dd); e.setAttribute('transform', `rotate(${a.sg * (-30 - f * 40)} ${a.sg * 40} 20)`); }); });
+      hairs.forEach(h => { const dd = wavy(h.sg * 16, -84, -128, 10, 1 / 9, ph * 2 + h.sg); [h.o, h.i].forEach(e => e.setAttribute('d', dd)); });
     } };
   };
   BODIES.pot = function (g, c) {
