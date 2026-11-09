@@ -23,7 +23,7 @@ Scene types (each scene = one spoken sentence + one animated visual). "data" fie
 - collapse: {"items": ["phone","laptop","cab","shop","play"] (icon names, 3-5), "label": ["SINGLE POINT","OF FAILURE"]} -> everything stands on one pillar that breaks.
 - toon: {"cast": [{"who": "earth", "mood": "happy", "mood2": "shocked", "act": "float"}, ...] (1-3 characters), "layout": "auto|solo|duo|trio|orbit", "at": 0.5, "label": "NO MOON!"}
   -> cute cartoon characters with faces. Each character shows `mood`, then switches to `mood2` at fraction `at` of the scene, so the faces REACT to what the sentence says.
-  who: sun earth moon star cloud buddy phone bulb server coin (buddy = friendly round robot for anything else; phone/server/cloud/coin/bulb for tech topics).
+  who: sun earth moon star cloud buddy astronaut (human-shaped spacesuit figure) blackhole (a realistic black hole with glowing disk, no face; use act float and optional size) phone bulb server coin (buddy = friendly round robot for anything else; phone/server/cloud/coin/bulb for tech topics).
   SEA LIFE (for ocean/animal topics): fish whale dolphin shark jellyfish octopus turtle crab angler (anglerfish with glowing lure) sub (yellow submarine).
   MOTION acts for characters: swim (travels across the screen; optional "from"/"to" in left right top bottom high deep center, optional "dir":"left|right", optional "start"/"end" 0-1 = fraction of the scene when the move happens, so a chase is two swimmers with different start times and a flee is "from":"center","to":"right","start":0.5,"end":0.8), dive (sinks from high to deep), rise (goes up), circle (loops around the middle), wiggle (body sways), plus the acts below.
   OCEAN BACKGROUND: in "data" add "bg":"ocean" and "depth": metres at the start of the scene, "depth2": metres at the end (0 to 11000). The water darkens with depth, a depth gauge shows the number, bubbles and drifting particles show the descent. Use it for every scene of an ocean video, with depth rising from scene to scene.
@@ -51,9 +51,9 @@ def _short(s, words=5):
     return " ".join(w[:words]) or "Key idea"
 
 
-TOON_WHO = "sun earth moon star cloud buddy phone bulb server coin fish whale dolphin shark jellyfish octopus turtle crab angler sub".split()
+TOON_WHO = "sun earth moon star cloud buddy astronaut blackhole phone bulb server coin fish whale dolphin shark jellyfish octopus turtle crab angler sub".split()
 TOON_MOODS = "happy joy excited shocked scared worried sad cry angry sleepy love dizzy cool thinking".split()
-TOON_ACTS = "float hop shake spin vanish appear fall grow shrink swim dive rise circle wiggle".split()
+TOON_ACTS = "float hop shake spin vanish appear fall grow shrink stretch suck swim dive rise circle wiggle".split()
 ANCHORS = ("left", "right", "top", "bottom", "high", "deep", "center", "base")
 
 
@@ -70,6 +70,16 @@ def _clean_toon(d):
                      "mood2": mood2 if mood2 in TOON_MOODS else (mood if mood in TOON_MOODS else "happy"),
                      "act": act if act in TOON_ACTS else "float"})
         e = cast[-1]
+        for k in ("size",):
+            try:
+                e[k] = min(3.0, max(.2, float(c[k])))
+            except (KeyError, TypeError, ValueError):
+                pass
+        if isinstance(c.get("pos"), list) and len(c["pos"]) >= 2:
+            try:
+                e["pos"] = [float(v) for v in c["pos"][:3]]
+            except (TypeError, ValueError):
+                pass
         for k in ("from", "to"):
             if str(c.get(k, "")).lower() in ANCHORS:
                 e[k] = str(c[k]).lower()

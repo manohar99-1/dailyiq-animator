@@ -351,6 +351,77 @@
     [[-30, -50, -16], [0, -54, 0], [30, -50, 16]].forEach(([x, y, a]) => el('path', { d: 'M -7 0 Q 0 -44 7 0 Z', fill: '#6ccf4c', transform: `translate(${x} ${y}) rotate(${a})` }, g));
     return { fy: 8, fs: .95, top: -130, tick() {} };
   };
+
+  /* A realistic black hole: dark shadow, thin photon ring, lensed light arcs and a tilted glowing accretion disk (no face). */
+  BODIES.blackhole = function (g, c) {
+    const id = 'bh' + (++UID);
+    const defs = el('defs', {}, g);
+    const bl = (n, sd) => { const f = el('filter', { id: id + n, x: '-50%', y: '-50%', width: '200%', height: '200%' }, defs); el('feGaussianBlur', { stdDeviation: sd }, f); };
+    bl('a', 14); bl('b', 5); bl('c', 2);
+    const lg = el('linearGradient', { id: id + 'g', x1: 0, y1: 0, x2: 1, y2: 0 }, defs);   // doppler beaming: bright on the approaching (left) side
+    [[0, '#fff6dc'], [.28, '#ffc65a'], [.62, '#ff7a1a'], [1, '#8a2a08']].forEach(([o, col]) => el('stop', { offset: o, 'stop-color': col }, lg));
+    const rg = el('radialGradient', { id: id + 'r' }, defs);
+    [[0, 'rgba(255,170,70,.55)'], [.5, 'rgba(255,110,30,.22)'], [1, 'rgba(255,90,20,0)']].forEach(([o, col]) => el('stop', { offset: o, 'stop-color': col }, rg));
+    const R = 70, RX = 215, RY = 52;
+    el('circle', { r: 250, fill: `url(#${id}r)` }, g);
+    // back half of the disk (behind the shadow)
+    const back = el('g', {}, g);
+    el('path', { d: `M ${-RX} 0 A ${RX} ${RY} 0 0 1 ${RX} 0`, fill: 'none', stroke: `url(#${id}g)`, 'stroke-width': 34, filter: `url(#${id}a)`, opacity: .85 }, back);
+    el('path', { d: `M ${-RX * .86} 0 A ${RX * .86} ${RY * .86} 0 0 1 ${RX * .86} 0`, fill: 'none', stroke: `url(#${id}g)`, 'stroke-width': 12, filter: `url(#${id}b)` }, back);
+    // lensed light arcs that wrap over the top and under the bottom of the shadow
+    el('path', { d: `M ${-R * 1.55} 0 A ${R * 1.55} ${R * 1.5} 0 0 1 ${R * 1.55} 0`, fill: 'none', stroke: `url(#${id}g)`, 'stroke-width': 22, filter: `url(#${id}b)`, opacity: .95 }, g);
+    el('path', { d: `M ${-R * 1.3} 14 A ${R * 1.3} ${R * 1.28} 0 0 0 ${R * 1.3} 14`, fill: 'none', stroke: `url(#${id}g)`, 'stroke-width': 14, filter: `url(#${id}b)`, opacity: .8 }, g);
+    // shadow + photon ring
+    el('circle', { r: R + 3, fill: 'none', stroke: '#ffe2b0', 'stroke-width': 5, filter: `url(#${id}c)`, opacity: .95 }, g);
+    el('circle', { r: R, fill: '#000' }, g);
+    // front half of the disk, in front of the shadow
+    const front = el('g', {}, g);
+    el('path', { d: `M ${-RX} 0 A ${RX} ${RY} 0 0 0 ${RX} 0`, fill: 'none', stroke: `url(#${id}g)`, 'stroke-width': 30, filter: `url(#${id}a)`, opacity: .8 }, front);
+    el('path', { d: `M ${-RX * .9} 0 A ${RX * .9} ${RY * .9} 0 0 0 ${RX * .9} 0`, fill: 'none', stroke: `url(#${id}g)`, 'stroke-width': 13, filter: `url(#${id}c)` }, front);
+    // swirling hot streaks give the disk its spin
+    const streaks = [0, 1, 2].map(i => el('ellipse', { rx: RX * (.72 + i * .1), ry: RY * (.72 + i * .1), fill: 'none', stroke: '#fff3d6', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-dasharray': '40 170', opacity: .75 }, g));
+    return { fy: 0, fs: 0, top: -150, noface: true, tick: t => streaks.forEach((e, i) => e.setAttribute('stroke-dashoffset', (-t * (90 + i * 40)).toFixed(1))) };
+  };
+
+  /* Human-shaped astronaut in a white spacesuit: bubble helmet with a clear visor (the face shows through), backpack, arms, legs and boots. */
+  BODIES.astronaut = function (g, c) {
+    const id = 'as' + (++UID), suit = c || '#f3f6fc', shade = '#cfd8ea', dark = '#8a97b8';
+    const defs = el('defs', {}, g);
+    const vg = el('radialGradient', { id: id + 'v', cx: .4, cy: .3, r: .9 }, defs);
+    [[0, '#e9f8ff'], [.7, '#a9dcf5'], [1, '#6fb5e0']].forEach(([o, col]) => el('stop', { offset: o, 'stop-color': col }, vg));
+    // backpack (behind everything)
+    el('rect', { x: -78, y: -92, width: 156, height: 150, rx: 26, fill: '#aab5d0' }, g);
+    el('rect', { x: -66, y: -80, width: 132, height: 20, rx: 10, fill: '#8f9cc0' }, g);
+    // legs
+    const legL = el('g', { transform: 'translate(-26 36)' }, g), legR = el('g', { transform: 'translate(26 36)' }, g);
+    [legL, legR].forEach(lg => { const i = el('g', {}, lg);
+      el('rect', { x: -21, y: 0, width: 42, height: 98, rx: 20, fill: suit }, i);
+      el('rect', { x: -21, y: 60, width: 42, height: 12, fill: shade }, i);
+      el('path', { d: 'M -26 88 Q -26 126 -4 126 L 30 126 Q 34 100 22 88 Z', fill: '#5c6a90' }, i);
+      el('rect', { x: -26, y: 84, width: 52, height: 10, rx: 5, fill: '#ff8a1f' }, i); });
+    // torso
+    el('rect', { x: -56, y: -96, width: 112, height: 148, rx: 38, fill: suit }, g);
+    el('path', { d: 'M -56 14 H 56 V 30 Q 56 52 18 52 H -18 Q -56 52 -56 30 Z', fill: shade }, g);
+    el('rect', { x: -34, y: -56, width: 68, height: 46, rx: 12, fill: '#dfe6f4', stroke: dark, 'stroke-width': 3 }, g);
+    [[-18, '#ff5252'], [0, '#4ff0a8'], [18, '#4aa8ff']].forEach(([x, col]) => el('circle', { cx: x, cy: -32, r: 7, fill: col }, g));
+    el('rect', { x: -54, y: -30, width: 20, height: 12, rx: 3, fill: '#ff8a1f' }, g);     // shoulder patch
+    // arms (swing a little)
+    const mkArm = (sx) => { const a = el('g', { transform: `translate(${sx * 58} -66)` }, g), i = el('g', {}, a);
+      el('rect', { x: -17, y: -6, width: 34, height: 96, rx: 17, fill: suit, transform: `rotate(${sx * -4})` }, i);
+      el('rect', { x: -17, y: 50, width: 34, height: 10, fill: shade }, i);
+      el('circle', { cx: 0, cy: 98, r: 22, fill: '#ff8a1f' }, i); el('circle', { cx: 0, cy: 98, r: 14, fill: '#ffb054' }, i);
+      return i; };
+    const armL = mkArm(-1), armR = mkArm(1);
+    // neck ring + helmet
+    el('rect', { x: -52, y: -108, width: 104, height: 22, rx: 11, fill: '#aab5d0' }, g);
+    el('circle', { cy: -168, r: 78, fill: '#e4eaf6' }, g);
+    el('circle', { cy: -168, r: 70, fill: suit }, g);
+    el('ellipse', { cy: -166, rx: 56, ry: 50, fill: `url(#${id}v)`, stroke: dark, 'stroke-width': 5 }, g);
+    el('path', { d: 'M -42 -190 Q -30 -208 -8 -208', fill: 'none', stroke: '#fff', 'stroke-width': 9, 'stroke-linecap': 'round', opacity: .8 }, g);
+    return { fy: -164, fs: .5, top: -262, tick: t => {
+      armL.setAttribute('transform', `rotate(${Math.sin(t * 1.6) * 7 + 6} 0 0)`); armR.setAttribute('transform', `rotate(${-Math.sin(t * 1.6 + 1) * 7 - 6} 0 0)`);
+      legL.setAttribute('transform', `translate(-26 36) rotate(${Math.sin(t * 1.3) * 3})`); legR.setAttribute('transform', `translate(26 36) rotate(${-Math.sin(t * 1.3 + 1) * 3})`); } };
+  };
   window.TOON.draw = function (parent, w, mood, t, color) {
     w = who(w); const cg = el('g', {}, parent), body = el('g', {}, cg);
     const b = BODIES[w](body, color || null);
@@ -359,7 +430,7 @@
   };
 
   const WHO = Object.keys(BODIES);
-  const ALIAS = { robot: 'buddy', mascot: 'buddy', ai: 'buddy', sparkle: 'star', internet: 'cloud', wifi: 'cloud', google: 'buddy', rupee: 'coin', money: 'coin', mobile: 'phone', idea: 'bulb', light: 'bulb', computer: 'server', planet: 'earth', water: 'drop', raindrop: 'drop', sunflower: 'flower', plant: 'flower', seedling: 'sprout', ground: 'soil', earthworm: 'worm', orca: 'whale', squid: 'octopus', jelly: 'jellyfish', submarine: 'sub', goldfish: 'fish', lanternfish: 'angler', seaturtle: 'turtle' };
+  const ALIAS = { hole: 'blackhole', singularity: 'blackhole', robot: 'buddy', spaceman: 'astronaut', cosmonaut: 'astronaut', mascot: 'buddy', ai: 'buddy', sparkle: 'star', internet: 'cloud', wifi: 'cloud', google: 'buddy', rupee: 'coin', money: 'coin', mobile: 'phone', idea: 'bulb', light: 'bulb', computer: 'server', planet: 'earth', water: 'drop', raindrop: 'drop', sunflower: 'flower', plant: 'flower', seedling: 'sprout', ground: 'soil', earthworm: 'worm', orca: 'whale', squid: 'octopus', jelly: 'jellyfish', submarine: 'sub', goldfish: 'fish', lanternfish: 'angler', seaturtle: 'turtle' };
   const who = w => { w = String(w || 'buddy').toLowerCase().trim(); return BODIES[w] ? w : (ALIAS[w] || 'buddy'); };
   Object.assign(window.TOON, { WHO, MOOD_NAMES });
 
@@ -450,11 +521,11 @@
     const chars = cast.map((c, i) => {
       const w = who(c.who), cg = el('g', {}, g), body = el('g', {}, cg);
       const b = BODIES[w](body, typeof c.color === 'string' && /^#[0-9a-f]{3,8}$/i.test(c.color) ? c.color : null);
-      const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = makeFace(fg);
-      const ex = makeExtras(cg, b.top);
+      const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = b.noface ? (() => { }) : makeFace(fg);
+      const ex = b.noface ? null : makeExtras(cg, b.top);
       const m1 = MOODS[c.mood] ? c.mood : 'happy', m2 = MOODS[c.mood2] ? c.mood2 : m1;
       const act0 = String(c.act || 'float').toLowerCase(); const dir = String(c.dir || '').toLowerCase();
-      return { c, i, w, cg, body, b, face, ex, flip: dir === 'right' ? -1 : 1, dirr: dir, P1: moodP(m1), P2: moodP(m2), act: act0, base: pos[i] || pos[0], size: Number(c.size) > 0 ? Number(c.size) : 1 };
+      return { c, i, w, cg, body, b, face, ex, flip: dir === 'right' ? -1 : 1, dirr: dir, P1: moodP(m1), P2: moodP(m2), act: act0, base: (Array.isArray(c.pos) && c.pos.length >= 2 ? [Number(c.pos[0]) || CX, Number(c.pos[1]) || CY, Number(c.pos[2]) || 1.5] : (pos[i] || pos[0])), size: Number(c.size) > 0 ? Number(c.size) : 1 };
     });
     // poof (smoke) used by vanish / appear
     const poofs = chars.map(() => { const pg = el('g', {}, g); const ps = []; for (let k = 0; k < 9; k++) ps.push({ e: el('circle', { fill: k % 3 === 0 ? '#ffd34d' : '#ffffff' }, pg), a: k / 9 * 6.283 + rnd(k) * .6, s: 50 + rnd(k + 5) * 60 }); return { pg, ps }; });
@@ -512,6 +583,16 @@
           case 'appear': if (after < 0) { vis = 0; } else { sc *= eob(prog(after, 0, .5)); } break;
           case 'fall': if (after > 0) { y += 1100 * Math.pow(after / 1.3, 2); rot = after * 60; x += after * 30; } break;
           case 'grow': sc *= 1 + .6 * prog(lt, 0, dur); break;
+          case 'stretch': { const k = eio(prog(lt, (Number(o.c.start) || 0) * dur, (Number(o.c.end) > 0 ? Number(o.c.end) : 1) * dur)); sy *= 1 + 1.5 * k; sx *= 1 - .45 * k; y -= 60 * k; break; }
+          case 'suck': {      // spiral into the black hole, stretched like spaghetti, shrinking away
+            const hole = chars.find(q => q.w === 'blackhole'); const hx = hole ? hole.base[0] : CX, hy = hole ? hole.base[1] : CY;
+            const s0 = (Number(o.c.start) > 0 ? Number(o.c.start) : .25) * dur, e0 = (Number(o.c.end) > 0 ? Number(o.c.end) : 1) * dur;
+            const k = prog(T, s0, e0), kk = Math.pow(k, 2.1);
+            const a0 = Math.atan2(o.base[1] - hy, o.base[0] - hx), r0 = Math.hypot(o.base[0] - hx, o.base[1] - hy);
+            const a = a0 + kk * 5.2, r = r0 * (1 - kk);
+            x = hx + Math.cos(a) * r; y = hy + Math.sin(a) * r * .55;
+            const rx = hx - x, ry = hy - y; rot = Math.atan2(-rx, ry) * 57.3 * Math.min(1, k * 3);
+            sy *= 1 + 2.4 * kk; sx *= 1 - .5 * kk; sc *= 1 - .9 * Math.pow(k, 1.4); if (k >= .985) vis = 0; break; }
           case 'shrink': sc *= 1 - .55 * prog(lt, 0, dur); break;
         }
         // idle life: bob + breathe + reaction squash when the mood changes
@@ -533,7 +614,7 @@
         const dx = tx - x, dy = ty - y, L = Math.hypot(dx, dy) || 1, look = { x: (dx / L) * .8, y: (dy / L) * .8 };
         if (other < 0) { look.x = Math.sin(T * .9) * .5; look.y = .1; }
         o.face(p, T, look, blink);
-        tickExtras(o.ex, p, T, o.act === 'vanish' ? 1 : eob(prog(T, 0, .5)));
+        if (o.ex) tickExtras(o.ex, p, T, o.act === 'vanish' ? 1 : eob(prog(T, 0, .5)));
         o.b.tick(moving ? T * 1.7 : T);
       });
       // smoke puffs
@@ -580,7 +661,7 @@
   limbify('sprout', { ax: 78, ay: 8, len: 52, dy: 18, dy2: 12, col: '#6fd04a' });
   limbify('drop', { ax: 84, ay: 56, len: 50, dy: 18, dy2: 12, col: '#2aa8ee', legs: true, lx: 38, ly: 128, col2: '#1f86d0' });
 
-  const TNAME = { seed: 'Seedy', sprout: 'Sprouty', flower: 'Sunny Bloom', drop: 'Drippy', sun: 'Sunny Ray', cloud: 'Rainy Cloud', soil: 'Mr. Soil', worm: 'Wiggly', moon: 'Moony', earth: 'Earthy', buddy: 'Buddy', fish: 'Finn', whale: 'Willa', dolphin: 'Dolly', jellyfish: 'Jelly', octopus: 'Inky', turtle: 'Shelly', crab: 'Crabby', shark: 'Sharky', angler: 'Glow', sub: 'Subby', star: 'Twinkle', phone: 'Phoney', bulb: 'Bulby', server: 'Servo', coin: 'Coiny' };
+  const TNAME = { seed: 'Seedy', sprout: 'Sprouty', flower: 'Sunny Bloom', drop: 'Drippy', sun: 'Sunny Ray', cloud: 'Rainy Cloud', soil: 'Mr. Soil', worm: 'Wiggly', moon: 'Moony', earth: 'Earthy', buddy: 'Buddy', fish: 'Finn', whale: 'Willa', dolphin: 'Dolly', jellyfish: 'Jelly', octopus: 'Inky', turtle: 'Shelly', crab: 'Crabby', shark: 'Sharky', angler: 'Glow', sub: 'Subby', star: 'Twinkle', blackhole: 'Black hole', phone: 'Phoney', bulb: 'Bulby', server: 'Servo', coin: 'Coiny' };
   const TCOL = { seed: '#a8642f', sprout: '#3f9a2e', flower: '#d99100', drop: '#1f86d0', sun: '#e07a00', cloud: '#5b6fc9', soil: '#7a4a28', worm: '#d9506c', moon: '#8a7f5a', earth: '#1f7fbf', buddy: '#4a63e0' };
   const BOT = { seed: 146, sprout: 150, flower: 290, drop: 168, sun: 110, cloud: 78, soil: 100, worm: 98, moon: 100, earth: 100, buddy: 100, star: 120, phone: 120, bulb: 112, server: 112, coin: 104, fish: 82, whale: 102, dolphin: 86, shark: 82, jellyfish: 190, octopus: 200, turtle: 114, crab: 90, angler: 92, sub: 70 };
 
