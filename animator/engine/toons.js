@@ -583,7 +583,7 @@
           case 'appear': if (after < 0) { vis = 0; } else { sc *= eob(prog(after, 0, .5)); } break;
           case 'fall': if (after > 0) { y += 1100 * Math.pow(after / 1.3, 2); rot = after * 60; x += after * 30; } break;
           case 'grow': sc *= 1 + .6 * prog(lt, 0, dur); break;
-          case 'stretch': { const k = eio(prog(lt, (Number(o.c.start) || 0) * dur, (Number(o.c.end) > 0 ? Number(o.c.end) : 1) * dur)); sy *= 1 + 1.5 * k; sx *= 1 - .45 * k; y -= 60 * k; break; }
+          case 'stretch': { const k = eio(prog(lt, (Number(o.c.start) || 0) * dur, (Number(o.c.end) > 0 ? Number(o.c.end) : 1) * dur)); sy *= 1 + 1.0 * k; sx *= 1 - .4 * k; y -= 40 * k; break; }
           case 'suck': {      // spiral into the black hole, stretched like spaghetti, shrinking away
             const hole = chars.find(q => q.w === 'blackhole'); const hx = hole ? hole.base[0] : CX, hy = hole ? hole.base[1] : CY;
             const s0 = (Number(o.c.start) > 0 ? Number(o.c.start) : .25) * dur, e0 = (Number(o.c.end) > 0 ? Number(o.c.end) : 1) * dur;
