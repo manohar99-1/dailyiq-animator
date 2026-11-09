@@ -9,7 +9,38 @@
  ],
  "scenes": [
   {
-   "say": "What if you fell into a black hole?",
+   "say": "Imagine floating in space when suddenly, you notice something terrifying.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "blackhole",
+      "mood": "happy",
+      "act": "float",
+      "pos": [
+       540,
+       330,
+       0.8
+      ]
+     },
+     {
+      "who": "astronaut",
+      "mood": "happy",
+      "mood2": "shocked",
+      "pos": [
+       230,
+       840,
+       0.95
+      ]
+     }
+    ],
+    "at": 0.55,
+    "layout": "auto",
+    "label": "DANGER AHEAD"
+   }
+  },
+  {
+   "say": "A black hole. A place where gravity is so strong that even light cannot escape once it gets too close.",
    "type": "toon",
    "data": {
     "cast": [
@@ -20,37 +51,6 @@
       "pos": [
        360,
        560,
-       1.25
-      ]
-     },
-     {
-      "who": "astronaut",
-      "mood": "happy",
-      "mood2": "worried",
-      "pos": [
-       160,
-       1070,
-       0.496
-      ]
-     }
-    ],
-    "at": 0.55,
-    "layout": "auto",
-    "label": "BLACK HOLE?"
-   }
-  },
-  {
-   "say": "A black hole is a place where gravity is so strong that not even light can escape.",
-   "type": "toon",
-   "data": {
-    "cast": [
-     {
-      "who": "blackhole",
-      "mood": "happy",
-      "act": "float",
-      "pos": [
-       360,
-       600,
        1.5
       ]
      }
@@ -61,7 +61,7 @@
    }
   },
   {
-   "say": "As you fall in, gravity pulls harder on your feet than on your head.",
+   "say": "You are being pulled in, and there is nothing you can do.",
    "type": "toon",
    "data": {
     "cast": [
@@ -77,21 +77,52 @@
      },
      {
       "who": "astronaut",
-      "mood": "happy",
+      "mood": "worried",
       "mood2": "scared",
-      "act": "suck",
-      "start": 0.15,
-      "end": 1.0,
       "pos": [
        170,
        1060,
-       0.682
-      ]
+       0.68
+      ],
+      "act": "suck",
+      "start": 0.15,
+      "end": 1.0
      }
     ],
     "at": 0.45,
     "layout": "auto",
     "label": "FALLING IN"
+   }
+  },
+  {
+   "say": "As you fall, gravity pulls harder on your feet than on your head.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "blackhole",
+      "mood": "happy",
+      "act": "float",
+      "pos": [
+       560,
+       300,
+       0.75
+      ]
+     },
+     {
+      "who": "astronaut",
+      "mood": "scared",
+      "mood2": "scared",
+      "pos": [
+       300,
+       880,
+       0.95
+      ]
+     }
+    ],
+    "at": 0.5,
+    "layout": "auto",
+    "label": "UNEVEN PULL"
    }
   },
   {
@@ -113,15 +144,16 @@
       "who": "astronaut",
       "mood": "scared",
       "mood2": "dizzy",
-      "act": "stretch",
       "pos": [
        300,
        780,
        0.8
-      ]
+      ],
+      "act": "stretch"
      }
     ],
     "at": 0.5,
+    "layout": "auto",
     "label": "SPAGHETTI!"
    }
   },
@@ -164,12 +196,12 @@
       "who": "astronaut",
       "mood": "worried",
       "mood2": "scared",
-      "act": "shake",
       "pos": [
        250,
        1010,
        0.62
-      ]
+      ],
+      "act": "shake"
      }
     ],
     "at": 0.5,
@@ -199,7 +231,7 @@
       "pos": [
        300,
        880,
-       1.054
+       1.05
       ]
      }
     ],
@@ -221,7 +253,7 @@
    }
   },
   {
-   "say": "So Earth is safe. And black holes are not cosmic vacuum cleaners. From far away, they pull just like any other object of the same mass.",
+   "say": "So Earth is safe. Black holes are not cosmic vacuum cleaners. From far away, they pull just like any other object of the same mass.",
    "type": "toon",
    "data": {
     "cast": [
@@ -250,6 +282,37 @@
     "at": 0.3,
     "layout": "auto",
     "label": "EARTH IS SAFE"
+   }
+  },
+  {
+   "say": "The universe just got a lot stranger, didn't it? Follow for more.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "astronaut",
+      "mood": "happy",
+      "mood2": "love",
+      "pos": [
+       360,
+       860,
+       1.2
+      ]
+     },
+     {
+      "who": "blackhole",
+      "mood": "happy",
+      "act": "float",
+      "pos": [
+       540,
+       300,
+       0.6
+      ]
+     }
+    ],
+    "at": 0.4,
+    "layout": "auto",
+    "label": "STRANGE, RIGHT?"
    }
   }
  ]

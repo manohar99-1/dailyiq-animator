@@ -356,7 +356,7 @@
   BODIES.blackhole = function (g, c) {
     const id = 'bh' + (++UID);
     const defs = el('defs', {}, g);
-    const bl = (n, sd) => { const f = el('filter', { id: id + n, x: '-50%', y: '-50%', width: '200%', height: '200%' }, defs); el('feGaussianBlur', { stdDeviation: sd }, f); };
+    const bl = (n, sd) => { const f = el('filter', { id: id + n, filterUnits: 'userSpaceOnUse', x: -400, y: -300, width: 800, height: 600 }, defs); el('feGaussianBlur', { stdDeviation: sd }, f); };
     bl('a', 14); bl('b', 5); bl('c', 2);
     const lg = el('linearGradient', { id: id + 'g', x1: 0, y1: 0, x2: 1, y2: 0 }, defs);   // doppler beaming: bright on the approaching (left) side
     [[0, '#fff6dc'], [.28, '#ffc65a'], [.62, '#ff7a1a'], [1, '#8a2a08']].forEach(([o, col]) => el('stop', { offset: o, 'stop-color': col }, lg));
@@ -380,53 +380,63 @@
     el('path', { d: `M ${-RX * .9} 0 A ${RX * .9} ${RY * .9} 0 0 0 ${RX * .9} 0`, fill: 'none', stroke: `url(#${id}g)`, 'stroke-width': 13, filter: `url(#${id}c)` }, front);
     // swirling hot streaks give the disk its spin
     const streaks = [0, 1, 2].map(i => el('ellipse', { rx: RX * (.72 + i * .1), ry: RY * (.72 + i * .1), fill: 'none', stroke: '#fff3d6', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-dasharray': '40 170', opacity: .75 }, g));
-    return { fy: 0, fs: 0, top: -150, noface: true, tick: t => streaks.forEach((e, i) => e.setAttribute('stroke-dashoffset', (-t * (90 + i * 40)).toFixed(1))) };
+    return { fy: 0, fs: 0, top: -150, noface: true, tick: t => { g.setAttribute('transform', 'rotate(-16)'); streaks.forEach((e, i) => e.setAttribute('stroke-dashoffset', (-t * (90 + i * 40)).toFixed(1))); } };
   };
 
-  /* Human-shaped astronaut in a white spacesuit: bubble helmet with a clear visor (the face shows through), backpack, arms, legs and boots. */
+  /* Human-shaped cartoon astronaut (reference style): thick outlines, glass helmet with a human face inside, white suit with orange
+     stripes, grey gloves and boots, backpack. Arms and legs react to the mood (calm drift -> scared reaching and flailing). */
   BODIES.astronaut = function (g, c) {
-    const id = 'as' + (++UID), suit = c || '#f3f6fc', shade = '#cfd8ea', dark = '#8a97b8';
+    const id = 'as' + (++UID), OL = '#14122b', W = 4.5, suit = c || '#fbfbfe', shade = '#dde2ee', or = '#ff8f1f', gr = '#a7adbd', dg = '#737a8c';
     const defs = el('defs', {}, g);
-    const vg = el('radialGradient', { id: id + 'v', cx: .4, cy: .3, r: .9 }, defs);
-    [[0, '#e9f8ff'], [.7, '#a9dcf5'], [1, '#6fb5e0']].forEach(([o, col]) => el('stop', { offset: o, 'stop-color': col }, vg));
-    // backpack (behind everything)
-    el('rect', { x: -78, y: -92, width: 156, height: 150, rx: 26, fill: '#aab5d0' }, g);
-    el('rect', { x: -66, y: -80, width: 132, height: 20, rx: 10, fill: '#8f9cc0' }, g);
+    const vg = el('radialGradient', { id: id + 'v', cx: .35, cy: .25, r: 1 }, defs);
+    [[0, '#4a68c8'], [.6, '#26408f'], [1, '#14245c']].forEach(([o, col]) => el('stop', { offset: o, 'stop-color': col }, vg));
+    const rect = (p, x, y, w, h, rx, fill, sw) => el('rect', { x, y, width: w, height: h, rx, fill, stroke: OL, 'stroke-width': sw == null ? W : sw }, p);
+    // backpack
+    rect(g, -72, -46, 78, 108, 24, gr); rect(g, -64, -34, 56, 18, 8, dg, 3);
     // legs
-    const legL = el('g', { transform: 'translate(-26 36)' }, g), legR = el('g', { transform: 'translate(26 36)' }, g);
-    [legL, legR].forEach(lg => { const i = el('g', {}, lg);
-      el('rect', { x: -21, y: 0, width: 42, height: 98, rx: 20, fill: suit }, i);
-      el('rect', { x: -21, y: 60, width: 42, height: 12, fill: shade }, i);
-      el('path', { d: 'M -26 88 Q -26 126 -4 126 L 30 126 Q 34 100 22 88 Z', fill: '#5c6a90' }, i);
-      el('rect', { x: -26, y: 84, width: 52, height: 10, rx: 5, fill: '#ff8a1f' }, i); });
-    // torso
-    el('rect', { x: -56, y: -96, width: 112, height: 148, rx: 38, fill: suit }, g);
-    el('path', { d: 'M -56 14 H 56 V 30 Q 56 52 18 52 H -18 Q -56 52 -56 30 Z', fill: shade }, g);
-    el('rect', { x: -34, y: -56, width: 68, height: 46, rx: 12, fill: '#dfe6f4', stroke: dark, 'stroke-width': 3 }, g);
-    [[-18, '#ff5252'], [0, '#4ff0a8'], [18, '#4aa8ff']].forEach(([x, col]) => el('circle', { cx: x, cy: -32, r: 7, fill: col }, g));
-    el('rect', { x: -54, y: -30, width: 20, height: 12, rx: 3, fill: '#ff8a1f' }, g);     // shoulder patch
-    // arms (swing a little)
-    const mkArm = (sx) => { const a = el('g', { transform: `translate(${sx * 58} -66)` }, g), i = el('g', {}, a);
-      el('rect', { x: -17, y: -6, width: 34, height: 96, rx: 17, fill: suit, transform: `rotate(${sx * -4})` }, i);
-      el('rect', { x: -17, y: 50, width: 34, height: 10, fill: shade }, i);
-      el('circle', { cx: 0, cy: 98, r: 22, fill: '#ff8a1f' }, i); el('circle', { cx: 0, cy: 98, r: 14, fill: '#ffb054' }, i);
-      return i; };
+    const mkLeg = sg => { const o = el('g', { transform: `translate(${sg * 24} 54)` }, g), i = el('g', {}, o);
+      rect(i, -19, 0, 38, 98, 19, suit); el('rect', { x: -18.5, y: 40, width: 37, height: 14, fill: or }, i); rect(i, -19, 0, 38, 98, 19, 'none');
+      el('path', { d: 'M -22 86 L 22 86 L 27 116 Q 27 130 10 130 L -26 130 Q -32 112 -22 86 Z', fill: gr, stroke: OL, 'stroke-width': W, 'stroke-linejoin': 'round' }, i);
+      el('rect', { x: -22, y: 82, width: 44, height: 12, rx: 5, fill: dg, stroke: OL, 'stroke-width': 3.5 }, i);
+      return o; };
+    const legL = mkLeg(-1), legR = mkLeg(1);
+    // torso, belt, chest panel
+    rect(g, -50, -58, 100, 122, 36, suit);
+    el('path', { d: 'M -50 36 H 50 V 44 Q 50 64 18 64 H -18 Q -50 64 -50 44 Z', fill: shade, stroke: OL, 'stroke-width': W, 'stroke-linejoin': 'round' }, g);
+    rect(g, -28, -34, 56, 38, 8, gr, 3.5);
+    [[-14, '#e84a4a'], [2, '#4a7be8'], [16, '#e84a4a']].forEach(([x, col], i) => { rect(g, x - 7, i === 1 ? -22 : -26, 14, 10, 3, col, 2.5); });
+    rect(g, -22, -4, 44, 6, 3, dg, 2.5);
+    // arms (rotate around the shoulder)
+    const mkArm = sg => { const o = el('g', { transform: `translate(${sg * 52} -34)` }, g), i = el('g', {}, o);
+      rect(i, -16, -2, 32, 88, 16, suit); el('rect', { x: -15.5, y: 30, width: 31, height: 14, fill: or }, i); rect(i, -16, -2, 32, 88, 16, 'none');
+      rect(i, -17, 66, 34, 12, 5, shade, 3.5);
+      el('circle', { cx: 0, cy: 98, r: 20, fill: gr, stroke: OL, 'stroke-width': W }, i); el('ellipse', { cx: -sg * 14, cy: 92, rx: 8, ry: 12, fill: gr, stroke: OL, 'stroke-width': 3.5 }, i);
+      return o; };
     const armL = mkArm(-1), armR = mkArm(1);
     // neck ring + helmet
-    el('rect', { x: -52, y: -108, width: 104, height: 22, rx: 11, fill: '#aab5d0' }, g);
-    el('circle', { cy: -168, r: 78, fill: '#e4eaf6' }, g);
-    el('circle', { cy: -168, r: 70, fill: suit }, g);
-    el('ellipse', { cy: -166, rx: 56, ry: 50, fill: `url(#${id}v)`, stroke: dark, 'stroke-width': 5 }, g);
-    el('path', { d: 'M -42 -190 Q -30 -208 -8 -208', fill: 'none', stroke: '#fff', 'stroke-width': 9, 'stroke-linecap': 'round', opacity: .8 }, g);
-    return { fy: -164, fs: .5, top: -262, tick: t => {
-      armL.setAttribute('transform', `rotate(${Math.sin(t * 1.6) * 7 + 6} 0 0)`); armR.setAttribute('transform', `rotate(${-Math.sin(t * 1.6 + 1) * 7 - 6} 0 0)`);
-      legL.setAttribute('transform', `translate(-26 36) rotate(${Math.sin(t * 1.3) * 3})`); legR.setAttribute('transform', `translate(26 36) rotate(${-Math.sin(t * 1.3 + 1) * 3})`); } };
+    rect(g, -44, -76, 88, 26, 13, shade);
+    el('circle', { cy: -142, r: 90, fill: suit, stroke: OL, 'stroke-width': 5.5 }, g);
+    el('ellipse', { cy: -140, rx: 72, ry: 68, fill: `url(#${id}v)`, stroke: OL, 'stroke-width': 4.5 }, g);
+    const faceHolder = el('g', {}, g);                                    // the human face is drawn here (see makeFace override below)
+    return { fy: -140, fs: .9, exx: 0, exy: -140, top: -118, faceParent: faceHolder, makeFace: makeHumanFace,
+      afterFace: g => { el('ellipse', { cy: -140, rx: 72, ry: 68, fill: '#8fb4ff', opacity: .14 }, g);                       // glass tint over the face
+        el('path', { d: 'M -52 -176 Q -40 -202 -10 -206', fill: 'none', stroke: '#fff', 'stroke-width': 9, 'stroke-linecap': 'round', opacity: .85 }, g);
+        el('path', { d: 'M 46 -108 Q 58 -122 60 -138', fill: 'none', stroke: '#fff', 'stroke-width': 5, 'stroke-linecap': 'round', opacity: .5 }, g);
+        el('circle', { cx: -62, cy: -160, r: 4, fill: '#fff', opacity: .8 }, g); },
+      tick: (t, p) => {
+        const f = clamp(Math.max(p ? p.tremble : 0, p ? p.excl * .7 : 0, p && p.sweat > .5 ? .5 : 0), 0, 1), fl = Math.sin(t * 9) * 9 * f;
+        armL.setAttribute('transform', `translate(-52 -34) rotate(${lerp(14 + Math.sin(t * 1.6) * 6, 55, f) + fl})`);
+        armR.setAttribute('transform', `translate(52 -34) rotate(${-lerp(14 - Math.sin(t * 1.6 + 1) * 6, 150, f) - fl * .6})`);
+        legL.setAttribute('transform', `translate(-24 54) rotate(${lerp(6 + Math.sin(t * 1.3) * 3, 20, f) + fl * .8})`);
+        legR.setAttribute('transform', `translate(24 54) rotate(${-lerp(6 - Math.sin(t * 1.3 + 1) * 3, 28, f) - fl * .8})`); } };
   };
   window.TOON.draw = function (parent, w, mood, t, color) {
     w = who(w); const cg = el('g', {}, parent), body = el('g', {}, cg);
     const b = BODIES[w](body, color || null);
-    const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = makeFace(fg), ex = makeExtras(cg, b.top), p = moodP(mood);
-    face(p, t, { x: .2, y: .1 }, 1); tickExtras(ex, p, t, 1); b.tick(t); return cg;
+    const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = b.noface ? (() => { }) : (b.makeFace ? b.makeFace(fg) : makeFace(fg));
+    if (b.afterFace) b.afterFace(cg);
+    const ex = b.noface ? null : makeExtras(b.exy ? el('g', { transform: `translate(${b.exx || 0} ${b.exy})` }, cg) : cg, b.top), p = moodP(mood);
+    face(p, t, { x: .2, y: .1 }, 1); if (ex) tickExtras(ex, p, t, 1); b.tick(t, p); return cg;
   };
 
   const WHO = Object.keys(BODIES);
@@ -435,6 +445,51 @@
   Object.assign(window.TOON, { WHO, MOOD_NAMES });
 
   /* ----------------------------------------------------------- extras above the head */
+
+  /* A human cartoon face (skin, brown hair, expressive eyes and brows) for characters seen through a helmet. Same mood parameters as makeFace. */
+  function makeHumanFace(parent) {
+    const OL = '#14122b', SK = '#f7c79d', HR = '#7a4725', f = el('g', {}, parent);
+    el('ellipse', { cx: 0, cy: -10, rx: 70, ry: 72, fill: HR, stroke: OL, 'stroke-width': 4.5 }, f);
+    [-1, 1].forEach(sg => el('ellipse', { cx: sg * 62, cy: 10, rx: 11, ry: 15, fill: SK, stroke: OL, 'stroke-width': 4 }, f));
+    el('path', { d: 'M -59 -12 C -59 -52 -32 -62 0 -62 C 32 -62 59 -52 59 -12 C 61 36 34 64 0 64 C -34 64 -61 36 -59 -12 Z', fill: SK, stroke: OL, 'stroke-width': 4.5 }, f);
+    const cheeks = [-1, 1].map(sg => el('ellipse', { cx: sg * 40, cy: 26, rx: 13, ry: 8, fill: '#ff8a80' }, f));
+    el('path', { d: 'M -3 12 Q 3 22 10 15', fill: 'none', stroke: '#c9885a', 'stroke-width': 3.5, 'stroke-linecap': 'round' }, f);
+    const eyes = [-1, 1].map(sg => {
+      const g = el('g', {}, f);
+      const white = el('ellipse', { rx: 15, ry: 18, fill: '#fff', stroke: OL, 'stroke-width': 3.5 }, g);
+      const pup = el('circle', { r: 9, fill: '#2b1a12' }, g);
+      const hi = el('circle', { r: 3.2, fill: '#fff' }, g);
+      const arc = el('path', { d: 'M -15 5 Q 0 -16 15 5', fill: 'none', stroke: OL, 'stroke-width': 5, 'stroke-linecap': 'round' }, g);
+      return { s: sg, g, white, pup, hi, arc };
+    });
+    const brows = [-1, 1].map(sg => ({ s: sg, e: el('line', { x1: -14, y1: 0, x2: 14, y2: 0, stroke: '#4a2a14', 'stroke-width': 7, 'stroke-linecap': 'round' }, f) }));
+    const mouth = el('path', { fill: '#6b1f2a', stroke: OL, 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, f);
+    const tongue = el('ellipse', { rx: 8, ry: 5, fill: '#ff7a8a' }, f);
+    // fringe + tufts (on top of the forehead)
+    el('path', { d: 'M -62 -14 C -66 -64 -22 -84 8 -74 C 40 -82 70 -56 62 -14 C 54 -40 38 -48 20 -50 C 8 -34 -20 -48 -36 -40 C -50 -34 -58 -28 -62 -14 Z', fill: HR, stroke: OL, 'stroke-width': 4.5, 'stroke-linejoin': 'round' }, f);
+    el('path', { d: 'M -8 -74 C -2 -92 18 -92 22 -78 C 12 -80 6 -76 -8 -74 Z', fill: HR, stroke: OL, 'stroke-width': 4, 'stroke-linejoin': 'round' }, f);
+    el('path', { d: 'M -40 -62 Q -22 -74 -4 -70', fill: 'none', stroke: '#a8683a', 'stroke-width': 5, 'stroke-linecap': 'round', opacity: .8 }, f);
+    return function (p, t, look, blink) {
+      cheeks.forEach(c => c.setAttribute('opacity', (p.blush * .55).toFixed(3)));
+      const oy = p.open * blink;
+      eyes.forEach(e => {
+        const lx = (look.x + (p.dizzy ? Math.cos(t * 9 + e.s) * .9 : 0)) * 5, ly = (look.y - p.lookUp * .9 + (p.dizzy ? Math.sin(t * 9 + e.s) * .9 : 0)) * 5;
+        e.g.setAttribute('transform', `translate(${e.s * 26} -4) scale(${p.eye} ${(p.eye * Math.max(.06, oy)).toFixed(3)})`);
+        const ar = e.s === 1 ? Math.max(p.arc, p.wink) : p.arc;
+        e.white.setAttribute('opacity', (1 - ar).toFixed(3));
+        e.pup.setAttribute('r', Math.min(11, 17 * p.pup).toFixed(2)); e.pup.setAttribute('cx', lx.toFixed(2)); e.pup.setAttribute('cy', ly.toFixed(2)); e.pup.setAttribute('opacity', (1 - ar).toFixed(3));
+        e.hi.setAttribute('cx', (lx - 3.5).toFixed(2)); e.hi.setAttribute('cy', (ly - 4.5).toFixed(2)); e.hi.setAttribute('opacity', (1 - ar).toFixed(3));
+        e.arc.setAttribute('opacity', ar.toFixed(3));
+      });
+      brows.forEach(b => b.e.setAttribute('transform', `translate(${b.s * 26} ${-34 + p.browY}) rotate(${b.s * p.brow})`));
+      const tk = p.talk, syl = tk * (.25 + .75 * Math.abs(Math.sin(t * 10.3)) * (.6 + .4 * Math.abs(Math.sin(t * 3.1))));
+      const w = p.mw * .8 * (1 + tk * .08), my = 38, c = lerp(p.curve, Math.max(.3, p.curve), tk), o = p.mo * (1 - tk * .5) + syl * 1.1;
+      const top = my + 18 * c, bot = my + 18 * c + o * 36;
+      mouth.setAttribute('d', `M ${-w} ${my} Q 0 ${top} ${w} ${my} Q 0 ${bot} ${-w} ${my} Z`);
+      mouth.setAttribute('fill', o > .08 ? '#6b1f2a' : 'none');
+      tongue.setAttribute('cx', 0); tongue.setAttribute('cy', (my + 9 * c + o * 28).toFixed(1)); tongue.setAttribute('rx', (w * .4).toFixed(1)); tongue.setAttribute('ry', (Math.min(1, o * 1.4) * 6).toFixed(1)); tongue.setAttribute('opacity', o > .3 ? 1 : 0);
+    };
+  }
   function makeExtras(parent, top) {
     const ex = {};
     ex.sweat = el('path', { d: 'M 0 -14 Q 10 2 0 10 Q -10 2 0 -14 Z', fill: '#8fdcff' }, parent);
@@ -521,8 +576,9 @@
     const chars = cast.map((c, i) => {
       const w = who(c.who), cg = el('g', {}, g), body = el('g', {}, cg);
       const b = BODIES[w](body, typeof c.color === 'string' && /^#[0-9a-f]{3,8}$/i.test(c.color) ? c.color : null);
-      const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = b.noface ? (() => { }) : makeFace(fg);
-      const ex = b.noface ? null : makeExtras(cg, b.top);
+      const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = b.noface ? (() => { }) : (b.makeFace ? b.makeFace(fg) : makeFace(fg));
+      if (b.afterFace) b.afterFace(cg);
+      const ex = b.noface ? null : makeExtras(b.exy ? el('g', { transform: `translate(${b.exx || 0} ${b.exy})` }, cg) : cg, b.top);
       const m1 = MOODS[c.mood] ? c.mood : 'happy', m2 = MOODS[c.mood2] ? c.mood2 : m1;
       const act0 = String(c.act || 'float').toLowerCase(); const dir = String(c.dir || '').toLowerCase();
       return { c, i, w, cg, body, b, face, ex, flip: dir === 'right' ? -1 : 1, dirr: dir, P1: moodP(m1), P2: moodP(m2), act: act0, base: (Array.isArray(c.pos) && c.pos.length >= 2 ? [Number(c.pos[0]) || CX, Number(c.pos[1]) || CY, Number(c.pos[2]) || 1.5] : (pos[i] || pos[0])), size: Number(c.size) > 0 ? Number(c.size) : 1 };
@@ -615,7 +671,7 @@
         if (other < 0) { look.x = Math.sin(T * .9) * .5; look.y = .1; }
         o.face(p, T, look, blink);
         if (o.ex) tickExtras(o.ex, p, T, o.act === 'vanish' ? 1 : eob(prog(T, 0, .5)));
-        o.b.tick(moving ? T * 1.7 : T);
+        o.b.tick(moving ? T * 1.7 : T, p);
       });
       // smoke puffs
       chars.forEach((o, i) => {
