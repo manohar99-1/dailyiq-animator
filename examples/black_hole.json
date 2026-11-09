@@ -283,37 +283,6 @@
     "layout": "auto",
     "label": "EARTH IS SAFE"
    }
-  },
-  {
-   "say": "The universe just got a lot stranger, didn't it? Follow for more.",
-   "type": "toon",
-   "data": {
-    "cast": [
-     {
-      "who": "astronaut",
-      "mood": "happy",
-      "mood2": "love",
-      "pos": [
-       360,
-       860,
-       1.2
-      ]
-     },
-     {
-      "who": "blackhole",
-      "mood": "happy",
-      "act": "float",
-      "pos": [
-       540,
-       300,
-       0.6
-      ]
-     }
-    ],
-    "at": 0.4,
-    "layout": "auto",
-    "label": "STRANGE, RIGHT?"
-   }
   }
  ]
 }
