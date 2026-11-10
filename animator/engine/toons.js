@@ -41,7 +41,7 @@
   const moodP = m => Object.assign({}, P0, MOODS[m] || {});
 
   /* ------------------------------------------------------------------- face */
-  function makeFace(parent) {
+  function makeFace(parent, noblush) {
     const f = el('g', {}, parent);
     const cheeks = [-1, 1].map(s => el('ellipse', { cx: s * 55, cy: 16, rx: 15, ry: 9, fill: '#ff6f8c' }, f));
     const eyes = [-1, 1].map(s => {
@@ -63,7 +63,7 @@
     el('rect', { x: 18, y: -24, width: 16, height: 5, rx: 2, fill: '#fff', opacity: .35 }, shades);
 
     return function (p, t, look, blink) {
-      cheeks.forEach(c => c.setAttribute('opacity', (p.blush * .6).toFixed(3)));
+      cheeks.forEach(c => c.setAttribute('opacity', noblush ? 0 : (p.blush * .6).toFixed(3)));
       const oy = p.open * blink;
       eyes.forEach(e => {
         const lx = (look.x + (p.dizzy ? Math.cos(t * 9 + e.s) * .9 : 0)) * 6, ly = (look.y - p.lookUp * .9 + (p.dizzy ? Math.sin(t * 9 + e.s) * .9 : 0)) * 6;
@@ -392,21 +392,19 @@
     const body = el('g', {}, g);
     const tube = (parent, w, stroke) => el('path', { fill: 'none', stroke, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, parent);
     const arms = [-1, 1].map(sg => ({ sg, o: tube(body, 24, OLK), i: tube(body, 14, col) }));
-    const bOut = tube(body, 70, OLK), bIn = tube(body, 58, col), bSh = tube(body, 14, '#eab23f'), bHi = tube(body, 8, '#fffbe6');
-    bSh.setAttribute('opacity', .75); bHi.setAttribute('opacity', .9);
-    [[-14, 40], [10, 110]].forEach(([x, y]) => el('circle', { cx: x, cy: y, r: 3, fill: '#eab23f', opacity: .7 }, body));
-    return { fy: -62, fs: .62, top: -150, tick: (t, p) => {
-      const f = p ? Math.max(p.tremble || 0, p.excl * .6 || 0) : 0, ph = -t * (2.2 + f * 8), amp = 52 * (1 + f * .4);
-      let d = '', dh = '', ds = ''; const Y0 = -100, Y1 = 200;
-      for (let i = 0; i <= 64; i++) { const u = i / 64, y = Y0 + (Y1 - Y0) * u, ramp = Math.min(1, Math.max(0, (u - .16) / .3)), x = amp * ramp * Math.sin(u * 8.2 + ph);
-        d += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1) + ' '; dh += (i ? 'L' : 'M') + (x - 15).toFixed(1) + ' ' + y.toFixed(1) + ' '; ds += (i ? 'L' : 'M') + (x + 17).toFixed(1) + ' ' + y.toFixed(1) + ' '; }
-      // curled tail
-      const ex = amp * Math.sin(8.2 + ph), ang0 = Math.PI * .1; let tl = '';
-      for (let k = 1; k <= 20; k++) { const a = ang0 + k * .32, r = 26 * (1 - k / 26); tl += 'L' + (ex + 26 - Math.cos(a) * r - 26 + 0).toFixed(1) + ' ' + (Y1 + Math.sin(a) * r * 1.0).toFixed(1) + ' '; }
-      [bOut, bIn].forEach(e => e.setAttribute('d', d)); bSh.setAttribute('d', ds); bHi.setAttribute('d', dh);
-      bSh.setAttribute('stroke-dasharray', '0 100 1000'); bHi.setAttribute('stroke-dasharray', '0 60 300 40 1000'); 
-      arms.forEach(a => { const y0 = -4, x0 = a.sg * 26, dd = 'M' + x0 + ' ' + y0 + ' ' + wavy(x0, y0, 44, 6 * (1 + f), 1 / 9, ph * 1.4 + a.sg, 5).slice(1);
-        [a.o, a.i].forEach(e => { e.setAttribute('d', dd); e.setAttribute('transform', `rotate(${a.sg * (-50 - f * 45)} ${x0} ${y0})`); }); });
+    const bOut = tube(body, 64, OLK), bIn = tube(body, 52, col);
+    // red sauce hat with drips
+    const hat = el('g', {}, g);
+    el('path', { d: 'M-40 -100 Q-44 -150 0 -152 Q46 -150 40 -100 Q30 -86 24 -104 Q20 -78 10 -104 Q0 -92 -8 -104 Q-16 -80 -24 -104 Q-34 -86 -40 -100Z', fill: '#d8362b', stroke: OLK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, hat);
+    el('ellipse', { cx: -12, cy: -132, rx: 8, ry: 4, fill: '#ff8a7a' }, hat);
+    return { fy: -58, fs: .78, top: -170, noblush: true, tick: (t, p) => {
+      const f = p ? Math.max(p.tremble || 0, p.excl * .6 || 0) : 0, ph = -t * (2.2 + f * 8), amp = 40 * (1 + f * .4);
+      let d = ''; const Y0 = -100, Y1 = 170;
+      for (let i = 0; i <= 60; i++) { const u = i / 60, y = Y0 + (Y1 - Y0) * u, x = amp * Math.min(1, u * 3) * Math.sin(y / 22 + ph); d += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1) + ' '; }
+      [bOut, bIn].forEach(e => e.setAttribute('d', d));
+      hat.setAttribute('transform', `translate(0 ${(Math.sin(ph * 2) * 2 * (1 + f * 2)).toFixed(1)})`);
+      arms.forEach(a => { const y0 = 0, x0 = a.sg * 24, dd = 'M' + x0 + ' ' + y0 + ' Q' + (x0 + a.sg * 36) + ' ' + (y0 + 6) + ' ' + (x0 + a.sg * 52) + ' ' + (y0 + 38);
+        [a.o, a.i].forEach(e => { e.setAttribute('d', dd); e.setAttribute('transform', `rotate(${a.sg * (-34 - f * 50)} ${x0} ${y0})`); }); });
     } };
   };
   BODIES.pot = function (g, c) {
@@ -447,7 +445,7 @@
     el('path', { d: 'M -130 70 L 130 70 L 130 -10 Q 20 -110 -130 -40 Z', fill: '#ffcb2e', stroke: OLK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
     el('path', { d: 'M -130 -40 Q 20 -110 130 -10 L 130 20 Q 20 -70 -130 4 Z', fill: '#ffe27a' }, g);
     [[-86, 34, 14], [60, 40, 18], [90, 6, 10], [-20, 46, 9]].forEach(([x, y, r]) => el('ellipse', { cx: x, cy: y, rx: r, ry: r * .8, fill: '#e09f10', stroke: OLK, 'stroke-width': 3 }, g));
-    return { fy: 10, fs: .5, top: -110, tick() {} };
+    return { fy: 10, fs: .5, top: -110, noblush: true, tick() {} };
   };
   BODIES.chef = null; delete BODIES.chef;
 
@@ -501,7 +499,7 @@
   window.TOON.draw = function (parent, w, mood, t, color) {
     w = who(w); const cg = el('g', {}, parent), body = el('g', {}, cg);
     const b = BODIES[w](body, color || null);
-    const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = b.noface ? (() => { }) : (b.makeFace ? b.makeFace(fg) : makeFace(fg));
+    const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = b.noface ? (() => { }) : (b.makeFace ? b.makeFace(fg) : makeFace(fg, b.noblush));
     if (b.afterFace) b.afterFace(cg);
     const ex = b.noface ? null : makeExtras(b.exy ? el('g', { transform: `translate(${b.exx || 0} ${b.exy})` }, cg) : cg, b.top), p = moodP(mood);
     face(p, t, { x: .2, y: .1 }, 1); if (ex) tickExtras(ex, p, t, 1); b.tick(t, p); return cg;
@@ -650,7 +648,7 @@
     const chars = cast.map((c, i) => {
       const w = who(c.who), cg = el('g', {}, g), body = el('g', {}, cg);
       const b = BODIES[w](body, typeof c.color === 'string' && /^#[0-9a-f]{3,8}$/i.test(c.color) ? c.color : null);
-      const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = b.noface ? (() => { }) : (b.makeFace ? b.makeFace(fg) : makeFace(fg));
+      const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = b.noface ? (() => { }) : (b.makeFace ? b.makeFace(fg) : makeFace(fg, b.noblush));
       if (b.afterFace) b.afterFace(cg);
       const ex = b.noface ? null : makeExtras(b.exy ? el('g', { transform: `translate(${b.exx || 0} ${b.exy})` }, cg) : cg, b.top);
       const m1 = MOODS[c.mood] ? c.mood : 'happy', m2 = MOODS[c.mood2] ? c.mood2 : m1;
