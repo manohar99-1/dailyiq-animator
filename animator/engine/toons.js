@@ -391,16 +391,22 @@
     const col = c || NOOD;
     const body = el('g', {}, g);
     const tube = (parent, w, stroke) => el('path', { fill: 'none', stroke, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, parent);
-    const hairs = [-1, 1].map(sg => ({ sg, o: tube(body, 20, OLK), i: tube(body, 11, col) }));
-    const arms = [-1, 1].map(sg => ({ sg, o: tube(body, 24, OLK), i: tube(body, 14, col) }));
-    const bOut = tube(body, 92, OLK), bIn = tube(body, 80, col), bHi = tube(body, 10, '#fff3b8'); bHi.setAttribute('opacity', .75);
-    [[-26, -50, 5], [30, -64, 4], [8, 40, 4], [-20, 100, 4], [26, 130, 3.5]].forEach(([x, y, r]) => el('circle', { cx: x, cy: y, r, fill: NOOD2, opacity: .5 }, g));
-    return { fy: -40, fs: .86, top: -150, tick: (t, p) => {
-      const f = p ? Math.max(p.tremble || 0, p.excl * .6 || 0) : 0, wob = 1 + f * 1.2, ph = -t * (3 + f * 7);
-      const d = wavy(0, -40, 210, 30 * wob, 1 / 22, ph, 6).replace(/L([-\d.]+) ([-\d.]+)/g, (m, x, y) => 'L' + (x * Math.min(1, Math.max(0, (Number(y) + 40) / 120))).toFixed(1) + ' ' + y);
-      [bOut, bIn].forEach(e => e.setAttribute('d', d)); bHi.setAttribute('d', d); bHi.setAttribute('transform', 'translate(-22 0)'); bHi.setAttribute('stroke-dasharray', '0 120 90 400'); 
-      arms.forEach(a => { const d2 = wavy(a.sg * 40, 20, 110, 10 * wob, 1 / 14, ph * 1.3 + a.sg); const dd = 'M' + (a.sg * 40) + ' 20 ' + d2.slice(1); [a.o, a.i].forEach(e => { e.setAttribute('d', dd); e.setAttribute('transform', `rotate(${a.sg * (-30 - f * 40)} ${a.sg * 40} 20)`); }); });
-      hairs.forEach(h => { const dd = wavy(h.sg * 16, -84, -128, 10, 1 / 9, ph * 2 + h.sg); [h.o, h.i].forEach(e => e.setAttribute('d', dd)); });
+    const limbs = [[-1, 'arm'], [1, 'arm'], [-1, 'leg'], [1, 'leg']].map(([sg, k]) => ({ sg, k, o: tube(body, 24, OLK), i: tube(body, 14, col) }));
+    const ROWS = 8, rows = [], outs = [];
+    for (let r = 0; r < ROWS; r++) outs.push(tube(body, 34, OLK));
+    for (let r = 0; r < ROWS; r++) rows.push(tube(body, 24, r % 2 ? '#f3c24d' : col));
+    const hi = rows.map((_, r) => { const e = tube(body, 4, '#fff3b8'); e.setAttribute('opacity', .6); return e; });
+    [[-34, -96], [20, -100], [52, -90]].forEach(([x, y]) => el('ellipse', { cx: x, cy: y, rx: 9, ry: 5, fill: '#4fae4f', stroke: OLK, 'stroke-width': 3 }, g));
+    return { fy: 16, fs: .84, top: -130, tick: (t, p) => {
+      const f = p ? Math.max(p.tremble || 0, p.excl * .6 || 0) : 0, ph = t * (2.2 + f * 8), amp = 10 + f * 6;
+      for (let r = 0; r < ROWS; r++) {
+        const y = -80 + r * 26, sh = Math.sin(ph + r * 1.3) * 5 * (1 + f), w = 74 - Math.abs(r - 3.5) * 1.5;
+        let d = 'M' + (-w + sh).toFixed(1) + ' ' + y; const n = 5; for (let k = 1; k <= n; k++) { const x = -w + 2 * w * k / n + sh; d += ' Q' + (x - w / n).toFixed(1) + ' ' + (y + (k % 2 ? -amp : amp)).toFixed(1) + ' ' + x.toFixed(1) + ' ' + y; }
+        [outs[r], rows[r]].forEach(e => e.setAttribute('d', d)); hi[r].setAttribute('d', d); hi[r].setAttribute('transform', 'translate(0 -5)');
+      }
+      limbs.forEach(l => { const arm = l.k === 'arm', x0 = l.sg * (arm ? 74 : 30), y0 = arm ? 10 : 110, y1 = arm ? 90 : 205;
+        const dd = 'M' + x0 + ' ' + y0 + ' ' + wavy(x0, y0, y1, 12 * (1 + f), 1 / 15, -t * 4 * (1 + f) + l.sg).slice(1);
+        [l.o, l.i].forEach(e => { e.setAttribute('d', dd); if (arm) e.setAttribute('transform', `rotate(${l.sg * (-38 - f * 45)} ${x0} ${y0})`); }); });
     } };
   };
   BODIES.pot = function (g, c) {
