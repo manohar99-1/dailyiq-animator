@@ -402,7 +402,7 @@
       const f = p ? Math.max(p.tremble || 0, p.excl * .6 || 0) : 0, ph = -t * (2.2 + f * 8), amp = 40 * (1 + f * .4);
       let d = ''; const Y0 = -100, Y1 = 170;
       for (let i = 0; i <= 60; i++) { const u = i / 60, y = Y0 + (Y1 - Y0) * u, x = amp * Math.min(1, u * 3) * Math.sin(y / 22 + ph); d += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1) + ' '; }
-      [bOut, bIn].forEach(e => e.setAttribute('d', d));
+      [bOut, bIn].forEach(e => e.setAttribute('d', d)); [hOut, hIn].forEach(e => e.setAttribute('d', 'M0 -96 L0 -62'));
       hat.setAttribute('transform', `translate(0 ${(Math.sin(ph * 2) * 2 * (1 + f * 2)).toFixed(1)})`);
       arms.forEach(a => { const y0 = 0, x0 = a.sg * 24, dd = 'M' + x0 + ' ' + y0 + ' Q' + (x0 + a.sg * 36) + ' ' + (y0 + 6) + ' ' + (x0 + a.sg * 52) + ' ' + (y0 + 38);
         [a.o, a.i].forEach(e => { e.setAttribute('d', dd); e.setAttribute('transform', `rotate(${a.sg * (-34 - f * 50)} ${x0} ${y0})`); }); });
