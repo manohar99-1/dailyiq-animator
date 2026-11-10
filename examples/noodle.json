@@ -20,12 +20,12 @@
       "act": "wiggle",
       "pos": [
        360,
-       760,
-       1.6
+       690,
+       2.9
       ]
      }
     ],
-    "at": 0.45,
+    "at": 0.72,
     "layout": "auto",
     "label": "YOU'RE A NOODLE?!",
     "bg": "kitchen"
@@ -43,13 +43,13 @@
       "act": "splat",
       "pos": [
        360,
-       640,
-       1.4
+       690,
+       2.9
       ],
       "start": 0.55
      }
     ],
-    "at": 0.55,
+    "at": 0.6,
     "layout": "auto",
     "label": "SPLAT!",
     "bg": "kitchen"
@@ -62,13 +62,13 @@
     "cast": [
      {
       "who": "noodle",
-      "mood": "scared",
+      "mood": "worried",
       "mood2": "scared",
       "act": "shake",
       "pos": [
        360,
-       840,
-       1.3
+       690,
+       2.9
       ]
      },
      {
@@ -77,12 +77,12 @@
       "act": "float",
       "pos": [
        360,
-       720,
-       0.85
+       470,
+       1.5
       ]
      }
     ],
-    "at": 0.5,
+    "at": 0.7,
     "layout": "auto",
     "label": "CHOPSTICKS!",
     "bg": "kitchen"
@@ -100,8 +100,8 @@
       "act": "shake",
       "pos": [
        360,
-       640,
-       1.3
+       690,
+       2.9
       ]
      },
      {
@@ -110,12 +110,12 @@
       "act": "float",
       "pos": [
        360,
-       860,
-       1.6
+       1020,
+       1.9
       ]
      }
     ],
-    "at": 0.5,
+    "at": 0.8,
     "layout": "auto",
     "label": "BOILING HOT",
     "bg": "kitchen"
@@ -128,13 +128,13 @@
     "cast": [
      {
       "who": "noodle",
-      "mood": "scared",
-      "mood2": "worried",
+      "mood": "worried",
+      "mood2": "sad",
       "act": "wiggle",
       "pos": [
        360,
        690,
-       1.3
+       2.9
       ]
      },
      {
@@ -143,12 +143,12 @@
       "act": "float",
       "pos": [
        360,
-       880,
-       1.5
+       1030,
+       1.9
       ]
      }
     ],
-    "at": 0.5,
+    "at": 0.6,
     "layout": "auto",
     "label": "SAUCY!",
     "bg": "kitchen"
@@ -161,13 +161,13 @@
     "cast": [
      {
       "who": "noodle",
-      "mood": "scared",
+      "mood": "worried",
       "mood2": "scared",
       "act": "shake",
       "pos": [
        360,
-       740,
-       1.25
+       690,
+       2.9
       ]
      },
      {
@@ -176,8 +176,8 @@
       "act": "float",
       "pos": [
        360,
-       940,
-       1.5
+       1030,
+       1.9
       ]
      },
      {
@@ -186,12 +186,12 @@
       "act": "float",
       "pos": [
        420,
-       640,
-       0.85
+       470,
+       1.5
       ]
      }
     ],
-    "at": 0.5,
+    "at": 0.85,
     "layout": "auto",
     "label": "NO ESCAPE",
     "bg": "kitchen"
@@ -204,13 +204,13 @@
     "cast": [
      {
       "who": "noodle",
-      "mood": "shocked",
-      "mood2": "worried",
+      "mood": "worried",
+      "mood2": "shocked",
       "act": "shake",
       "pos": [
-       300,
-       720,
-       1.2
+       240,
+       690,
+       2.9
       ]
      },
      {
@@ -219,8 +219,8 @@
       "act": "float",
       "pos": [
        360,
-       940,
-       1.5
+       1030,
+       1.9
       ]
      },
      {
@@ -228,20 +228,20 @@
       "mood": "happy",
       "act": "float",
       "pos": [
-       500,
-       380,
+       540,
+       330,
        1.4
       ]
      }
     ],
-    "at": 0.5,
+    "at": 0.7,
     "layout": "auto",
     "label": "CHEESE?!",
     "bg": "kitchen"
    }
   },
   {
-   "say": "Congratulations. You are now officially... a delicious noodle.",
+   "say": "Congratulations. You are now officially... a delicious meal.",
    "type": "toon",
    "data": {
     "cast": [
@@ -252,8 +252,8 @@
       "act": "hop",
       "pos": [
        360,
-       700,
-       1.4
+       690,
+       2.9
       ]
      },
      {
@@ -262,8 +262,8 @@
       "act": "float",
       "pos": [
        360,
-       960,
-       1.4
+       1040,
+       1.9
       ]
      }
     ],
