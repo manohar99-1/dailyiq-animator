@@ -9,19 +9,19 @@
  ],
  "scenes": [
   {
-   "say": "You wake up one morning... and something feels very, very wrong. You look down. And you are... a noodle.",
+   "say": "You wake up one morning... and something feels very wrong. You look down. And you are... a noodle.",
    "type": "toon",
    "data": {
     "cast": [
      {
       "who": "noodle",
       "mood": "worried",
-      "mood2": "shocked",
+      "mood2": "gasp",
       "act": "wiggle",
       "pos": [
        360,
-       690,
-       2.9
+       660,
+       2.1
       ]
      }
     ],
@@ -39,12 +39,12 @@
      {
       "who": "noodle",
       "mood": "happy",
-      "mood2": "shocked",
+      "mood2": "gasp",
       "act": "splat",
       "pos": [
        360,
-       690,
-       2.9
+       660,
+       2.1
       ],
       "start": 0.55
      }
@@ -63,12 +63,12 @@
      {
       "who": "noodle",
       "mood": "worried",
-      "mood2": "scared",
+      "mood2": "fear",
       "act": "shake",
       "pos": [
        360,
-       690,
-       2.9
+       660,
+       2.1
       ]
      },
      {
@@ -78,7 +78,7 @@
       "pos": [
        360,
        470,
-       1.5
+       1.4
       ]
      }
     ],
@@ -96,12 +96,12 @@
      {
       "who": "noodle",
       "mood": "worried",
-      "mood2": "scared",
+      "mood2": "fear",
       "act": "shake",
       "pos": [
        360,
-       690,
-       2.9
+       660,
+       2.1
       ]
      },
      {
@@ -110,8 +110,8 @@
       "act": "float",
       "pos": [
        360,
-       1020,
-       1.9
+       1040,
+       1.7
       ]
      }
     ],
@@ -133,8 +133,8 @@
       "act": "wiggle",
       "pos": [
        360,
-       690,
-       2.9
+       660,
+       2.1
       ]
      },
      {
@@ -143,8 +143,8 @@
       "act": "float",
       "pos": [
        360,
-       1030,
-       1.9
+       1040,
+       1.7
       ]
      }
     ],
@@ -162,12 +162,12 @@
      {
       "who": "noodle",
       "mood": "worried",
-      "mood2": "scared",
+      "mood2": "fear",
       "act": "shake",
       "pos": [
        360,
-       690,
-       2.9
+       660,
+       2.1
       ]
      },
      {
@@ -176,8 +176,8 @@
       "act": "float",
       "pos": [
        360,
-       1030,
-       1.9
+       1040,
+       1.7
       ]
      },
      {
@@ -187,7 +187,7 @@
       "pos": [
        420,
        470,
-       1.5
+       1.4
       ]
      }
     ],
@@ -205,12 +205,12 @@
      {
       "who": "noodle",
       "mood": "worried",
-      "mood2": "shocked",
+      "mood2": "gasp",
       "act": "shake",
       "pos": [
-       240,
-       690,
-       2.9
+       250,
+       660,
+       2.1
       ]
      },
      {
@@ -219,8 +219,8 @@
       "act": "float",
       "pos": [
        360,
-       1030,
-       1.9
+       1040,
+       1.7
       ]
      },
      {
@@ -229,8 +229,8 @@
       "act": "float",
       "pos": [
        540,
-       330,
-       1.4
+       400,
+       1.3
       ]
      }
     ],
@@ -252,8 +252,8 @@
       "act": "hop",
       "pos": [
        360,
-       690,
-       2.9
+       660,
+       2.1
       ]
      },
      {
@@ -263,7 +263,7 @@
       "pos": [
        360,
        1040,
-       1.9
+       1.7
       ]
      }
     ],
@@ -273,5 +273,8 @@
     "bg": "kitchen"
    }
   }
- ]
+ ],
+ "look": {
+  "frame": "wide"
+ }
 }

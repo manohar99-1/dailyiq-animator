@@ -79,7 +79,7 @@ def build(spec, cfg, clips):
                        "voice_at": round(start + PAD, 3), "wav": clip["wav"]})
         t = end
     return {"title": spec["title"], "channel": cfg["channel"], "scenes": scenes, "captions": caps, "T": round(t, 3),
-            "end": v["end_card_seconds"], "look": {"title_in_video": v["title_in_video"]}}
+            "end": v["end_card_seconds"], "look": dict({"title_in_video": v["title_in_video"]}, **(spec.get("look") or {}))}
 
 
 def write_voice_track(rt, path):

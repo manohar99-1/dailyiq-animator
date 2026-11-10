@@ -18,6 +18,8 @@
     joy:      { arc: 1, mw: 34, curve: 1, mo: .55, blush: 1, stars: 1 },
     excited:  { eye: 1.2, pup: .7, mw: 34, curve: 1, mo: .7, blush: .9, stars: 1, browY: -8 },
     shocked:  { eye: 1.3, pup: .28, browY: -12, mw: 14, curve: 0, mo: 1.5, blush: .1, excl: 1 },
+    gasp:     { eye: 1.3, pup: .28, browY: -12, mw: 8, curve: 0, mo: .75, blush: 0, excl: 1 },
+    fear:     { eye: 1.3, pup: .25, brow: 22, browY: -8, mw: 9, curve: 0, mo: .6, blush: 0, sweat: 1, tremble: 1 },
     scared:   { eye: 1.3, pup: .25, brow: 26, browY: -8, mw: 20, curve: -.3, mo: .8, blush: 0, sweat: 1, tremble: 1 },
     worried:  { eye: 1.05, pup: .5, brow: 22, browY: -4, mw: 22, curve: -.55, mo: .1, blush: .2, sweat: 1 },
     sad:      { pup: .6, brow: 18, mw: 20, curve: -.95, mo: 0, blush: .1, tears: .5 },

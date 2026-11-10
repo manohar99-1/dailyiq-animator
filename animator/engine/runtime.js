@@ -1,7 +1,7 @@
 /* Timeline runtime: window.loadSpec(spec) then window.render(t, frameIndex) draws the exact frame for time t. */
 (function () {
   const X = window.X, S = window.Scenes;
-  let spec = null, inst = [], parts = [], endEls = null;
+  let spec = null, inst = [], parts = [], endEls = null, WIDE = false;
   const $ = id => document.getElementById(id);
 
   function buildEnd(ch) {
@@ -40,6 +40,8 @@
     const tt = $('title'); const tx = tt.querySelector('.t'); tx.textContent = sp.title || ''; tx.style.fontSize = '43px';
     let g = 0; while (tx.scrollWidth > 620 && g++ < 30) tx.style.fontSize = (parseFloat(tx.style.fontSize) * .94) + 'px';
     if (sp.look && sp.look.title_in_video === false) tt.style.display = 'none';
+    WIDE = !!(sp.look && sp.look.frame === 'wide');
+    if (WIDE) { const fr = $('frame'); Object.assign(fr.style, { left: '18px', top: '72px', width: '684px', height: '1177px' }); tt.style.height = '72px'; tx.style.fontSize = '36px'; tt.querySelector('.u').style.display = 'none'; g = 0; while (tx.scrollWidth > 660 && g++ < 30) tx.style.fontSize = (parseFloat(tx.style.fontSize) * .94) + 'px'; }
     endEls = buildEnd(sp.channel || {});
     return true;
   };
@@ -50,7 +52,7 @@
     X.S_red_reset = (S._red = 0);
     $('turb').setAttribute('seed', 1 + Math.floor(t * 9) % 8);
     parts.forEach((p, i) => { p.c.setAttribute('cx', (p.x + Math.sin(t * .6 + i) * 14) % 720); p.c.setAttribute('cy', ((p.y - t * p.s) % 1228 + 1228) % 1228); });
-    $('stage').style.transform = `scale(${(640 / 720) * (1 + .05 * cl(t / T))})`;
+    $('stage').style.transform = `scale(${((WIDE ? 684 : 640) / 720) * (1 + .05 * cl(t / T))})`;
     inst.forEach((o, idx) => {
       const s = o.s, nx = spec.scenes[idx + 1], pv = spec.scenes[idx - 1];
       let op = Math.min(prog(t, s.start - .12, s.start + .12), 1 - prog(t, s.end - .12, s.end + .12));

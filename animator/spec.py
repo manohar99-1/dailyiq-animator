@@ -27,7 +27,7 @@ Scene types (each scene = one spoken sentence + one animated visual). "data" fie
   SEA LIFE (for ocean/animal topics): fish whale dolphin shark jellyfish octopus turtle crab angler (anglerfish with glowing lure) sub (yellow submarine).
   MOTION acts for characters: swim (travels across the screen; optional "from"/"to" in left right top bottom high deep center, optional "dir":"left|right", optional "start"/"end" 0-1 = fraction of the scene when the move happens, so a chase is two swimmers with different start times and a flee is "from":"center","to":"right","start":0.5,"end":0.8), dive (sinks from high to deep), rise (goes up), circle (loops around the middle), wiggle (body sways), plus the acts below.
   OCEAN BACKGROUND: in "data" add "bg":"ocean" and "depth": metres at the start of the scene, "depth2": metres at the end (0 to 11000). The water darkens with depth, a depth gauge shows the number, bubbles and drifting particles show the descent. Use it for every scene of an ocean video, with depth rising from scene to scene.
-  mood/mood2: happy joy excited shocked scared worried sad cry angry sleepy love dizzy cool thinking.
+  mood/mood2: happy joy excited shocked scared worried gasp fear sad cry angry sleepy love dizzy cool thinking.
   act: float (default) hop shake spin vanish (character pops out of existence at `at`) appear fall grow shrink.
   layout "orbit": first character in the centre, second circles it, third circles the second (sun, earth, moon). "label": optional 1-3 word banner at the top (ALL CAPS).
   Example (moon disappears): {"cast": [{"who": "earth", "mood": "happy", "mood2": "shocked"}, {"who": "moon", "mood": "happy", "act": "vanish"}], "layout": "orbit", "at": 0.5, "label": "NO MOON!"}
@@ -206,6 +206,8 @@ def validate(spec, max_scenes=14):
     tags = [("#" + re.sub(r"\W", "", str(t).lstrip("#"))) for t in (spec.get("hashtags") or []) if re.sub(r"\W", "", str(t))]
     tags = list(dict.fromkeys(tags))[:5] or ["#shorts"]
     out = {"title": title, "description": str(spec.get("description") or "")[:400].strip(), "hashtags": tags, "scenes": scenes}
+    if isinstance(spec.get("look"), dict) and spec["look"].get("frame") == "wide":
+        out["look"] = {"frame": "wide"}
     if spec.get("silent"):
         out["silent"] = True
     return out
