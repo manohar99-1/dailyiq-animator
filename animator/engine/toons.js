@@ -392,12 +392,13 @@
     const body = el('g', {}, g);
     const tube = (parent, w, stroke) => el('path', { fill: 'none', stroke, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, parent);
     const arms = [-1, 1].map(sg => ({ sg, o: tube(body, 24, OLK), i: tube(body, 14, col) }));
-    const bOut = tube(body, 64, OLK), bIn = tube(body, 52, col);
+    const bOut = tube(body, 64, OLK), hOut = tube(body, 100, OLK), bIn = tube(body, 52, col), hIn = tube(body, 88, col);
+    hOut.setAttribute('d', 'M0 -88 L0 -56'); hIn.setAttribute('d', 'M0 -88 L0 -56');
     // red sauce hat with drips
     const hat = el('g', {}, g);
     el('path', { d: 'M-40 -100 Q-44 -150 0 -152 Q46 -150 40 -100 Q30 -86 24 -104 Q20 -78 10 -104 Q0 -92 -8 -104 Q-16 -80 -24 -104 Q-34 -86 -40 -100Z', fill: '#d8362b', stroke: OLK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, hat);
     el('ellipse', { cx: -12, cy: -132, rx: 8, ry: 4, fill: '#ff8a7a' }, hat);
-    return { fy: -58, fs: .78, top: -170, noblush: true, tick: (t, p) => {
+    return { fy: -66, fs: .7, top: -170, noblush: true, tick: (t, p) => {
       const f = p ? Math.max(p.tremble || 0, p.excl * .6 || 0) : 0, ph = -t * (2.2 + f * 8), amp = 40 * (1 + f * .4);
       let d = ''; const Y0 = -100, Y1 = 170;
       for (let i = 0; i <= 60; i++) { const u = i / 60, y = Y0 + (Y1 - Y0) * u, x = amp * Math.min(1, u * 3) * Math.sin(y / 22 + ph); d += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1) + ' '; }
