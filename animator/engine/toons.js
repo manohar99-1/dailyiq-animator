@@ -388,25 +388,19 @@
   const NOOD = '#f7d065', NOOD2 = '#e3a93a', OLK = '#3a2412';
   const wavy = (x0, y0, y1, amp, k, ph, step) => { let d = ''; const n = Math.max(2, Math.ceil(Math.abs(y1 - y0) / (step || 8))); for (let i = 0; i <= n; i++) { const y = y0 + (y1 - y0) * i / n, u = i / n; d += (i ? 'L' : 'M') + (x0 + amp * Math.sin(y * k + ph) * (.25 + u)).toFixed(1) + ' ' + y.toFixed(1) + ' '; } return d; };
   BODIES.noodle = function (g, c) {
-    const col = c || NOOD;
+    const col = c || '#fadb7c';
     const body = el('g', {}, g);
     const tube = (parent, w, stroke) => el('path', { fill: 'none', stroke, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, parent);
-    const limbs = [[-1, 'arm'], [1, 'arm'], [-1, 'leg'], [1, 'leg']].map(([sg, k]) => ({ sg, k, o: tube(body, 24, OLK), i: tube(body, 14, col) }));
-    const ROWS = 8, rows = [], outs = [];
-    for (let r = 0; r < ROWS; r++) outs.push(tube(body, 34, OLK));
-    for (let r = 0; r < ROWS; r++) rows.push(tube(body, 24, r % 2 ? '#f3c24d' : col));
-    const hi = rows.map((_, r) => { const e = tube(body, 4, '#fff3b8'); e.setAttribute('opacity', .6); return e; });
-    [[-34, -96], [20, -100], [52, -90]].forEach(([x, y]) => el('ellipse', { cx: x, cy: y, rx: 9, ry: 5, fill: '#4fae4f', stroke: OLK, 'stroke-width': 3 }, g));
-    return { fy: 16, fs: .84, top: -130, tick: (t, p) => {
-      const f = p ? Math.max(p.tremble || 0, p.excl * .6 || 0) : 0, ph = t * (2.2 + f * 8), amp = 10 + f * 6;
-      for (let r = 0; r < ROWS; r++) {
-        const y = -80 + r * 26, sh = Math.sin(ph + r * 1.3) * 5 * (1 + f), w = 74 - Math.abs(r - 3.5) * 1.5;
-        let d = 'M' + (-w + sh).toFixed(1) + ' ' + y; const n = 5; for (let k = 1; k <= n; k++) { const x = -w + 2 * w * k / n + sh; d += ' Q' + (x - w / n).toFixed(1) + ' ' + (y + (k % 2 ? -amp : amp)).toFixed(1) + ' ' + x.toFixed(1) + ' ' + y; }
-        [outs[r], rows[r]].forEach(e => e.setAttribute('d', d)); hi[r].setAttribute('d', d); hi[r].setAttribute('transform', 'translate(0 -5)');
-      }
-      limbs.forEach(l => { const arm = l.k === 'arm', x0 = l.sg * (arm ? 74 : 30), y0 = arm ? 10 : 110, y1 = arm ? 90 : 205;
-        const dd = 'M' + x0 + ' ' + y0 + ' ' + wavy(x0, y0, y1, 12 * (1 + f), 1 / 15, -t * 4 * (1 + f) + l.sg).slice(1);
-        [l.o, l.i].forEach(e => { e.setAttribute('d', dd); if (arm) e.setAttribute('transform', `rotate(${l.sg * (-38 - f * 45)} ${x0} ${y0})`); }); });
+    const arms = [-1, 1].map(sg => ({ sg, o: tube(body, 20, OLK), i: tube(body, 11, col) }));
+    const bOut = tube(body, 50, OLK), bIn = tube(body, 38, col), bHi = tube(body, 6, '#fffbe0'); bHi.setAttribute('opacity', .85);
+    return { fy: -48, fs: .74, top: -150, tick: (t, p) => {
+      const f = p ? Math.max(p.tremble || 0, p.excl * .6 || 0) : 0, ph = -t * (2.4 + f * 8), amp = 46 * (1 + f * .5);
+      let d = '', dh = ''; const Y0 = -112, Y1 = 232;
+      for (let i = 0; i <= 70; i++) { const u = i / 70, y = Y0 + (Y1 - Y0) * u, ramp = Math.min(1, Math.max(0, (u - .12) / .3)), x = amp * ramp * Math.sin(u * 9.4 + ph);
+        d += (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1) + ' '; dh += (i ? 'L' : 'M') + (x - 9).toFixed(1) + ' ' + y.toFixed(1) + ' '; }
+      [bOut, bIn].forEach(e => e.setAttribute('d', d)); bHi.setAttribute('d', dh); bHi.setAttribute('stroke-dasharray', '0 70 1000');
+      arms.forEach(a => { const y0 = 6, x0 = a.sg * 14, dd = 'M' + x0 + ' ' + y0 + ' ' + wavy(x0, y0, 72, 9 * (1 + f), 1 / 11, ph * 1.4 + a.sg, 6).slice(1);
+        [a.o, a.i].forEach(e => { e.setAttribute('d', dd); e.setAttribute('transform', `rotate(${a.sg * (-62 - f * 40)} ${x0} ${y0})`); }); });
     } };
   };
   BODIES.pot = function (g, c) {
