@@ -12,7 +12,7 @@
 
   /* ------------------------------------------------------------ expressions */
   const P0 = { eye: 1, pup: .55, open: 1, arc: 0, brow: 0, browY: 0, mw: 26, curve: .8, mo: 0, blush: .5, tongue: 0,
-    sweat: 0, tears: 0, zzz: 0, hearts: 0, stars: 0, shades: 0, excl: 0, ques: 0, tremble: 0, dizzy: 0, lookUp: 0, wink: 0, talk: 0 };
+    sweat: 0, tears: 0, zzz: 0, hearts: 0, stars: 0, shades: 0, excl: 0, ques: 0, tremble: 0, dizzy: 0, lookUp: 0, wink: 0, talk: 0, specs: 0, bags: 0 };
   const MOODS = {
     happy:    {},
     joy:      { arc: 1, mw: 34, curve: 1, mo: .55, blush: 1, stars: 1 },
@@ -25,7 +25,7 @@
     sad:      { pup: .6, brow: 18, mw: 20, curve: -.95, mo: 0, blush: .1, tears: .5 },
     cry:      { pup: .6, brow: 22, mw: 24, curve: -1, mo: .7, blush: .4, tears: 1 },
     angry:    { eye: .95, pup: .6, brow: -24, browY: 5, mw: 26, curve: -.7, mo: .35, blush: 0 },
-    sleepy:   { open: .3, pup: .5, mw: 14, curve: .2, mo: .2, blush: .3, zzz: 1 },
+    sleepy:   { open: .3, pup: .5, mw: 14, curve: .2, mo: .2, blush: .3, zzz: 1, bags: .8 },
     love:     { arc: 1, mw: 28, curve: 1, mo: .2, blush: 1, hearts: 1 },
     dizzy:    { eye: 1.1, pup: .35, mw: 20, curve: -.2, mo: .5, blush: .3, dizzy: 1, stars: 1 },
     cool:     { mw: 28, curve: .6, shades: 1, blush: .2 },
@@ -35,7 +35,10 @@
     giggle:   { arc: 1, mw: 36, curve: 1, mo: .9, blush: 1 },
     hopeful:  { eye: 1.25, pup: .78, brow: 8, browY: -7, mw: 20, curve: .7, mo: .1, blush: .5, stars: 1, lookUp: 1 },
     wink:     { wink: 1, mw: 32, curve: 1, mo: .5, blush: .8 },
-    tired:    { open: .55, pup: .5, brow: 12, mw: 20, curve: -.3, mo: .15, blush: .2, sweat: .6 },
+    tired:    { open: .55, pup: .5, brow: 12, mw: 20, curve: -.3, mo: .15, blush: .2, sweat: .6, bags: .9 },
+    smart:    { pup: .6, mw: 20, curve: .35, mo: 0, blush: .2, specs: 1, browY: -3 },
+    puzzled:  { pup: .5, brow: 12, browY: -5, mw: 14, curve: -.1, mo: 0, blush: .1, specs: 1, ques: 1, lookUp: .6 },
+    deadpan:  { open: .55, pup: .5, brow: -6, mw: 20, curve: 0, mo: 0, blush: 0, bags: .9 },
     thinking: { pup: .5, brow: 10, browY: -4, mw: 14, curve: 0, mo: 0, blush: .2, ques: 1, lookUp: 1 },
   };
   const MOOD_NAMES = Object.keys(MOODS);
@@ -499,6 +502,163 @@
         legL.setAttribute('transform', `translate(-24 54) rotate(${lerp(6 + Math.sin(t * 1.3) * 3, 20, f) + fl * .8})`);
         legR.setAttribute('transform', `translate(24 54) rotate(${-lerp(6 - Math.sin(t * 1.3 + 1) * 3, 28, f) - fl * .8})`); } };
   };
+  /* ======================================================================================
+     BRAIN EMPLOYEE ("What Actually Happens Inside Your Brain?"): a tired pink brain with arms and legs.
+     Moods used on top of the usual ones: smart (round glasses), puzzled (glasses + ?), cool (sunglasses), tired / deadpan (eye bags).
+     Props (noface): clock (7:00, ringing) clock3 (3:00) coffee ball pan smartphone.
+     Backgrounds (toon data.bg): bedroom control chat memory night plain.
+     ====================================================================================== */
+  const BR = '#F4A6B8', BR2 = '#B8566F', BR3 = '#D9748F', LID = '#E58AA3', BRI = '#7a3a50';
+  function makeBrainFace(parent) {
+    const f = el('g', {}, parent), id = 'bf' + (++UID), defs = el('defs', {}, f);
+    const eyes = [-1, 1].map(s => {
+      const cid = id + (s > 0 ? 'r' : 'l'), cp = el('clipPath', { id: cid }, defs); el('circle', { r: 7 }, cp);
+      const g = el('g', {}, f);
+      el('circle', { r: 7, fill: '#fff', stroke: BRI, 'stroke-width': 1.5 }, g);
+      const pup = el('circle', { r: 3, fill: '#222' }, g), hi = el('circle', { r: 1, fill: '#fff' }, g);
+      const lg = el('g', { 'clip-path': `url(#${cid})` }, g), lid = el('rect', { x: -8, y: -16, width: 16, height: 16, fill: LID }, lg);
+      const line = el('line', { x1: -7, x2: 7, stroke: BRI, 'stroke-width': 1.6, 'stroke-linecap': 'round' }, g);
+      const bag = el('path', { d: 'M -7 8 Q 0 12 7 8', fill: 'none', stroke: '#8a6aa8', 'stroke-width': 1.8, 'stroke-linecap': 'round' }, g);
+      return { s, g, pup, hi, lid, line, bag };
+    });
+    const brows = [-1, 1].map(s => ({ s, e: el('line', { x1: -7, y1: 0, x2: 7, y2: 0, stroke: BRI, 'stroke-width': 2, 'stroke-linecap': 'round' }, f) }));
+    const mouthLine = el('path', { fill: 'none', stroke: BRI, 'stroke-width': 2, 'stroke-linecap': 'round' }, f);
+    const mouthO = el('ellipse', { fill: '#7a2a3e', stroke: BRI, 'stroke-width': 1.6 }, f);
+    const specs = el('g', {}, f);
+    [-1, 1].forEach(s => el('circle', { cx: s * 14, cy: -2, r: 11, fill: '#cfe9ff', 'fill-opacity': .18, stroke: '#2b2b3a', 'stroke-width': 2.2 }, specs));
+    el('path', { d: 'M -3 -3 Q 0 -6 3 -3', fill: 'none', stroke: '#2b2b3a', 'stroke-width': 2 }, specs);
+    const shades = el('g', {}, f);
+    el('rect', { x: -26, y: -10, width: 22, height: 13, rx: 5, fill: '#1c1c28' }, shades); el('rect', { x: 4, y: -10, width: 22, height: 13, rx: 5, fill: '#1c1c28' }, shades);
+    el('rect', { x: -4, y: -7, width: 8, height: 2.6, fill: '#1c1c28' }, shades);
+    el('path', { d: 'M -22 -6 L -16 -6 M 8 -6 L 14 -6', stroke: '#fff', 'stroke-width': 1.8, 'stroke-linecap': 'round' }, shades);
+    return function (p, t, look, blink) {
+      const lidAmt = clamp(1 - p.open * blink, 0, 1), yb = -7 + lidAmt * 14;
+      eyes.forEach(e => {
+        e.g.setAttribute('transform', `translate(${e.s * 14} -2) scale(${p.eye.toFixed(3)})`);
+        e.g.setAttribute('opacity', (1 - p.shades).toFixed(3));
+        const lx = (look.x + (p.dizzy ? Math.cos(t * 9 + e.s) * .9 : 0)) * 1.8, ly = (look.y - p.lookUp * .9 + (p.dizzy ? Math.sin(t * 9 + e.s) * .9 : 0)) * 1.8 + .6;
+        e.pup.setAttribute('r', (5.4 * p.pup).toFixed(2)); e.pup.setAttribute('cx', lx.toFixed(2)); e.pup.setAttribute('cy', ly.toFixed(2));
+        e.hi.setAttribute('cx', (lx - 1.1).toFixed(2)); e.hi.setAttribute('cy', (ly - 1.3).toFixed(2));
+        e.lid.setAttribute('height', (16 + yb).toFixed(2)); e.line.setAttribute('y1', yb.toFixed(2)); e.line.setAttribute('y2', yb.toFixed(2)); e.line.setAttribute('opacity', lidAmt > .12 ? 1 : 0);
+        e.bag.setAttribute('opacity', p.bags.toFixed(3));
+      });
+      brows.forEach(b => { b.e.setAttribute('transform', `translate(${b.s * 14} ${(-14 + p.browY * .35).toFixed(2)}) rotate(${(b.s * p.brow * .9).toFixed(1)})`); b.e.setAttribute('opacity', p.shades > .5 ? 0 : clamp((Math.abs(p.brow) + Math.abs(p.browY)) / 6, 0, 1).toFixed(3)); });
+      const tk = p.talk, syl = tk * (.25 + .75 * Math.abs(Math.sin(t * 10.3)) * (.6 + .4 * Math.abs(Math.sin(t * 3.1))));
+      const surprised = p.excl > .3 && syl < .5;            // a small round "o" only at surprise moments
+      const open = surprised ? 1 : syl;
+      const my = 16, w = Math.min(9, p.mw * .34), cv = p.curve * 4;
+      if (surprised || syl > .08) {
+        mouthO.setAttribute('cx', 0); mouthO.setAttribute('cy', my + 1);
+        mouthO.setAttribute('rx', surprised ? 3.4 : (2.6 + syl * 1.2).toFixed(2)); mouthO.setAttribute('ry', surprised ? 4.4 : (1 + syl * 3.2).toFixed(2)); mouthO.setAttribute('opacity', 1); mouthLine.setAttribute('opacity', 0);
+      } else { mouthO.setAttribute('opacity', 0); mouthLine.setAttribute('opacity', 1); mouthLine.setAttribute('d', `M ${-w} ${my} Q 0 ${(my + cv).toFixed(2)} ${w} ${my}`); }
+      specs.setAttribute('opacity', p.specs.toFixed(3)); shades.setAttribute('opacity', p.shades.toFixed(3));
+    };
+  }
+  BODIES.brain = function (g, c) {
+    const col = c || BR, root = el('g', { transform: 'scale(1.9)' }, g);
+    const legs = [-1, 1].map(sg => { const o = el('g', {}, root);
+      el('path', { d: 'M 0 36 L 0 54', stroke: BR2, 'stroke-width': 3.5, 'stroke-linecap': 'round', fill: 'none' }, o); el('ellipse', { cx: sg * 3, cy: 56, rx: 8, ry: 3.5, fill: '#3a3a4a' }, o); return { sg, o }; });
+    const arms = [-1, 1].map(sg => ({ sg, p: el('path', { fill: 'none', stroke: BR2, 'stroke-width': 3.5, 'stroke-linecap': 'round' }, root), h: el('circle', { r: 3.6, fill: BR2 }, root) }));
+    el('path', { d: 'M-48 0 C-52 -26 -30 -42 -8 -38 C6 -46 34 -44 40 -26 C56 -22 58 6 44 16 C46 32 22 40 8 34 C-8 42 -36 38 -40 22 C-54 18 -56 8 -48 0 Z', fill: col, stroke: BR2, 'stroke-width': 2, 'stroke-linejoin': 'round' }, root);
+    el('path', { d: 'M-30 -22 C-20 -32 -8 -24 2 -32 M8 -30 C18 -36 28 -30 34 -22 M-38 14 C-30 20 -20 18 -14 26 M14 28 C24 22 34 24 38 14', stroke: BR3, 'stroke-width': 2, fill: 'none', 'stroke-linecap': 'round' }, root);
+    return { fy: 0, fs: 1.9, top: -96, exx: 14, exy: -24, makeFace: makeBrainFace, tick: (t, p) => {
+      const f = clamp(Math.max(p ? p.tremble : 0, p ? p.excl * .7 : 0, p && p.sweat > .5 ? .35 : 0), 0, 1), fl = Math.sin(t * 9) * 5 * f;
+      arms.forEach(a => {
+        const sg = a.sg, sw = Math.sin(t * 1.6 + sg) * 1.6 * (1 - f), ex = lerp(61, 62, f), ey = lerp(29, -19, f) + sw + fl * sg, cx = lerp(57, 55, f), cy = lerp(18, -6, f);
+        a.p.setAttribute('d', `M ${sg * 47} 6 Q ${sg * cx} ${cy} ${sg * ex} ${ey.toFixed(1)}`); a.h.setAttribute('cx', sg * ex); a.h.setAttribute('cy', ey.toFixed(1));
+      });
+      legs.forEach(l => l.o.setAttribute('transform', `translate(${l.sg * 14} 36) rotate(${(l.sg * (2 + f * 9) + Math.sin(t * 1.3 + l.sg) * 1.5 + fl * l.sg).toFixed(1)}) translate(0 -36)`));
+    } };
+  };
+  const mkClock = (hr, ring) => function (g) {
+    const r = el('g', {}, g), a = (hr % 12) / 12 * 360;
+    [-1, 1].forEach(sg => { el('path', { d: `M ${sg * 30} 68 L ${sg * 52} 108`, stroke: OLK, 'stroke-width': 8, 'stroke-linecap': 'round' }, r); el('circle', { cx: sg * 52, cy: -76, r: 22, fill: '#ffd34d', stroke: OLK, 'stroke-width': 5 }, r); });
+    el('circle', { r: 78, fill: '#e8483f', stroke: OLK, 'stroke-width': 6 }, r); el('circle', { r: 60, fill: '#fff', stroke: OLK, 'stroke-width': 4 }, r);
+    for (let i = 0; i < 12; i++) el('line', { x1: 0, y1: -50, x2: 0, y2: -42, stroke: OLK, 'stroke-width': 3, transform: `rotate(${i * 30})`, 'stroke-linecap': 'round' }, r);
+    el('line', { x1: 0, y1: 0, x2: 0, y2: -34, stroke: OLK, 'stroke-width': 6, 'stroke-linecap': 'round', transform: `rotate(${a})` }, r); el('line', { x1: 0, y1: 0, x2: 0, y2: -48, stroke: OLK, 'stroke-width': 4, 'stroke-linecap': 'round' }, r); el('circle', { r: 5, fill: OLK }, r);
+    const rg = [-1, 1].map(sg => el('path', { d: `M ${sg * 96} -40 Q ${sg * 112} -20 ${sg * 96} 0 M ${sg * 114} -52 Q ${sg * 138} -20 ${sg * 114} 12`, fill: 'none', stroke: '#ff9f1c', 'stroke-width': 5, 'stroke-linecap': 'round' }, r));
+    return { fy: 0, fs: 0, top: -150, noface: true, tick: t => { r.setAttribute('transform', `rotate(${ring ? Math.sin(t * 38) * 5 : 0})`); rg.forEach(e => e.setAttribute('opacity', ring ? (.4 + .6 * Math.abs(Math.sin(t * 19))).toFixed(2) : 0)); } };
+  };
+  BODIES.clock = mkClock(7, true); BODIES.clock3 = mkClock(3, false);
+  BODIES.coffee = function (g) {
+    el('path', { d: 'M 66 -10 q 56 4 46 46 q -8 30 -48 26', fill: 'none', stroke: OLK, 'stroke-width': 18, 'stroke-linecap': 'round' }, g); el('path', { d: 'M 66 -10 q 56 4 46 46 q -8 30 -48 26', fill: 'none', stroke: '#fff', 'stroke-width': 8, 'stroke-linecap': 'round' }, g);
+    el('path', { d: 'M -76 -30 L 76 -30 L 62 84 Q 58 104 38 104 L -38 104 Q -58 104 -62 84 Z', fill: '#fff', stroke: OLK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
+    el('ellipse', { cy: -30, rx: 76, ry: 18, fill: '#6b3a1e', stroke: OLK, 'stroke-width': 5 }, g); el('path', { d: 'M -60 0 L -52 70', stroke: '#e8e8f0', 'stroke-width': 8, 'stroke-linecap': 'round' }, g);
+    const st = [0, 1, 2].map(() => el('path', { d: 'M 0 0 Q 14 -20 0 -40 Q -14 -60 0 -80', fill: 'none', stroke: '#fff', 'stroke-width': 9, 'stroke-linecap': 'round' }, g));
+    return { fy: 0, fs: 0, top: -170, noface: true, tick: t => st.forEach((s, i) => { const u = (t * .5 + i / 3) % 1; s.setAttribute('transform', `translate(${-40 + i * 40} ${-40 - u * 50})`); s.setAttribute('opacity', (.8 * Math.sin(u * 3.14)).toFixed(2)); }) };
+  };
+  BODIES.ball = function (g) {
+    const sp = el('g', {}, g);
+    el('circle', { r: 66, fill: '#ff8a2b', stroke: OLK, 'stroke-width': 6 }, sp); el('path', { d: 'M -66 0 H 66 M 0 -66 V 66 M -46 -46 Q 0 0 -46 46 M 46 -46 Q 0 0 46 46', fill: 'none', stroke: OLK, 'stroke-width': 4 }, sp);
+    el('ellipse', { cx: -24, cy: -30, rx: 16, ry: 8, fill: '#fff', opacity: .45, transform: 'rotate(-35 -24 -30)' }, g);
+    return { fy: 0, fs: 0, top: -100, noface: true, tick: t => sp.setAttribute('transform', `rotate(${(t * 420) % 360})`) };
+  };
+  BODIES.pan = function (g) {
+    const gl = el('ellipse', { cx: 0, cy: 6, rx: 150, ry: 42, fill: '#ff5a1f', opacity: .35 }, g);
+    el('rect', { x: 120, y: -14, width: 150, height: 26, rx: 12, fill: '#6b4a2a', stroke: OLK, 'stroke-width': 5 }, g);
+    el('path', { d: 'M -130 -10 L 130 -10 L 112 40 Q 100 62 70 62 L -70 62 Q -100 62 -112 40 Z', fill: '#3a3a48', stroke: OLK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
+    el('ellipse', { cy: -10, rx: 130, ry: 24, fill: '#55556a', stroke: OLK, 'stroke-width': 5 }, g); el('ellipse', { cy: -8, rx: 108, ry: 17, fill: '#2b2b38' }, g);
+    el('path', { d: 'M -40 -12 Q -48 -26 -20 -26 Q 10 -34 22 -20 Q 44 -14 28 -6 Q 0 2 -40 -12 Z', fill: '#fff', stroke: OLK, 'stroke-width': 3 }, g); el('circle', { cx: -4, cy: -16, r: 10, fill: '#ffb627' }, g);
+    const heat = [0, 1, 2].map(() => el('path', { d: 'M 0 0 Q 14 -18 0 -36 Q -14 -54 0 -72', fill: 'none', stroke: '#ff7a3d', 'stroke-width': 8, 'stroke-linecap': 'round' }, g));
+    return { fy: 0, fs: 0, top: -140, noface: true, tick: t => { gl.setAttribute('opacity', (.25 + .2 * Math.sin(t * 6)).toFixed(2)); heat.forEach((s, i) => { const u = (t * .7 + i / 3) % 1; s.setAttribute('transform', `translate(${-60 + i * 60} ${-34 - u * 60})`); s.setAttribute('opacity', (.85 * Math.sin(u * 3.14)).toFixed(2)); }); } };
+  };
+  BODIES.smartphone = function (g) {
+    el('rect', { x: -78, y: -140, width: 156, height: 280, rx: 26, fill: '#2b2f3e', stroke: OLK, 'stroke-width': 6 }, g); el('rect', { x: -64, y: -120, width: 128, height: 232, rx: 14, fill: '#9bd4f5' }, g); el('rect', { x: -22, y: -130, width: 44, height: 6, rx: 3, fill: '#14182a' }, g);
+    X.text(g, '12:47', 0, -26, 48, '#14182a', 900, 'middle'); X.text(g, 'Wed', 0, -70, 24, '#2b4a6b', 700, 'middle'); el('rect', { x: -40, y: 40, width: 80, height: 12, rx: 6, fill: '#fff', opacity: .55 }, g);
+    return { fy: 0, fs: 0, top: -180, noface: true, tick() { } };
+  };
+  const BRAIN_BGS = ['bedroom', 'control', 'chat', 'memory', 'night', 'plain'];
+  function makeBrainBg(kind, p) {
+    if (BRAIN_BGS.indexOf(kind) < 0) return null;
+    const R = (x, y, w, h, fill, o) => el('rect', Object.assign({ x, y, width: w, height: h, fill }, o || {}), p);
+    const C = (cx, cy, r, fill, o) => el('circle', Object.assign({ cx, cy, r, fill }, o || {}), p);
+    const upd = [];
+    if (kind === 'bedroom') {
+      R(0, 0, 720, 1228, '#fbe8c8'); for (let i = 0; i < 9; i++) R(i * 90, 0, 45, 930, '#fff3dc', { opacity: .45 });
+      R(0, 930, 720, 298, '#d9b38c'); R(0, 920, 720, 16, '#b88a60'); for (let i = 0; i < 6; i++) el('path', { d: `M ${i * 130} 936 L ${i * 130 - 40} 1228`, stroke: '#c49a70', 'stroke-width': 4, opacity: .6 }, p);
+      R(60, 300, 240, 280, '#bfe6ff', { stroke: '#8a6a4a', 'stroke-width': 10 }); const sun = el('g', {}, p); const rays = el('g', {}, sun);
+      for (let i = 0; i < 10; i++) el('path', { d: 'M -7 -62 Q 0 -86 7 -62 Z', fill: '#ffd23f', transform: `rotate(${i * 36})` }, rays);
+      el('circle', { r: 40, fill: '#ffd23f' }, sun); sun.setAttribute('transform', 'translate(150 410)'); R(176, 300, 6, 280, '#8a6a4a'); R(60, 436, 240, 6, '#8a6a4a');
+      el('path', { d: 'M 40 290 Q 80 420 50 600 L 20 600 L 20 290 Z M 320 290 Q 280 420 310 600 L 340 600 L 340 290 Z', fill: '#e8706a', opacity: .9 }, p);
+      R(470, 830, 260, 130, '#7aa5d6', { rx: 14 }); R(470, 800, 260, 60, '#5b86b8', { rx: 14 }); R(490, 770, 90, 44, '#fff', { rx: 18, stroke: '#cfd8e6', 'stroke-width': 3 });
+      [[130, 1010], [210, 1050], [90, 1090]].forEach(([x, y]) => C(x, y, 9, '#6b3a1e', { opacity: .55 }));
+      upd.push(T => rays.setAttribute('transform', `rotate(${T * 12})`));
+    } else if (kind === 'control') {
+      R(0, 0, 720, 1228, '#26304f'); R(0, 960, 720, 268, '#1a2038'); R(30, 300, 660, 300, '#34406a', { rx: 14, stroke: '#6b7bb8', 'stroke-width': 4 });
+      const dots = []; for (let r = 0; r < 4; r++) for (let c = 0; c < 10; c++) dots.push(C(70 + c * 36, 340 + r * 40, 10, '#5be37d'));
+      R(440, 330, 220, 140, '#0f1530', { rx: 8, stroke: '#6b7bb8', 'stroke-width': 3 }); const line = el('path', { fill: 'none', stroke: '#5be37d', 'stroke-width': 4, 'stroke-linejoin': 'round' }, p);
+      for (let i = 0; i < 6; i++) R(40 + i * 110, 500, 80, 70, '#222c4e', { rx: 8 }); const glow = R(0, 0, 720, 1228, '#ff3b30', { opacity: 0 });
+      const sir = el('g', {}, p); C(0, 0, 36, '#ff4d4d', { 'stroke': '#8a1a1a', 'stroke-width': 5 }); sir.setAttribute('transform', 'translate(640 252)'); el('circle', { r: 36, fill: '#ff4d4d', stroke: '#8a1a1a', 'stroke-width': 5 }, sir); const beam = el('path', { d: 'M 0 0 L -230 -60 L -230 60 Z', fill: '#ff4d4d', opacity: .3 }, sir);
+      upd.push(T => { dots.forEach((d, i) => d.setAttribute('fill', Math.sin(T * 7 + i * 1.7) > .1 ? '#5be37d' : (Math.sin(T * 5 + i) > .6 ? '#ffd23f' : '#ff4d4d'))); let d = ''; for (let i = 0; i <= 20; i++) d += (i ? 'L' : 'M') + (450 + i * 10) + ' ' + (400 - Math.abs(Math.sin(i * .7 + T * 6)) * 50 * (i % 5 === 0 ? 1.4 : .6)).toFixed(1) + ' '; line.setAttribute('d', d); glow.setAttribute('opacity', (.05 + .07 * Math.abs(Math.sin(T * 5))).toFixed(3)); beam.setAttribute('transform', `rotate(${T * 300})`); });
+    } else if (kind === 'chat') {
+      R(0, 0, 720, 1228, '#0d3b3a'); R(0, 980, 720, 248, '#0a2e2d');
+      const N = [[90, 420], [250, 330], [450, 380], [620, 470], [150, 600], [330, 560], [540, 640], [380, 220]], E = [[0, 1], [1, 2], [2, 3], [0, 4], [4, 5], [5, 2], [5, 6], [6, 3], [1, 7], [7, 2], [1, 5]];
+      E.forEach(([a, b]) => el('line', { x1: N[a][0], y1: N[a][1], x2: N[b][0], y2: N[b][1], stroke: '#2ee6a6', 'stroke-width': 2.5, opacity: .75 }, p));
+      const nodes = N.map(([x, y]) => C(x, y, 12, '#2ee6a6')), msgs = [];
+      for (let i = 0; i < 9; i++) { const gm = el('g', {}, p); const own = i % 2 === 0; el('rect', { x: -22, y: -12, width: 44, height: 24, rx: 10, fill: own ? '#25D366' : '#dcf8c6' }, gm); el('path', { d: 'M -12 0 H 12', stroke: own ? '#fff' : '#0d3b3a', 'stroke-width': 3, 'stroke-linecap': 'round' }, gm); msgs.push({ gm, e: E[i % E.length], k: i * .37, sp: .35 + (i % 4) * .08 }); }
+      upd.push(T => { nodes.forEach((n, i) => n.setAttribute('r', (11 + 4 * Math.abs(Math.sin(T * 3 + i))).toFixed(1))); msgs.forEach(m => { const u = (T * m.sp + m.k) % 1, a = N[m.e[0]], b = N[m.e[1]]; m.gm.setAttribute('transform', `translate(${(a[0] + (b[0] - a[0]) * u).toFixed(1)} ${(a[1] + (b[1] - a[1]) * u - 18).toFixed(1)}) scale(${(.6 + .5 * Math.sin(u * 3.14)).toFixed(2)})`); }); });
+    } else if (kind === 'memory') {
+      R(0, 0, 720, 1228, '#e9e4f5'); R(0, 960, 720, 268, '#cfc4e8');
+      const cols = ['#6fa8dc', '#e06666', '#93c47d', '#f6b26b', '#8e7cc3', '#76a5af'];
+      [[330, 0], [470, 1], [610, 2]].forEach(([y, k]) => { R(20, y + 24, 680, 12, '#8a5a3a', { rx: 4 }); for (let i = 0; i < 9; i++) { const h = 50 + ((i * 17 + k * 11) % 40); R(40 + i * 62, y + 24 - h, 44, h, cols[(i + k) % cols.length], { rx: 4, stroke: '#14122b', 'stroke-width': 3 }); } });
+      const hot = el('g', {}, p); hot.setAttribute('transform', 'translate(560 262)'); el('rect', { x: -60, y: -34, width: 120, height: 68, rx: 10, fill: '#ffd23f', stroke: '#b38f00', 'stroke-width': 5 }, hot); X.text(hot, '2017', 0, 14, 44, '#7a5a00', 900, 'middle');
+      const pap = el('g', {}, p); el('rect', { x: -40, y: -52, width: 80, height: 104, fill: '#fff', stroke: '#999', 'stroke-width': 3 }, pap); [-24, -8, 8].forEach(y => el('path', { d: `M -26 ${y} H 26`, stroke: '#bbb', 'stroke-width': 4 }, pap)); el('path', { d: 'M -26 -8 H 26', stroke: '#e06666', 'stroke-width': 4 }, pap);
+      upd.push(T => { hot.setAttribute('transform', `translate(560 ${262 + Math.sin(T * 2) * 5}) scale(${1 + .06 * Math.sin(T * 5)})`); pap.setAttribute('transform', `translate(${590 + Math.sin(T * .9) * 30} ${1000 + Math.sin(T * 1.7) * 22}) rotate(${14 + Math.sin(T * 1.3) * 12})`); });
+    } else if (kind === 'night') {
+      R(0, 0, 720, 1228, '#14183a'); R(0, 980, 720, 248, '#0d1030');
+      const st = []; for (let i = 0; i < 30; i++) st.push(C(20 + rnd(i + 3) * 680, 240 + rnd(i + 9) * 640, .8 + rnd(i + 21) * 2, '#fff'));
+      C(590, 330, 52, '#f6f1c9'); C(612, 316, 46, '#14183a');
+      R(380, 930, 340, 110, '#5b7fb5', { rx: 16 }); R(380, 910, 340, 50, '#3f5f94', { rx: 16 }); C(430, 925, 34, '#f1c7a0'); R(402, 890, 80, 34, '#fff', { rx: 16, opacity: .9 }); el('path', { d: 'M 416 922 q 8 6 16 0 M 436 922 q 8 6 16 0', fill: 'none', stroke: '#6b4a2a', 'stroke-width': 3, 'stroke-linecap': 'round' }, p);
+      const z = [0, 1, 2].map(i => X.text(p, 'Z', 0, 0, 40 + i * 10, '#c9d6ff', 800));
+      upd.push(T => { st.forEach((s, i) => s.setAttribute('opacity', (.25 + .6 * Math.abs(Math.sin(T * 1.3 + i))).toFixed(2))); z.forEach((e, i) => { const u = (T * .45 + i / 3) % 1; e.setAttribute('opacity', (.9 * Math.sin(u * 3.14)).toFixed(2)); e.setAttribute('transform', `translate(${470 + u * 70} ${880 - u * 120})`); }); });
+    } else {
+      R(0, 0, 720, 1228, '#f2e6ff'); R(0, 960, 720, 268, '#e0ccff'); R(0, 950, 720, 14, '#c9b0f0');
+      C(560, 400, 84, '#fff', { stroke: '#555', 'stroke-width': 8 }); for (let i = 0; i < 12; i++) el('line', { x1: 0, y1: -70, x2: 0, y2: -60, stroke: '#555', 'stroke-width': 4, transform: `translate(560 400) rotate(${i * 30})` }, p);
+      el('line', { x1: 560, y1: 400, x2: 560 + 36 * Math.sin(23.5 * .01745), y2: 400 - 36 * Math.cos(23.5 * .01745), stroke: '#333', 'stroke-width': 7, 'stroke-linecap': 'round' }, p); el('line', { x1: 560, y1: 400, x2: 560 + 56 * Math.sin(282 * .01745), y2: 400 - 56 * Math.cos(282 * .01745), stroke: '#333', 'stroke-width': 5, 'stroke-linecap': 'round' }, p); C(560, 400, 6, '#333');
+    }
+    return { update: T => upd.forEach(f => f(T)) };
+  }
+
   window.TOON.draw = function (parent, w, mood, t, color) {
     w = who(w); const cg = el('g', {}, parent), body = el('g', {}, cg);
     const b = BODIES[w](body, color || null);
@@ -634,13 +794,14 @@
     // twinkling background stars
     const ocean = d.bg === 'ocean' ? makeOcean(bg, d.depth !== undefined) : null;
     const D0 = Number(d.depth) || 0, D1 = d.depth2 !== undefined ? Number(d.depth2) || 0 : D0;
-    const stars = []; for (let i = 0; i < (ocean || d.bg === 'kitchen' ? 0 : 26); i++) stars.push({ e: el('circle', { cx: 20 + rnd(i + 3) * 680, cy: 60 + rnd(i + 9) * 1000, r: .8 + rnd(i + 21) * 2.2, fill: '#fff' }, bg), k: i });
+    const stars = []; for (let i = 0; i < (ocean || d.bg === 'kitchen' || BRAIN_BGS.indexOf(d.bg) >= 0 ? 0 : 26); i++) stars.push({ e: el('circle', { cx: 20 + rnd(i + 3) * 680, cy: 60 + rnd(i + 9) * 1000, r: .8 + rnd(i + 21) * 2.2, fill: '#fff' }, bg), k: i });
     if (d.bg === 'kitchen') {
       el('rect', { x: 0, y: 0, width: 720, height: 1228, fill: '#ffe9c4' }, bg);
       for (let r = 0; r < 14; r++) for (let c = 0; c < 8; c++) el('rect', { x: c * 100 - (r % 2 ? 50 : 0) + 4, y: r * 70 + 4, width: 92, height: 62, rx: 8, fill: (r + c) % 2 ? '#fff3dc' : '#ffe2b0' }, bg);
       el('rect', { x: 0, y: 900, width: 720, height: 330, fill: '#b9794a' }, bg); el('rect', { x: 0, y: 890, width: 720, height: 26, fill: '#e2a870' }, bg);
       for (let i = 0; i < 5; i++) el('path', { d: `M ${i * 160} 930 L ${i * 160} 1228`, stroke: '#a26636', 'stroke-width': 4, opacity: .6 }, bg);
     }
+    const brainBg = makeBrainBg(d.bg, bg);
     if (d.bg === 'day') { el('rect', { x: 0, y: 0, width: 720, height: 1228, fill: '#2d63b8', opacity: .55 }, bg); }
 
     const CX = 360, CY = 620;
@@ -666,6 +827,7 @@
     return function (lt, dur) {
       const tAt = at * dur, T = lt;
       bg.setAttribute('opacity', 1);
+      if (brainBg) brainBg.update(T);
       stars.forEach(s => s.e.setAttribute('opacity', (.25 + .55 * Math.abs(Math.sin(T * 1.5 + s.k))).toFixed(3)));
       if (ocean) ocean.update(lerp(D0, D1, eio(prog(lt, 0, dur))), T, (D1 - D0) / Math.max(1, dur) / 700);
       const reveal = eob(prog(lt, 0, .45)) ;

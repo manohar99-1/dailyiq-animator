@@ -51,8 +51,8 @@ def _short(s, words=5):
     return " ".join(w[:words]) or "Key idea"
 
 
-TOON_WHO = "sun earth moon star cloud buddy astronaut blackhole phone bulb server coin fish whale dolphin shark jellyfish octopus turtle crab angler sub noodle pot bowl chopsticks cheese".split()
-TOON_MOODS = "happy joy excited shocked scared worried sad cry angry sleepy love dizzy cool thinking".split()
+TOON_WHO = "sun earth moon star cloud buddy astronaut blackhole phone bulb server coin fish whale dolphin shark jellyfish octopus turtle crab angler sub noodle pot bowl chopsticks cheese brain clock clock3 coffee ball pan smartphone".split()
+TOON_MOODS = "happy joy excited shocked scared worried sad cry angry sleepy love dizzy cool thinking smart puzzled tired deadpan yawn".split()
 TOON_ACTS = "float hop shake spin vanish appear fall grow shrink stretch suck splat swim dive rise circle wiggle".split()
 ANCHORS = ("left", "right", "top", "bottom", "high", "deep", "center", "base")
 
@@ -97,7 +97,7 @@ def _clean_toon(d):
         out["at"] = min(.85, max(.15, float(d.get("at", .5))))
     except (TypeError, ValueError):
         out["at"] = .5
-    if d.get("bg") in ("ocean", "day", "space", "kitchen"):
+    if d.get("bg") in ("ocean", "day", "space", "kitchen", "bedroom", "control", "chat", "memory", "night", "plain"):
         out["bg"] = d["bg"]
     for k in ("depth", "depth2"):
         try:
