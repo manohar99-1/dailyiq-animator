@@ -1,0 +1,215 @@
+{
+ "title": "What If You Became Invisible for 24 Hours? 👻",
+ "description": "You wake up invisible for 24 hours. Ghost pranks, floating burgers, midnight snacks... what would you do first? Tell us in the comments!\n#shorts #whatif #invisible #funny",
+ "hashtags": [
+  "#shorts",
+  "#whatif",
+  "#invisible",
+  "#funny"
+ ],
+ "scenes": [
+  {
+   "say": "What if you became invisible for the next twenty four hours? Imagine waking up tomorrow and discovering you've become INVISIBLE!",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "invis",
+      "mood": "shocked",
+      "mood2": "shocked",
+      "act": "wiggle",
+      "pos": [
+       360,
+       560,
+       1.5
+      ]
+     }
+    ],
+    "at": 0.55,
+    "layout": "auto",
+    "label": "INVISIBLE?!",
+    "bg": "bedroom"
+   }
+  },
+  {
+   "say": "You've officially become a walking cheat code. No awkward conversations, no annoying people, and you can finally sneak into the kitchen at midnight without anyone knowing.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "invis",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "hop",
+      "pos": [
+       200,
+       600,
+       1.15
+      ]
+     },
+     {
+      "who": "cake",
+      "act": "float",
+      "pos": [
+       520,
+       620,
+       1.0
+      ]
+     }
+    ],
+    "at": 0.55,
+    "layout": "auto",
+    "label": "CHEAT CODE",
+    "bg": "inv_kitchen"
+   }
+  },
+  {
+   "say": "Now imagine becoming a real-life ghost! You could walk into a dark room, slowly open the door, and whisper someone's name.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "ghost",
+      "mood": "happy",
+      "mood2": "excited",
+      "act": "float",
+      "pos": [
+       230,
+       700,
+       1.5
+      ]
+     },
+     {
+      "who": "friend",
+      "mood": "worried",
+      "mood2": "scared",
+      "act": "shake",
+      "pos": [
+       520,
+       620,
+       0.95
+      ]
+     }
+    ],
+    "at": 0.55,
+    "layout": "auto",
+    "label": "GHOST MODE",
+    "bg": "inv_dark"
+   }
+  },
+  {
+   "say": "You could make objects float, switch on lights when nobody's around, or pull someone's chair just as they're about to sit down. Your friends would probably start looking for an exorcist!",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "friend",
+      "mood": "scared",
+      "mood2": "shocked",
+      "act": "shake",
+      "pos": [
+       150,
+       610,
+       0.8
+      ]
+     },
+     {
+      "who": "priest",
+      "mood": "determined",
+      "mood2": "determined",
+      "act": "float",
+      "pos": [
+       360,
+       540,
+       0.95
+      ]
+     },
+     {
+      "who": "hero",
+      "mood": "scared",
+      "mood2": "shocked",
+      "act": "shake",
+      "pos": [
+       580,
+       610,
+       0.8
+      ]
+     }
+    ],
+    "at": 0.55,
+    "layout": "auto",
+    "label": "CALL THE EXORCIST",
+    "bg": "inv_dark"
+   }
+  },
+  {
+   "say": "Or imagine going to a restaurant. You pick up a burger, and it starts floating in mid-air. People would think they're witnessing a real ghost, and start running!",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "hero",
+      "mood": "worried",
+      "mood2": "scared",
+      "act": "hop",
+      "pos": [
+       150,
+       720,
+       0.8
+      ]
+     },
+     {
+      "who": "burger",
+      "act": "float",
+      "pos": [
+       360,
+       640,
+       1.6
+      ]
+     },
+     {
+      "who": "friend",
+      "mood": "worried",
+      "mood2": "scared",
+      "act": "hop",
+      "pos": [
+       580,
+       720,
+       0.8
+      ]
+     }
+    ],
+    "at": 0.55,
+    "layout": "auto",
+    "label": "FLOATING BURGER",
+    "bg": "inv_restaurant"
+   }
+  },
+  {
+   "say": "But here's the real question. If you really had the power to become invisible for twenty four hours, what would you do first? Would you become a ghost and prank everyone, or use your power for something completely different? Let me know in the comments!",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "invis",
+      "mood": "thinking",
+      "mood2": "excited",
+      "act": "float",
+      "pos": [
+       360,
+       560,
+       1.5
+      ]
+     }
+    ],
+    "at": 0.55,
+    "layout": "auto",
+    "label": "WHAT WOULD YOU DO?",
+    "bg": "inv_comments"
+   }
+  }
+ ],
+ "look": {
+  "frame": "wide"
+ }
+}
