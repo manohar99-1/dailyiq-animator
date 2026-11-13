@@ -83,6 +83,15 @@ def _clean_toon(d):
         for k in ("from", "to"):
             if str(c.get(k, "")).lower() in ANCHORS:
                 e[k] = str(c[k]).lower()
+        if str(c.get("enter", "")).lower() in ("left", "right", "top", "bottom"):
+            e["enter"] = str(c["enter"]).lower()
+        if c.get("brief"):
+            e["brief"] = True
+        try:
+            if "delay" in c:
+                e["delay"] = min(5.0, max(0.0, float(c["delay"])))
+        except (TypeError, ValueError):
+            pass
         if str(c.get("dir", "")).lower() in ("left", "right"):
             e["dir"] = str(c["dir"]).lower()
         for k in ("start", "end"):

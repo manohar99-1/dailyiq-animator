@@ -668,46 +668,50 @@
   const limbP = (parent, w, stroke) => el('path', { fill: 'none', stroke, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, parent);
   function mkPerson(o) {
     return function (g, c) {
-      const suit = c || o.suit, hairC = o.hair || '#4a2a14';
-      const legs = [-1, 1].map(sg => ({ sg, o: limbP(g, 24, OLK), i: limbP(g, 14, suit) }));
-      el('ellipse', { cx: -22, cy: 338, rx: 24, ry: 10, fill: '#2b2b3a', stroke: OLK, 'stroke-width': 4 }, g); el('ellipse', { cx: 22, cy: 338, rx: 24, ry: 10, fill: '#2b2b3a', stroke: OLK, 'stroke-width': 4 }, g);
-      const arms = [-1, 1].map(sg => ({ sg, o: limbP(g, 22, OLK), i: limbP(g, 12, suit), h: el('circle', { r: 11, fill: SKIN, stroke: OLK, 'stroke-width': 4 }, g) }));
-      el('rect', { x: -14, y: 66, width: 28, height: 24, fill: SKIN, stroke: OLK, 'stroke-width': 4 }, g);
-      el('path', { d: 'M -50 96 Q -50 82 -34 82 L 34 82 Q 50 82 50 96 L 46 214 Q 0 226 -46 214 Z', fill: suit, stroke: OLK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
-      el('path', { d: 'M -22 82 L 0 118 L 22 82 Z', fill: '#fff', stroke: OLK, 'stroke-width': 4, 'stroke-linejoin': 'round' }, g);
-      if (o.collar) { el('rect', { x: -12, y: 84, width: 24, height: 12, fill: '#fff', stroke: OLK, 'stroke-width': 3 }, g); el('path', { d: 'M 0 150 L 0 196 M -13 164 L 13 164', stroke: '#ffd34d', 'stroke-width': 7, 'stroke-linecap': 'round' }, g); }
-      else el('path', { d: 'M -8 112 L 8 112 L 13 130 L 0 192 L -13 130 Z', fill: o.tie || '#e8352f', stroke: OLK, 'stroke-width': 3.5, 'stroke-linejoin': 'round' }, g);
+      const tee = c || o.suit, hairC = o.hair || '#4a2a14', pants = o.pants || '#3b4560';
+      const legs = [-1, 1].map(sg => ({ sg, o: limbP(g, 26, OLK), i: limbP(g, 16, o.robe ? tee : pants) }));
+      [-1, 1].forEach(sg => el('ellipse', { cx: sg * 22, cy: 340, rx: 22, ry: 9, fill: '#2b2b3a', stroke: OLK, 'stroke-width': 4 }, g));
+      const arms = [-1, 1].map(sg => ({ sg, o: limbP(g, 22, OLK), i: limbP(g, 12, o.robe ? tee : SKIN), h: el('circle', { r: 11, fill: SKIN, stroke: OLK, 'stroke-width': 4 }, g) }));
+      el('rect', { x: -13, y: 66, width: 26, height: 24, fill: SKIN, stroke: OLK, 'stroke-width': 4 }, g);
+      if (o.robe) el('path', { d: 'M -50 96 Q -50 82 -34 82 L 34 82 Q 50 82 50 96 L 62 300 Q 0 318 -62 300 Z', fill: tee, stroke: OLK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
+      else el('path', { d: 'M -48 98 Q -48 82 -30 82 L 30 82 Q 48 82 48 98 L 44 212 Q 0 224 -44 212 Z', fill: tee, stroke: OLK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
+      if (o.robe) el('path', { d: 'M 0 140 L 0 198 M -15 158 L 15 158', stroke: '#ffd34d', 'stroke-width': 8, 'stroke-linecap': 'round' }, g);
       el('circle', { r: 80, fill: SKIN, stroke: OLK, 'stroke-width': 5 }, g);
       [-1, 1].forEach(sg => el('ellipse', { cx: sg * 80, cy: 8, rx: 10, ry: 16, fill: SKIN, stroke: OLK, 'stroke-width': 4 }, g));
-      if (!o.bald) el('path', { d: 'M -78 -14 Q -86 -88 0 -86 Q 86 -88 78 -14 Q 60 -56 0 -58 Q -60 -56 -78 -14 Z', fill: hairC, stroke: OLK, 'stroke-width': 4, 'stroke-linejoin': 'round' }, g);
+      el('path', { d: 'M -78 -14 Q -86 -88 0 -86 Q 86 -88 78 -14 Q 60 -56 0 -58 Q -60 -56 -78 -14 Z', fill: hairC, stroke: OLK, 'stroke-width': 4, 'stroke-linejoin': 'round' }, g);
       return { fy: 0, fs: 1, top: -108, noblush: true, tick: (t, p) => {
-        const f = p ? clamp(Math.max(p.tremble || 0, p.excl * .8 || 0, p.sweat > .5 ? .3 : 0), 0, 1) : 0, sw = Math.sin(t * 1.5), fl = Math.sin(t * 11) * 6 * f;
-        arms.forEach(a => { const sg = a.sg, x0 = sg * 50, y0 = 104, ex = sg * lerp(86, 78, f), ey = lerp(188 + sw * 5 * sg, 20 + fl * sg, f), d = `M ${x0} ${y0} Q ${sg * lerp(86, 100, f)} ${lerp(138, 70, f)} ${ex} ${ey}`;
+        const f = p ? clamp(Math.max(p.tremble || 0, p.excl * .8 || 0, p.sweat > .5 ? .3 : 0), 0, 1) : 0, sw = Math.sin(t * 1.8), fl = Math.sin(t * 11) * 6 * f;
+        arms.forEach(a => { const sg = a.sg, x0 = sg * 46, y0 = 104, ex = sg * lerp(78, 74, f), ey = lerp(186 + sw * 9 * sg, 24 + fl * sg, f), d = `M ${x0} ${y0} Q ${sg * lerp(82, 96, f)} ${lerp(140, 70, f)} ${ex} ${ey}`;
           a.o.setAttribute('d', d); a.i.setAttribute('d', d); a.h.setAttribute('cx', ex); a.h.setAttribute('cy', ey); });
-        legs.forEach(l => { const sg = l.sg, d = `M ${sg * 22} 210 Q ${sg * (30 + f * 8)} 270 ${sg * (22 + f * 10)} 332`; l.o.setAttribute('d', d); l.i.setAttribute('d', d); });
+        legs.forEach(l => { const sg = l.sg, d = `M ${sg * 22} 208 Q ${sg * (28 + f * 8)} 272 ${sg * (22 + f * 10)} 332`; l.o.setAttribute('d', d); l.i.setAttribute('d', d); });
       } };
     };
   }
-  BODIES.hero = mkPerson({ suit: '#2f6fdb' });
-  BODIES.friend = mkPerson({ suit: '#2fa56a', tie: '#ffb627', hair: '#1c1c28' });
-  BODIES.priest = mkPerson({ suit: '#23232f', collar: true, hair: '#8a8a99' });
-  // invisible person: floating pyjamas, hands and head only hinted by dashed outlines
+  BODIES.hero = mkPerson({ suit: '#4a90e2' });
+  BODIES.friend = mkPerson({ suit: '#4cc38a', hair: '#1c1c28', pants: '#5b4a8a' });
+  BODIES.priest = mkPerson({ suit: '#26262f', robe: true, hair: '#9a9aa8' });
+  // invisible person: only a see-through glassy outline (no clothes)
   BODIES.invis = function (g, c) {
-    const pj = c || '#8ec9ff', ghostL = { fill: 'rgba(255,255,255,.10)', stroke: '#ffffff', 'stroke-width': 4, 'stroke-dasharray': '9 9', 'stroke-linecap': 'round', opacity: .8 };
-    const legs = [-1, 1].map(sg => ({ sg, o: limbP(g, 26, OLK), i: limbP(g, 16, pj) }));
-    const arms = [-1, 1].map(sg => ({ sg, o: limbP(g, 24, OLK), i: limbP(g, 14, pj), h: el('circle', Object.assign({ r: 13 }, ghostL), g) }));
-    el('circle', Object.assign({ r: 80 }, ghostL), g);
-    el('path', { d: 'M -34 74 L 0 100 L 34 74', fill: 'none', stroke: OLK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
-    el('path', { d: 'M -52 96 Q -52 82 -36 82 L 36 82 Q 52 82 52 96 L 48 214 Q 0 226 -48 214 Z', fill: pj, stroke: OLK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
-    el('path', { d: 'M -22 82 L 0 108 L 22 82', fill: '#fff', stroke: OLK, 'stroke-width': 4, 'stroke-linejoin': 'round' }, g);
-    [[-22, 140], [18, 168], [-6, 196], [26, 124]].forEach(([x, y]) => el('path', { d: `M ${x} ${y - 9} L ${x + 3} ${y - 3} L ${x + 10} ${y - 3} L ${x + 5} ${y + 2} L ${x + 7} ${y + 9} L ${x} ${y + 5} L ${x - 7} ${y + 9} L ${x - 5} ${y + 2} L ${x - 10} ${y - 3} L ${x - 3} ${y - 3} Z`, fill: '#ffd34d' }, g));
-    [-1, 1].forEach(sg => el('ellipse', { cx: sg * 24, cy: 338, rx: 26, ry: 11, fill: '#ffffff', stroke: OLK, 'stroke-width': 4, opacity: .95 }, g));
-    const sp = [0, 1, 2, 3, 4].map(i => el('path', { d: 'M 0 -10 L 3 -3 L 10 0 L 3 3 L 0 10 L -3 3 L -10 0 L -3 -3 Z', fill: '#fff' }, g));
-    return { fy: 0, fs: 0, top: -120, noface: true, tick: (t, p) => {
+    const id = 'iv' + (++UID), defs = el('defs', {}, g), fl = el('filter', { id, x: '-30%', y: '-30%', width: '160%', height: '160%' }, defs);
+    el('feMorphology', { in: 'SourceAlpha', operator: 'erode', radius: 3.2, result: 'e' }, fl);
+    el('feComposite', { in: 'SourceGraphic', in2: 'e', operator: 'out', result: 'rim' }, fl);
+    const fillT = el('feComponentTransfer', { in: 'SourceGraphic', result: 'fillA' }, fl); const fa = el('feFuncA', { type: 'linear', slope: .16 }, fillT);
+    const mg = el('feMerge', {}, fl); el('feMergeNode', { in: 'fillA' }, mg); el('feMergeNode', { in: 'rim' }, mg);
+    const sil = el('g', { filter: `url(#${id})` }, g), W = '#e8f6ff';
+    const tube = w => el('path', { fill: 'none', stroke: W, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, sil);
+    const legs = [-1, 1].map(sg => ({ sg, p: tube(30) })), arms = [-1, 1].map(sg => ({ sg, p: tube(26), h: el('circle', { r: 15, fill: W }, sil) }));
+    el('path', { d: 'M -50 98 Q -50 82 -32 82 L 32 82 Q 50 82 50 98 L 46 214 Q 0 226 -46 214 Z', fill: W }, sil);
+    el('rect', { x: -13, y: 64, width: 26, height: 26, fill: W }, sil);
+    el('circle', { r: 80, fill: W }, sil);
+    [-1, 1].forEach(sg => el('ellipse', { cx: sg * 24, cy: 340, rx: 26, ry: 11, fill: W }, sil));
+    const sp = [0, 1, 2, 3, 4].map(() => el('path', { d: 'M 0 -10 L 3 -3 L 10 0 L 3 3 L 0 10 L -3 3 L -10 0 L -3 -3 Z', fill: '#fff' }, g));
+    const shine = el('path', { d: 'M -52 -34 Q -30 -62 0 -62', fill: 'none', stroke: '#fff', 'stroke-width': 7, 'stroke-linecap': 'round', opacity: .7 }, g);
+    return { fy: 0, fs: 1, top: -120, noblush: true, makeFace: p => { const f = makeFace(p, true); p.setAttribute('opacity', .55); return f; }, tick: (t, p) => {
       const f = p ? clamp(Math.max(p.tremble || 0, p.excl * .8 || 0), 0, 1) : 0;
-      arms.forEach(a => { const sg = a.sg, x0 = sg * 52, y0 = 104, ex = sg * lerp(88, 80, f), ey = lerp(190 + Math.sin(t * 1.5) * 5 * sg, 30, f), d = `M ${x0} ${y0} Q ${sg * 100} ${lerp(138, 70, f)} ${ex} ${ey}`; a.o.setAttribute('d', d); a.i.setAttribute('d', d); a.h.setAttribute('cx', ex); a.h.setAttribute('cy', ey); });
-      legs.forEach(l => { const sg = l.sg, d = `M ${sg * 24} 210 Q ${sg * 30} 270 ${sg * 24} 330`; l.o.setAttribute('d', d); l.i.setAttribute('d', d); });
-      sp.forEach((s, i) => { const u = (t * .6 + i / 5) % 1, a = i * 1.9; s.setAttribute('transform', `translate(${Math.cos(a) * (110 + 30 * u)} ${60 + Math.sin(a * 1.3) * 140 - u * 40}) scale(${(Math.sin(u * 3.14)).toFixed(2)})`); s.setAttribute('opacity', (.9 * Math.sin(u * 3.14)).toFixed(2)); });
+      fa.setAttribute('slope', (.14 + .06 * Math.sin(t * 2.4)).toFixed(3)); shine.setAttribute('opacity', (.5 + .3 * Math.sin(t * 2.4 + 1)).toFixed(2));
+      arms.forEach(a => { const sg = a.sg, x0 = sg * 46, y0 = 104, ex = sg * lerp(80, 76, f), ey = lerp(190 + Math.sin(t * 1.8) * 9 * sg, 30, f), d = `M ${x0} ${y0} Q ${sg * 94} ${lerp(140, 72, f)} ${ex} ${ey}`; a.p.setAttribute('d', d); a.h.setAttribute('cx', ex); a.h.setAttribute('cy', ey); });
+      legs.forEach(l => { const sg = l.sg, d = `M ${sg * 24} 210 Q ${sg * 30} 272 ${sg * 24} 332`; l.p.setAttribute('d', d); });
+      sp.forEach((s, i) => { const u = (t * .6 + i / 5) % 1, a = i * 1.9; s.setAttribute('transform', `translate(${Math.cos(a) * (130 + 30 * u)} ${60 + Math.sin(a * 1.3) * 150 - u * 40}) scale(${Math.sin(u * 3.14).toFixed(2)})`); s.setAttribute('opacity', (.9 * Math.sin(u * 3.14)).toFixed(2)); });
     } };
   };
   BODIES.ghost = function (g, c) {
@@ -1022,12 +1026,14 @@
         sx = br * (1 - .08 * pulse) * (1 + .0); sy = sy * br * (1 + .14 * pulse);
         if (o.P2.tremble > .5 && after >= 0 || o.P1.tremble > .5 && after < 0) x += Math.sin(T * 50) * 2.5;
         sc *= reveal;
-        pts[i] = { x, y };
+        if (o.c.enter) { const dl = Number(o.c.delay) || 0, k = 1 - eob(prog(lt, dl, dl + .7)), e = String(o.c.enter); x += (e === 'left' ? -560 : e === 'right' ? 560 : 0) * k; y += (e === 'bottom' ? 760 : e === 'top' ? -760 : 0) * k; if (lt < dl) vis = 0; }
+                pts[i] = { x, y };
         o.cg.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(1)}) scale(${(sc * sx).toFixed(3)} ${(sc * sy).toFixed(3)})`);
         X.show(o.cg, vis); o.body.setAttribute('transform', `scale(${o.flip || 1} 1) rotate(${(brot - tiltDeg).toFixed(1)})`);
         // expression
         const u = eio(prog(after, -.05, .25));
         const p = mix(o.P1, o.P2, u);
+        if (o.c.brief && after >= 0) { const dk = Math.exp(-after * 2.6); p.mo = lerp(.08, p.mo, dk); p.mw = lerp(18, p.mw, dk); p.curve = lerp(-.25, p.curve, dk); }   // mouth opens only for a moment, then closes
         const bl = (T + i * .9) % 3.2; const blink = bl < .13 ? 1 - Math.sin(bl / .13 * 3.14) * .95 : 1;
         // look toward the nearest other character (or the middle)
         let tx = CX, ty = CY; const other = chars.length > 1 ? (i === 0 ? 1 : 0) : -1; if (other >= 0 && pts[other]) { tx = pts[other].x; ty = pts[other].y; } else if (other >= 0) { tx = chars[other].base[0]; ty = chars[other].base[1]; }

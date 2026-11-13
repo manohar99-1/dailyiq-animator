@@ -15,14 +15,16 @@
     "cast": [
      {
       "who": "invis",
-      "mood": "shocked",
+      "mood": "happy",
       "mood2": "shocked",
-      "act": "wiggle",
+      "act": "float",
       "pos": [
        360,
        560,
        1.5
-      ]
+      ],
+      "brief": true,
+      "enter": "bottom"
      }
     ],
     "at": 0.55,
@@ -39,7 +41,7 @@
      {
       "who": "invis",
       "mood": "happy",
-      "mood2": "happy",
+      "mood2": "cool",
       "act": "hop",
       "pos": [
        200,
@@ -54,7 +56,9 @@
        520,
        620,
        1.0
-      ]
+      ],
+      "enter": "right",
+      "delay": 0.5
      }
     ],
     "at": 0.55,
@@ -77,18 +81,22 @@
        230,
        700,
        1.5
-      ]
+      ],
+      "enter": "left"
      },
      {
       "who": "friend",
-      "mood": "worried",
-      "mood2": "scared",
-      "act": "shake",
+      "mood": "happy",
+      "mood2": "worried",
+      "act": "float",
       "pos": [
        520,
        620,
        0.95
-      ]
+      ],
+      "brief": true,
+      "enter": "right",
+      "delay": 0.6
      }
     ],
     "at": 0.55,
@@ -104,14 +112,17 @@
     "cast": [
      {
       "who": "friend",
-      "mood": "scared",
+      "mood": "happy",
       "mood2": "shocked",
       "act": "shake",
       "pos": [
        150,
        610,
        0.8
-      ]
+      ],
+      "brief": true,
+      "enter": "left",
+      "delay": 0.2
      },
      {
       "who": "priest",
@@ -122,18 +133,22 @@
        360,
        540,
        0.95
-      ]
+      ],
+      "enter": "bottom"
      },
      {
       "who": "hero",
-      "mood": "scared",
+      "mood": "happy",
       "mood2": "shocked",
       "act": "shake",
       "pos": [
        580,
        610,
        0.8
-      ]
+      ],
+      "brief": true,
+      "enter": "right",
+      "delay": 0.4
      }
     ],
     "at": 0.55,
@@ -149,14 +164,16 @@
     "cast": [
      {
       "who": "hero",
-      "mood": "worried",
-      "mood2": "scared",
+      "mood": "happy",
+      "mood2": "worried",
       "act": "hop",
       "pos": [
        150,
        720,
        0.8
-      ]
+      ],
+      "brief": true,
+      "enter": "left"
      },
      {
       "who": "burger",
@@ -169,14 +186,17 @@
      },
      {
       "who": "friend",
-      "mood": "worried",
-      "mood2": "scared",
+      "mood": "happy",
+      "mood2": "worried",
       "act": "hop",
       "pos": [
        580,
        720,
        0.8
-      ]
+      ],
+      "brief": true,
+      "enter": "right",
+      "delay": 0.2
      }
     ],
     "at": 0.55,
@@ -193,13 +213,14 @@
      {
       "who": "invis",
       "mood": "thinking",
-      "mood2": "excited",
+      "mood2": "happy",
       "act": "float",
       "pos": [
        360,
        560,
        1.5
-      ]
+      ],
+      "enter": "bottom"
      }
     ],
     "at": 0.55,

@@ -10,6 +10,7 @@ from animator import compose, config, render, spec as specmod, timeline
 from animator.cli import slugify
 
 SR = 44100
+FRAC = float(sys.argv[sys.argv.index("--at") + 1]) if "--at" in sys.argv else 0.62
 # (text, speed, pitch semitones, pause after) -- grouped per scene
 SCENES = [
  [("What if you became invisible, for the next twenty four hours?", 1.0, 0.0, 0.5),
@@ -70,7 +71,7 @@ def main():
     if stills:
         spec_json = work / "stills_spec.json"; spec_json.write_text(json.dumps(rt, default=str), encoding="utf-8")
         for i, s in enumerate(rt["scenes"]):
-            f = int((s["start"] + (s["end"] - s["start"]) * 0.62) * fps)
+            f = int((s["start"] + (s["end"] - s["start"]) * FRAC) * fps)
             subprocess.run([sys.executable, "-m", "animator.render_worker", str(spec_json), str(out / "stills"), str(f), str(f + 1), str(fps)], cwd=str(ROOT), check=True)
             p = out / "stills" / f"f{f:05d}.jpg"; shutil.move(p, out / "stills" / f"scene{i + 1}.jpg")
         return
