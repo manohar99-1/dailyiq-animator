@@ -834,6 +834,74 @@
       sp.forEach((s, i) => { const u = (t * .6 + i / 5) % 1, a = i * 1.9; s.setAttribute('transform', `translate(${Math.cos(a) * (130 + 30 * u)} ${60 + Math.sin(a * 1.3) * 150 - u * 40}) scale(${Math.sin(u * 3.14).toFixed(2)})`); s.setAttribute('opacity', (.9 * Math.sin(u * 3.14)).toFixed(2)); });
     } };
   };
+  /* ---------- STYLE C: round-head noodle people (big round head, dot eyes, noodle arms/legs, simple tee) ---------- */
+  const NK = '#161616';
+  function makeDotFace(parent, glass) {
+    const f = el('g', {}, parent), col = glass ? '#2a4a78' : NK;
+    const eyes = [-1, 1].map(s => { const g = el('g', {}, f), dot = el('circle', { r: 6.4, fill: col }, g), arc = el('path', { d: 'M -10 3 Q 0 -10 10 3', fill: 'none', stroke: col, 'stroke-width': 4.6, 'stroke-linecap': 'round' }, g); return { s, g, dot, arc }; });
+    const brows = [-1, 1].map(s => ({ s, e: el('line', { x1: -12, y1: 0, x2: 12, y2: 0, stroke: col, 'stroke-width': 4.4, 'stroke-linecap': 'round' }, f) }));
+    const mouth = el('path', { fill: '#6a2036', stroke: col, 'stroke-width': 4.4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, f);
+    const shades = el('g', {}, f);
+    el('rect', { x: -40, y: -16, width: 34, height: 22, rx: 8, fill: '#10142e' }, shades); el('rect', { x: 6, y: -16, width: 34, height: 22, rx: 8, fill: '#10142e' }, shades); el('rect', { x: -7, y: -10, width: 14, height: 4, fill: '#10142e' }, shades);
+    return function (p, t, look, blink) {
+      const oy = p.open * blink;
+      eyes.forEach(e => {
+        const lx = (look.x + (p.dizzy ? Math.cos(t * 9 + e.s) * .9 : 0)) * 2.4, ly = (look.y - p.lookUp * .9) * 2.4, ar = e.s === 1 ? Math.max(p.arc, p.wink) : p.arc;
+        e.g.setAttribute('transform', `translate(${e.s * 20 + lx} ${-3 + ly}) scale(${(1 + (p.eye - 1) * .5).toFixed(3)} ${((1 + (p.eye - 1) * .6) * Math.max(.08, oy)).toFixed(3)})`);
+        e.dot.setAttribute('opacity', (1 - ar).toFixed(3)); e.arc.setAttribute('opacity', ar.toFixed(3));
+      });
+      brows.forEach(b => { b.e.setAttribute('transform', `translate(${b.s * 21} ${-22 + p.browY * .7}) rotate(${b.s * p.brow * .85})`); b.e.setAttribute('opacity', p.shades > .5 ? 0 : 1); });
+      const tk = p.talk, syl = tk * (.25 + .75 * Math.abs(Math.sin(t * 10.3)) * (.6 + .4 * Math.abs(Math.sin(t * 3.1))));
+      const w = Math.max(8, p.mw * .62) * (1 + tk * .08), my = 24, c = lerp(p.curve, Math.max(.3, p.curve), tk), o = p.mo * (1 - tk * .5) + syl * 1.1, top = my + 12 * c, bot = my + 12 * c + o * 20;
+      mouth.setAttribute('d', `M ${-w} ${my} Q 0 ${top} ${w} ${my} Q 0 ${bot} ${-w} ${my} Z`); mouth.setAttribute('fill', o > .08 ? '#6a2036' : 'none');
+      shades.setAttribute('opacity', p.shades.toFixed(3));
+    };
+  }
+  function mkNoodle(o) {
+    return function (g, c) {
+      const tee = c || o.suit, skin = o.skin, hairC = o.hair;
+      el('ellipse', { cx: 0, cy: 346, rx: 62, ry: 10, fill: '#000', opacity: .16 }, g);
+      const legs = [-1, 1].map(sg => ({ sg, p: limbP(g, 9.5, NK), shoe: el('ellipse', { rx: 18, ry: 8.5, fill: '#222', stroke: NK, 'stroke-width': 3 }, g) }));
+      const arms = [-1, 1].map(sg => ({ sg, p: limbP(g, 9, NK), h: el('circle', { r: 9, fill: skin, stroke: NK, 'stroke-width': 3.5 }, g) }));
+      if (o.robe) {
+        el('path', { d: 'M -32 62 Q 0 52 32 62 L 46 300 Q 0 316 -46 300 Z', fill: tee, stroke: NK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
+        el('path', { d: 'M -12 60 L 0 84 L 12 60 Z', fill: '#fff', stroke: NK, 'stroke-width': 3 }, g); el('path', { d: 'M 0 118 L 0 178 M -14 136 L 14 136', stroke: '#ffd34d', 'stroke-width': 7, 'stroke-linecap': 'round' }, g);
+      } else {
+        el('path', { d: 'M -32 62 Q 0 52 32 62 L 25 168 Q 0 176 -25 168 Z', fill: tee, stroke: NK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
+        el('path', { d: 'M -14 58 Q 0 76 14 58', fill: skin, stroke: NK, 'stroke-width': 3.4, 'stroke-linecap': 'round' }, g);
+        if (o.stripe) el('path', { d: 'M -29 104 L 29 104 L 27 116 L -27 116 Z', fill: o.stripe }, g);
+      }
+      el('circle', { r: 55, fill: skin, stroke: NK, 'stroke-width': 6 }, g);
+      if (o.style === 'spiky') el('path', { d: 'M -54 -6 Q -58 -50 -34 -62 L -28 -80 L -13 -63 L 0 -84 L 13 -63 L 28 -78 L 34 -62 Q 58 -50 54 -6 Q 36 -34 0 -33 Q -36 -34 -54 -6 Z', fill: hairC, stroke: NK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
+      else if (o.style === 'bald') el('path', { d: 'M -54 -2 Q -58 -34 -38 -44 Q -48 -22 -48 -2 Z M 54 -2 Q 58 -34 38 -44 Q 48 -22 48 -2 Z', fill: hairC, stroke: NK, 'stroke-width': 4, 'stroke-linejoin': 'round' }, g);
+      else el('path', { d: 'M -55 -6 Q -58 -66 0 -66 Q 58 -66 55 -6 Q 36 -36 0 -34 Q -36 -36 -55 -6 Z', fill: hairC, stroke: NK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
+      return { fy: 0, fs: 1, top: -88, noblush: true, makeFace: p => makeDotFace(p, false), tick: (t, p) => {
+        const f = p ? clamp(Math.max(p.tremble || 0, p.excl * .8 || 0, p.raise || 0, p.sweat > .5 ? .3 : 0), 0, 1) : 0, sw = Math.sin(t * 1.8);
+        arms.forEach(a => { const sg = a.sg, hx = sg * lerp(52, 66, f), hy = lerp(150 + sw * 7 * sg, 20 + Math.sin(t * 11) * 6 * f * sg, f), d = `M ${sg * 28} 76 Q ${sg * lerp(62, 84, f)} ${lerp(112, 50, f)} ${hx} ${hy}`; a.p.setAttribute('d', d); a.h.setAttribute('cx', hx); a.h.setAttribute('cy', hy); });
+        legs.forEach(l => { const sg = l.sg, fx = sg * (20 + f * 8), d = `M ${sg * 12} ${o.robe ? 300 : 168} Q ${sg * (22 + f * 5)} 256 ${fx} 330`; l.p.setAttribute('d', d); l.shoe.setAttribute('cx', fx + sg * 6); l.shoe.setAttribute('cy', 336); });
+      } };
+    };
+  }
+  BODIES.hero = mkNoodle({ suit: '#5f8fe8', skin: '#f7d2b0', hair: '#2c3a78', style: 'swoop', stripe: '#ffffff' });
+  BODIES.friend = mkNoodle({ suit: '#5fc4a2', skin: '#f1c49b', hair: '#e08a45', style: 'spiky' });
+  BODIES.priest = mkNoodle({ suit: '#26262f', skin: '#f7d2b0', hair: '#b8b8c8', style: 'bald', robe: true });
+  BODIES.invis = function (g, c) {
+    const S = '#8fcfff', FILL = 'rgba(255,255,255,.22)';
+    el('ellipse', { cx: 0, cy: 346, rx: 62, ry: 10, fill: '#000', opacity: .1 }, g);
+    const nd = () => el('path', { fill: 'none', stroke: S, 'stroke-width': 6, 'stroke-linecap': 'round' }, g);
+    const legs = [-1, 1].map(sg => ({ sg, p: nd(), shoe: el('ellipse', { rx: 18, ry: 8.5, fill: FILL, stroke: S, 'stroke-width': 3.5 }, g) })), arms = [-1, 1].map(sg => ({ sg, p: nd(), h: el('circle', { r: 9, fill: FILL, stroke: S, 'stroke-width': 3.5 }, g) }));
+    el('path', { d: 'M -32 62 Q 0 52 32 62 L 25 168 Q 0 176 -25 168 Z', fill: FILL, stroke: S, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
+    el('circle', { r: 55, fill: FILL, stroke: S, 'stroke-width': 6 }, g);
+    const sp = [0, 1, 2, 3, 4].map(() => el('path', { d: 'M 0 -10 L 3 -3 L 10 0 L 3 3 L 0 10 L -3 3 L -10 0 L -3 -3 Z', fill: '#fff' }, g));
+    const shine = el('path', { d: 'M -36 -26 Q -22 -44 -2 -46', fill: 'none', stroke: '#fff', 'stroke-width': 6, 'stroke-linecap': 'round', opacity: .8 }, g);
+    return { fy: 0, fs: 1, top: -88, noblush: true, makeFace: p => { const f = makeDotFace(p, true); p.setAttribute('opacity', .8); return f; }, tick: (t, p) => {
+      const f = p ? clamp(Math.max(p.tremble || 0, p.excl * .8 || 0, p.raise || 0), 0, 1) : 0;
+      shine.setAttribute('opacity', (.55 + .3 * Math.sin(t * 2.4)).toFixed(2));
+      arms.forEach(a => { const sg = a.sg, hx = sg * lerp(52, 66, f), hy = lerp(150 + Math.sin(t * 1.8) * 7 * sg, 20, f), d = `M ${sg * 28} 76 Q ${sg * lerp(62, 84, f)} ${lerp(112, 50, f)} ${hx} ${hy}`; a.p.setAttribute('d', d); a.h.setAttribute('cx', hx); a.h.setAttribute('cy', hy); });
+      legs.forEach(l => { const sg = l.sg, fx = sg * (20 + f * 8), d = `M ${sg * 12} 168 Q ${sg * (22 + f * 5)} 256 ${fx} 330`; l.p.setAttribute('d', d); l.shoe.setAttribute('cx', fx + sg * 6); l.shoe.setAttribute('cy', 336); });
+      sp.forEach((s, i) => { const u = (t * .6 + i / 5) % 1, a = i * 1.9; s.setAttribute('transform', `translate(${Math.cos(a) * (100 + 26 * u)} ${40 + Math.sin(a * 1.3) * 140 - u * 40}) scale(${Math.sin(u * 3.14).toFixed(2)})`); s.setAttribute('opacity', (.9 * Math.sin(u * 3.14)).toFixed(2)); });
+    } };
+  };
   BODIES.ghost = function (g, c) {
     const aura = el('ellipse', { cx: 0, cy: 20, rx: 150, ry: 170, fill: '#7be0ff', opacity: .28 }, g);
     const body = el('path', { d: 'M -92 -10 Q -92 -120 0 -120 Q 92 -120 92 -10 L 92 150 Q 69 118 46 150 Q 23 118 0 150 Q -23 118 -46 150 Q -69 118 -92 150 Z', fill: c || '#f4fcff', stroke: '#5fb4d9', 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
