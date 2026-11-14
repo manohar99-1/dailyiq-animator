@@ -713,6 +713,101 @@
   BODIES.hero = mkPerson({ suit: '#3d83e8', hair: '#5a3416', style: 'side', pants: '#38425f' });
   BODIES.friend = mkPerson({ suit: '#3fb67f', hair: '#1c1c28', style: 'spiky', pants: '#5a4a86', skin: '#e8b98a' });
   BODIES.priest = mkPerson({ suit: '#26262f', robe: true, hair: '#9a9aa8', style: 'bald' });
+  /* ---------- ANIME-style 2D people: pointed chin, big glossy eyes with highlights and lash flicks, layered hair with shine, cel shading, thin outlines ---------- */
+  const AO = '#2a1c2e';
+  function makeAnimeFace(parent, iris) {
+    const f = el('g', {}, parent), uid = 'af' + (++UID);
+    const defs = el('defs', {}, f);
+    const eyeShape = 'M -17 3 Q -13 -19 0 -22 Q 13 -19 17 3 Q 10 22 0 22 Q -10 22 -17 3 Z';
+    const ig = el('linearGradient', { id: uid + 'g', x1: 0, y1: 0, x2: 0, y2: 1 }, defs); el('stop', { offset: 0, 'stop-color': shade(iris, .55) }, ig); el('stop', { offset: .55, 'stop-color': iris }, ig); el('stop', { offset: 1, 'stop-color': shade(iris, 1.45) }, ig);
+    const eyes = [-1, 1].map(s => {
+      const g = el('g', {}, f), cp = el('clipPath', { id: uid + s }, el('defs', {}, g)); el('path', { d: eyeShape }, cp);
+      const white = el('path', { d: eyeShape, fill: '#fff' }, g);
+      const inner = el('g', { 'clip-path': `url(#${uid + s})` }, g);
+      const irisE = el('ellipse', { rx: 12.5, ry: 18, fill: `url(#${uid}g)` }, inner), pup = el('ellipse', { rx: 6, ry: 9.5, fill: '#14101f' }, inner);
+      const hi = el('circle', { r: 4.6, fill: '#fff' }, inner), hi2 = el('circle', { r: 2.2, fill: '#fff', opacity: .85 }, inner);
+      el('path', { d: 'M -17 3 Q -13 -19 0 -22 Q 13 -19 17 3 Q 10 -8 0 -9 Q -10 -8 -17 3 Z', fill: '#000', opacity: .16 }, inner);
+      const lash = el('g', { transform: `scale(${s} 1)` }, g);
+      el('path', { d: 'M -19 3 Q -14 -22 0 -24 Q 14 -22 19 1', fill: 'none', stroke: AO, 'stroke-width': 5.5, 'stroke-linecap': 'round' }, lash);
+      el('path', { d: 'M 17 -1 L 27 -9 L 20 4 Z', fill: AO, stroke: AO, 'stroke-width': 2, 'stroke-linejoin': 'round' }, lash);
+      el('path', { d: 'M -15 11 Q 0 24 15 11', fill: 'none', stroke: AO, 'stroke-width': 1.8, opacity: .55 }, g);
+      const arc = el('path', { d: 'M -16 8 Q 0 -14 16 8', fill: 'none', stroke: AO, 'stroke-width': 5, 'stroke-linecap': 'round' }, g);
+      return { s, g, white, inner, irisE, pup, hi, hi2, lash, arc };
+    });
+    const brows = [-1, 1].map(s => ({ s, e: el('path', { d: 'M -14 3 Q 0 -5 14 1', fill: 'none', stroke: AO, 'stroke-width': 3.6, 'stroke-linecap': 'round' }, f) }));
+    const mouth = el('path', { fill: '#7a2a3c', stroke: AO, 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, f);
+    const tongue = el('ellipse', { rx: 5, ry: 3, fill: '#ff7d92' }, f);
+    const shades = el('g', {}, f);
+    el('rect', { x: -58, y: -22, width: 50, height: 34, rx: 12, fill: '#10142e' }, shades); el('rect', { x: 8, y: -22, width: 50, height: 34, rx: 12, fill: '#10142e' }, shades); el('rect', { x: -10, y: -14, width: 20, height: 5, fill: '#10142e' }, shades);
+    el('rect', { x: -50, y: -17, width: 18, height: 5, rx: 2, fill: '#fff', opacity: .4 }, shades); el('rect', { x: 16, y: -17, width: 18, height: 5, rx: 2, fill: '#fff', opacity: .4 }, shades);
+    return function (p, t, look, blink) {
+      const oy = p.open * blink;
+      eyes.forEach(e => {
+        const lx = (look.x + (p.dizzy ? Math.cos(t * 9 + e.s) * .9 : 0)) * 3.2, ly = (look.y - p.lookUp * .9 + (p.dizzy ? Math.sin(t * 9 + e.s) * .9 : 0)) * 3.2, ar = e.s === 1 ? Math.max(p.arc, p.wink) : p.arc;
+        e.g.setAttribute('transform', `translate(${e.s * 33} 4) scale(${(1 + (p.eye - 1) * .5).toFixed(3)} ${((1 + (p.eye - 1) * .6) * Math.max(.07, oy)).toFixed(3)})`);
+        e.white.setAttribute('opacity', (1 - ar).toFixed(3)); e.inner.setAttribute('opacity', (1 - ar).toFixed(3)); e.lash.setAttribute('opacity', (1 - ar).toFixed(3)); e.arc.setAttribute('opacity', ar.toFixed(3));
+        const k = clamp(p.pup / .55, .45, 1.5); e.pup.setAttribute('rx', (6 * k).toFixed(2)); e.pup.setAttribute('ry', (9.5 * k).toFixed(2));
+        [e.irisE, e.pup].forEach(q => { q.setAttribute('cx', lx.toFixed(2)); q.setAttribute('cy', (ly + 1).toFixed(2)); });
+        e.hi.setAttribute('cx', (lx - 5).toFixed(2)); e.hi.setAttribute('cy', (ly - 8).toFixed(2)); e.hi2.setAttribute('cx', (lx + 5).toFixed(2)); e.hi2.setAttribute('cy', (ly + 8).toFixed(2));
+      });
+      brows.forEach(b => { b.e.setAttribute('transform', `translate(${b.s * 33} ${-28 + p.browY * .6}) rotate(${b.s * p.brow * .8}) scale(${b.s} 1)`); b.e.setAttribute('opacity', p.shades > .5 ? 0 : 1); });
+      const tk = p.talk, syl = tk * (.25 + .75 * Math.abs(Math.sin(t * 10.3)) * (.6 + .4 * Math.abs(Math.sin(t * 3.1))));
+      const w = p.mw * .55 * (1 + tk * .08), my = 36, c = lerp(p.curve, Math.max(.3, p.curve), tk), o = p.mo * (1 - tk * .5) + syl * 1.1, top = my + 9 * c, bot = my + 9 * c + o * 22;
+      mouth.setAttribute('d', `M ${-w} ${my} Q 0 ${top} ${w} ${my} Q 0 ${bot} ${-w} ${my} Z`); mouth.setAttribute('fill', o > .08 ? '#7a2a3c' : 'none');
+      tongue.setAttribute('cx', 0); tongue.setAttribute('cy', (my + 5 * c + o * 17).toFixed(1)); tongue.setAttribute('rx', (w * .4).toFixed(1)); tongue.setAttribute('ry', (Math.min(1, o * 1.4) * 4).toFixed(1)); tongue.setAttribute('opacity', o > .3 ? 1 : 0);
+      shades.setAttribute('opacity', p.shades.toFixed(3));
+    };
+  }
+  function mkAnime(o) {
+    return function (g, c) {
+      const tee = c || o.suit, skin = o.skin || '#ffdcc0', skinD = shade(skin, .83), hairC = o.hair, hairD = shade(hairC, .6), pants = o.pants, teeD = shade(tee, .74);
+      el('ellipse', { cx: 0, cy: 346, rx: 60, ry: 11, fill: '#000', opacity: .18 }, g);
+      const legs = [-1, 1].map(sg => ({ sg, o: limbP(g, 29, AO), i: limbP(g, 23, o.robe ? tee : pants), sh: limbP(g, 8, o.robe ? teeD : shade(pants, .72)), shoe: el('path', {}, g), toe: el('path', {}, g), sole: el('path', {}, g) }));
+      const arms = [-1, 1].map(sg => ({ sg, o: limbP(g, 14, AO), i: limbP(g, 8.5, skin), so: limbP(g, 21, AO), si: limbP(g, 15, tee), h: el('circle', { r: 8.5, fill: skin, stroke: AO, 'stroke-width': 3 }, g), th: el('ellipse', { rx: 3.6, ry: 5.6, fill: skin, stroke: AO, 'stroke-width': 2.6 }, g) }));
+      el('rect', { x: -9, y: 40, width: 18, height: 34, fill: skin, stroke: AO, 'stroke-width': 3 }, g); el('path', { d: 'M -9 44 L 9 44 L 9 58 Q 0 62 -9 58 Z', fill: skinD }, g);
+      if (o.robe) {
+        el('path', { d: 'M -48 84 Q -48 70 -34 68 L 34 68 Q 48 70 48 84 L 60 312 Q 0 326 -60 312 Z', fill: tee, stroke: AO, 'stroke-width': 3.4, 'stroke-linejoin': 'round' }, g);
+        el('path', { d: 'M 14 70 L 34 68 Q 48 70 48 84 L 60 312 Q 36 318 22 320 Q 34 200 14 70 Z', fill: teeD }, g);
+        el('path', { d: 'M -12 69 L 0 92 L 12 69 Z', fill: '#fff', stroke: AO, 'stroke-width': 2.6 }, g); el('path', { d: 'M 0 128 L 0 188 M -14 146 L 14 146', stroke: '#ffd34d', 'stroke-width': 7, 'stroke-linecap': 'round' }, g);
+      } else {
+        el('path', { d: 'M -46 84 Q -46 70 -32 68 L 32 68 Q 46 70 46 84 L 40 202 Q 0 211 -40 202 Z', fill: tee, stroke: AO, 'stroke-width': 3.4, 'stroke-linejoin': 'round' }, g);
+        el('path', { d: 'M 16 70 L 32 68 Q 46 70 46 84 L 40 202 Q 30 205 22 206 Q 32 140 16 70 Z', fill: teeD }, g);
+        el('path', { d: 'M -16 68 Q 0 86 16 68', fill: skin, stroke: AO, 'stroke-width': 3 }, g); el('path', { d: 'M -19 68 Q 0 92 19 68', fill: 'none', stroke: o.trim || '#fff', 'stroke-width': 4.5, 'stroke-linecap': 'round' }, g);
+        if (o.stripe) el('path', { d: 'M -44 126 L 44 126 L 43 140 L -43 140 Z', fill: o.stripe, opacity: .95 }, g);
+        el('path', { d: 'M -26 150 Q -22 162 -28 178', fill: 'none', stroke: teeD, 'stroke-width': 2.6, 'stroke-linecap': 'round' }, g);
+        el('path', { d: 'M -40 200 Q 0 209 40 200 L 40 214 Q 0 224 -40 214 Z', fill: pants, stroke: AO, 'stroke-width': 3 }, g); el('rect', { x: -7, y: 203, width: 14, height: 9, rx: 2, fill: '#e3c45a', stroke: AO, 'stroke-width': 2 }, g);
+      }
+      [-1, 1].forEach(sg => el('ellipse', { cx: sg * 40, cy: 4, rx: 6, ry: 9, fill: skin, stroke: AO, 'stroke-width': 3 }, g));
+      el('path', { d: 'M -40 -4 Q -42 -45 0 -48 Q 42 -45 40 -4 Q 38 26 22 40 Q 8 52 0 52 Q -8 52 -22 40 Q -38 26 -40 -4 Z', fill: skin, stroke: AO, 'stroke-width': 3.4, 'stroke-linejoin': 'round' }, g);
+      el('path', { d: 'M -40 -4 Q -42 -30 -28 -40 Q 0 -30 28 -40 Q 42 -30 40 -4 Q 30 -16 0 -18 Q -30 -16 -40 -4 Z', fill: skinD, opacity: .55 }, g);
+      el('path', { d: 'M 0 14 L 3 19', stroke: shade(skin, .6), 'stroke-width': 2.4, 'stroke-linecap': 'round' }, g);
+      const hs = o.style;
+      if (hs === 'swoop') {
+        el('path', { d: 'M -46 12 Q -62 -52 -4 -66 Q 62 -60 48 8 Q 46 -22 36 -32 Q 28 -46 20 -34 Q 6 -22 -4 -40 Q -12 -22 -24 -36 Q -34 -22 -46 12 Z', fill: hairC, stroke: AO, 'stroke-width': 3.2, 'stroke-linejoin': 'round' }, g);
+        el('path', { d: 'M -30 -52 Q -4 -64 26 -54', fill: 'none', stroke: shade(hairC, 2.1), 'stroke-width': 6, 'stroke-linecap': 'round', opacity: .55 }, g);
+        el('path', { d: 'M 6 -58 Q 16 -42 8 -30 M -22 -48 Q -14 -36 -18 -28', fill: 'none', stroke: hairD, 'stroke-width': 2.4, 'stroke-linecap': 'round' }, g);
+      } else if (hs === 'spiky') {
+        el('path', { d: 'M -46 10 Q -58 -36 -38 -52 L -40 -78 L -22 -62 L -14 -88 L -2 -66 L 14 -90 L 20 -64 L 38 -80 L 36 -52 Q 58 -38 46 10 Q 44 -20 34 -30 L 26 -42 L 16 -30 L 6 -44 L -4 -28 L -14 -42 L -24 -26 L -34 -38 Q -44 -22 -46 10 Z', fill: hairC, stroke: AO, 'stroke-width': 3.2, 'stroke-linejoin': 'round' }, g);
+        el('path', { d: 'M -22 -60 L -14 -82 M 14 -64 L 14 -86', fill: 'none', stroke: shade(hairC, 2.4), 'stroke-width': 4, 'stroke-linecap': 'round', opacity: .55 }, g);
+      } else {
+        el('path', { d: 'M -42 -8 Q -48 -36 -26 -42 Q -38 -26 -40 -8 Z M 42 -8 Q 48 -36 26 -42 Q 38 -26 40 -8 Z', fill: hairC, stroke: AO, 'stroke-width': 3, 'stroke-linejoin': 'round' }, g);
+        el('path', { d: 'M -30 -42 Q 0 -54 30 -42', fill: 'none', stroke: '#fff', 'stroke-width': 4, 'stroke-linecap': 'round', opacity: .5 }, g);
+      }
+      return { fy: 2, fs: .7, top: -92, noblush: true, makeFace: p => makeAnimeFace(p, o.iris), tick: (t, p) => {
+        const f = p ? clamp(Math.max(p.tremble || 0, p.excl * .8 || 0, p.raise || 0, p.sweat > .5 ? .3 : 0), 0, 1) : 0, sw = Math.sin(t * 1.8), fl = Math.sin(t * 11) * 6 * f;
+        arms.forEach(a => { const sg = a.sg, S = [sg * 44, 82], hx = sg * lerp(62, 72, f), hy = lerp(190 + sw * 8 * sg, 36 + fl * sg, f), E = [sg * lerp(66, 88, f), lerp(134, 62, f)];
+          const full = `M ${S[0]} ${S[1]} Q ${E[0]} ${E[1]} ${hx} ${hy}`; a.o.setAttribute('d', full); a.i.setAttribute('d', full);
+          const dp = o.robe ? full : qpart(S, E, [hx, hy], .4); a.so.setAttribute('d', dp); a.si.setAttribute('d', dp); a.h.setAttribute('cx', hx); a.h.setAttribute('cy', hy); a.th.setAttribute('cx', hx - sg * 7); a.th.setAttribute('cy', hy - 2); });
+        legs.forEach(l => { const sg = l.sg, kx = sg * (21 + f * 5), fx = sg * (20 + f * 8), d = `M ${sg * 16} 206 Q ${kx} 274 ${fx} 326`; l.o.setAttribute('d', d); l.i.setAttribute('d', d); l.sh.setAttribute('d', `M ${sg * 22} 212 Q ${kx + sg * 6} 276 ${fx + sg * 5} 322`);
+          l.shoe.setAttribute('d', `M ${fx - 12 * sg} 338 L ${fx - 12 * sg} 324 Q ${fx - 12 * sg} 314 ${fx - 2 * sg} 314 L ${fx + 5 * sg} 318 Q ${fx + 28 * sg} 322 ${fx + 28 * sg} 338 Z`); l.shoe.setAttribute('fill', o.shoe || '#f4f4fa'); l.shoe.setAttribute('stroke', AO); l.shoe.setAttribute('stroke-width', 3.2); l.shoe.setAttribute('stroke-linejoin', 'round');
+          l.toe.setAttribute('d', `M ${fx + 10 * sg} 320 Q ${fx + 28 * sg} 324 ${fx + 28 * sg} 338 L ${fx + 14 * sg} 338 Q ${fx + 18 * sg} 326 ${fx + 10 * sg} 320 Z`); l.toe.setAttribute('fill', o.shoeAcc || '#e8483f');
+          l.sole.setAttribute('d', `M ${fx - 12 * sg} 340 L ${fx + 28 * sg} 340`); l.sole.setAttribute('stroke', '#7a7a90'); l.sole.setAttribute('stroke-width', 3.4); l.sole.setAttribute('stroke-linecap', 'round'); });
+      } };
+    };
+  }
+  BODIES.hero = mkAnime({ suit: '#3d83e8', hair: '#3b2a5e', style: 'swoop', pants: '#2f3550', iris: '#4a90e2', stripe: '#ffffff', trim: '#fff' });
+  BODIES.friend = mkAnime({ suit: '#3fb67f', hair: '#c4572a', style: 'spiky', pants: '#5a4a86', skin: '#f6cfa8', iris: '#3fa86a', trim: '#fff', shoeAcc: '#3d83e8' });
+  BODIES.priest = mkAnime({ suit: '#26262f', robe: true, hair: '#b8b8c8', style: 'bald', iris: '#8a6a4a' });
   // invisible person: only a see-through glassy outline (no clothes)
   BODIES.invis = function (g, c) {
     const id = 'iv' + (++UID), defs = el('defs', {}, g), fl = el('filter', { id, x: '-30%', y: '-30%', width: '160%', height: '160%' }, defs);
@@ -724,18 +819,18 @@
     el('ellipse', { cx: 0, cy: 346, rx: 74, ry: 13, fill: '#000', opacity: .12 }, g);
     const sil = el('g', { filter: `url(#${id})` }, g), W = '#e8f6ff';
     const tube = w => el('path', { fill: 'none', stroke: W, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, sil);
-    const legs = [-1, 1].map(sg => ({ sg, p: tube(32) })), arms = [-1, 1].map(sg => ({ sg, p: tube(22), h: el('circle', { r: 12, fill: W }, sil) }));
-    el('path', { d: 'M -56 86 Q -56 68 -38 66 L 38 66 Q 56 68 56 86 L 50 206 Q 0 218 -50 206 Z', fill: W }, sil);
-    el('rect', { x: -12, y: 36, width: 24, height: 36, fill: W }, sil);
-    el('ellipse', { cx: 0, cy: 2, rx: 44, ry: 48, fill: W }, sil);
-    [-1, 1].forEach(sg => { el('ellipse', { cx: sg * 43, cy: 6, rx: 8, ry: 12, fill: W }, sil); el('path', { d: `M ${sg * 14} 332 L ${sg * 14} 318 Q ${sg * 14} 310 ${sg * 26} 310 L ${sg * 34} 314 Q ${sg * 56} 318 ${sg * 56} 336 L ${sg * 14} 336 Z`, fill: W }, sil); });
+    const legs = [-1, 1].map(sg => ({ sg, p: tube(28) })), arms = [-1, 1].map(sg => ({ sg, p: tube(18), h: el('circle', { r: 10, fill: W }, sil) }));
+    el('path', { d: 'M -46 84 Q -46 70 -32 68 L 32 68 Q 46 70 46 84 L 40 202 Q 0 211 -40 202 Z', fill: W }, sil);
+    el('rect', { x: -10, y: 40, width: 20, height: 34, fill: W }, sil);
+    el('path', { d: 'M -41 -4 Q -43 -46 0 -49 Q 43 -46 41 -4 Q 39 26 23 40 Q 9 53 0 53 Q -9 53 -23 40 Q -39 26 -41 -4 Z', fill: W }, sil);
+    [-1, 1].forEach(sg => { el('ellipse', { cx: sg * 40, cy: 4, rx: 7, ry: 10, fill: W }, sil); el('path', { d: `M ${sg * 8} 338 L ${sg * 8} 324 Q ${sg * 8} 314 ${sg * 18} 314 L ${sg * 25} 318 Q ${sg * 48} 322 ${sg * 48} 338 Z`, fill: W }, sil); });
     const sp = [0, 1, 2, 3, 4].map(() => el('path', { d: 'M 0 -10 L 3 -3 L 10 0 L 3 3 L 0 10 L -3 3 L -10 0 L -3 -3 Z', fill: '#fff' }, g));
     const shine = el('path', { d: 'M -52 -34 Q -30 -62 0 -62', fill: 'none', stroke: '#fff', 'stroke-width': 7, 'stroke-linecap': 'round', opacity: .7 }, g);
-    return { fy: 2, fs: .56, top: -82, noblush: true, makeFace: p => { const f = makeFace(p, true); p.setAttribute('opacity', .6); return f; }, tick: (t, p) => {
+    return { fy: 2, fs: .7, top: -92, noblush: true, makeFace: p => { const f = makeAnimeFace(p, '#7fc4ff'); p.setAttribute('opacity', .75); return f; }, tick: (t, p) => {
       const f = p ? clamp(Math.max(p.tremble || 0, p.excl * .8 || 0, p.raise || 0), 0, 1) : 0;
       fa.setAttribute('slope', (.14 + .06 * Math.sin(t * 2.4)).toFixed(3)); shine.setAttribute('opacity', (.5 + .3 * Math.sin(t * 2.4 + 1)).toFixed(2));
-      arms.forEach(a => { const sg = a.sg, hx = sg * lerp(74, 80, f), hy = lerp(196 + Math.sin(t * 1.8) * 8 * sg, 36, f), d = `M ${sg * 54} 84 Q ${sg * lerp(78, 96, f)} ${lerp(138, 66, f)} ${hx} ${hy}`; a.p.setAttribute('d', d); a.h.setAttribute('cx', hx); a.h.setAttribute('cy', hy); });
-      legs.forEach(l => { const sg = l.sg, d = `M ${sg * 20} 206 Q ${sg * (26 + f * 6)} 274 ${sg * (24 + f * 10)} 326`; l.p.setAttribute('d', d); });
+      arms.forEach(a => { const sg = a.sg, hx = sg * lerp(62, 72, f), hy = lerp(190 + Math.sin(t * 1.8) * 8 * sg, 36, f), d = `M ${sg * 44} 82 Q ${sg * lerp(66, 88, f)} ${lerp(134, 62, f)} ${hx} ${hy}`; a.p.setAttribute('d', d); a.h.setAttribute('cx', hx); a.h.setAttribute('cy', hy); });
+      legs.forEach(l => { const sg = l.sg, d = `M ${sg * 16} 206 Q ${sg * (21 + f * 5)} 274 ${sg * (20 + f * 8)} 326`; l.p.setAttribute('d', d); });
       sp.forEach((s, i) => { const u = (t * .6 + i / 5) % 1, a = i * 1.9; s.setAttribute('transform', `translate(${Math.cos(a) * (130 + 30 * u)} ${60 + Math.sin(a * 1.3) * 150 - u * 40}) scale(${Math.sin(u * 3.14).toFixed(2)})`); s.setAttribute('opacity', (.9 * Math.sin(u * 3.14)).toFixed(2)); });
     } };
   };
