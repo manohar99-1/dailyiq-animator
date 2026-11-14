@@ -51,15 +51,15 @@ def _short(s, words=5):
     return " ".join(w[:words]) or "Key idea"
 
 
-TOON_WHO = "sun earth moon star cloud buddy astronaut blackhole phone bulb server coin fish whale dolphin shark jellyfish octopus turtle crab angler sub noodle pot bowl chopsticks cheese brain clock clock3 coffee ball pan smartphone hero friend priest invis ghost burger cake".split()
-TOON_MOODS = "happy joy excited shocked scared worried sad cry angry sleepy love dizzy cool thinking smart puzzled tired deadpan yawn".split()
+TOON_WHO = "sun earth moon star cloud buddy astronaut blackhole phone bulb server coin fish whale dolphin shark jellyfish octopus turtle crab angler sub noodle pot bowl chopsticks cheese brain clock clock3 coffee ball pan smartphone hero friend priest invis ghost burger cake blanket bubble book lamp chair table gift".split()
+TOON_MOODS = "happy joy excited shocked scared worried boo sad cry angry sleepy love dizzy cool thinking smart puzzled tired deadpan yawn".split()
 TOON_ACTS = "float hop shake spin vanish appear fall grow shrink stretch suck splat swim dive rise circle wiggle".split()
 ANCHORS = ("left", "right", "top", "bottom", "high", "deep", "center", "base")
 
 
 def _clean_toon(d):
     cast = []
-    for c in (d.get("cast") if isinstance(d.get("cast"), list) else [])[:3]:
+    for c in (d.get("cast") if isinstance(d.get("cast"), list) else [])[:6]:
         if not isinstance(c, dict):
             continue
         who = str(c.get("who") or "buddy").lower().strip()
@@ -87,6 +87,12 @@ def _clean_toon(d):
             e["enter"] = str(c["enter"]).lower()
         if c.get("brief"):
             e["brief"] = True
+        if c.get("walk"):
+            e["walk"] = True
+        if isinstance(c.get("text"), str) and c["text"].strip():
+            e["text"] = c["text"].strip()[:24]
+        if isinstance(c.get("color"), str) and re.match(r"^#[0-9a-fA-F]{3,8}$", c["color"]):
+            e["color"] = c["color"]
         try:
             if "delay" in c:
                 e["delay"] = min(5.0, max(0.0, float(c["delay"])))
@@ -106,7 +112,7 @@ def _clean_toon(d):
         out["at"] = min(.85, max(.15, float(d.get("at", .5))))
     except (TypeError, ValueError):
         out["at"] = .5
-    if d.get("bg") in ("ocean", "day", "space", "kitchen", "bedroom", "control", "chat", "memory", "night", "plain", "inv_kitchen", "inv_dark", "inv_restaurant", "inv_comments"):
+    if d.get("bg") in ("ocean", "day", "space", "kitchen", "bedroom", "control", "chat", "memory", "night", "plain", "inv_kitchen", "inv_dark", "inv_restaurant", "inv_comments", "inv_bath", "inv_bed", "inv_street", "inv_living", "inv_room"):
         out["bg"] = d["bg"]
     for k in ("depth", "depth2"):
         try:

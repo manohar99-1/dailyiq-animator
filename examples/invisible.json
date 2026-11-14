@@ -1,15 +1,41 @@
 {
  "title": "What If You Became Invisible for 24 Hours? 👻",
- "description": "You wake up invisible for 24 hours. Ghost pranks, floating burgers, midnight snacks... what would you do first? Tell us in the comments!\n#shorts #whatif #invisible #funny",
+ "description": "You wake up invisible for 24 hours. Pranks, snacks, floating burgers... what would you do first? Tell us in the comments!\n#shorts #whatif #invisible #funny",
  "hashtags": [
   "#shorts",
   "#whatif",
   "#invisible",
   "#funny"
  ],
+ "look": {
+  "frame": "wide"
+ },
  "scenes": [
   {
-   "say": "What if you became invisible for the next twenty four hours? Imagine waking up tomorrow and discovering you've become INVISIBLE!",
+   "say": "What if you became invisible, for the next twenty four hours?",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "hero",
+      "mood": "worried",
+      "mood2": "shocked",
+      "act": "float",
+      "pos": [
+       360,
+       484,
+       1.3
+      ],
+      "brief": true
+     }
+    ],
+    "at": 0.45,
+    "layout": "auto",
+    "bg": "inv_bath"
+   }
+  },
+  {
+   "say": "Imagine waking up tomorrow, and discovering you've become invisible!",
    "type": "toon",
    "data": {
     "cast": [
@@ -20,93 +46,155 @@
       "act": "float",
       "pos": [
        360,
-       560,
-       1.5
+       500,
+       1.3
       ],
-      "brief": true,
-      "enter": "bottom"
+      "brief": true
+     },
+     {
+      "who": "blanket",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       360,
+       735,
+       1.0
+      ]
      }
     ],
-    "at": 0.55,
+    "at": 0.5,
     "layout": "auto",
-    "label": "INVISIBLE?!",
-    "bg": "bedroom"
+    "bg": "inv_bed",
+    "label": "INVISIBLE?!"
    }
   },
   {
-   "say": "You've officially become a walking cheat code. No awkward conversations, no annoying people, and you can finally sneak into the kitchen at midnight without anyone knowing.",
+   "say": "You've officially become a walking cheat code!",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "friend",
+      "mood": "cool",
+      "mood2": "cool",
+      "act": "float",
+      "pos": [
+       590,
+       501,
+       1.25
+      ],
+      "color": "#2b2b36"
+     },
+     {
+      "who": "invis",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "swim",
+      "pos": [
+       360,
+       501,
+       1.25
+      ],
+      "from": "left",
+      "to": "right",
+      "walk": true,
+      "start": 0.1,
+      "end": 0.9
+     }
+    ],
+    "at": 0.5,
+    "layout": "auto",
+    "bg": "inv_street",
+    "label": "CHEAT CODE"
+   }
+  },
+  {
+   "say": "No awkward conversations. No annoying people.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "friend",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       190,
+       501,
+       1.25
+      ]
+     },
+     {
+      "who": "bubble",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       250,
+       330,
+       1.0
+      ],
+      "text": "BLAH BLAH BLAH"
+     },
+     {
+      "who": "invis",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "swim",
+      "pos": [
+       400,
+       501,
+       1.25
+      ],
+      "from": "base",
+      "to": "right",
+      "walk": true,
+      "start": 0.3,
+      "end": 1
+     }
+    ],
+    "at": 0.5,
+    "layout": "auto",
+    "bg": "inv_room"
+   }
+  },
+  {
+   "say": "And you can finally sneak into the kitchen at midnight, without anyone knowing.",
    "type": "toon",
    "data": {
     "cast": [
      {
       "who": "invis",
       "mood": "happy",
-      "mood2": "cool",
-      "act": "hop",
+      "mood2": "happy",
+      "act": "float",
       "pos": [
-       200,
-       600,
-       1.15
+       215,
+       484,
+       1.3
       ]
      },
      {
       "who": "cake",
+      "mood": "happy",
+      "mood2": "happy",
       "act": "float",
       "pos": [
-       520,
-       620,
-       1.0
-      ],
-      "enter": "right",
-      "delay": 0.5
+       340,
+       690,
+       0.3
+      ]
      }
     ],
-    "at": 0.55,
+    "at": 0.5,
     "layout": "auto",
-    "label": "CHEAT CODE",
-    "bg": "inv_kitchen"
+    "bg": "inv_kitchen",
+    "label": "MIDNIGHT SNACK"
    }
   },
   {
-   "say": "Now imagine becoming a real-life ghost! You could walk into a dark room, slowly open the door, and whisper someone's name.",
-   "type": "toon",
-   "data": {
-    "cast": [
-     {
-      "who": "ghost",
-      "mood": "happy",
-      "mood2": "excited",
-      "act": "float",
-      "pos": [
-       230,
-       700,
-       1.5
-      ],
-      "enter": "left"
-     },
-     {
-      "who": "friend",
-      "mood": "happy",
-      "mood2": "worried",
-      "act": "float",
-      "pos": [
-       520,
-       620,
-       0.95
-      ],
-      "brief": true,
-      "enter": "right",
-      "delay": 0.6
-     }
-    ],
-    "at": 0.55,
-    "layout": "auto",
-    "label": "GHOST MODE",
-    "bg": "inv_dark"
-   }
-  },
-  {
-   "say": "You could make objects float, switch on lights when nobody's around, or pull someone's chair just as they're about to sit down. Your friends would probably start looking for an exorcist!",
+   "say": "Now imagine becoming a real-life ghost!",
    "type": "toon",
    "data": {
     "cast": [
@@ -117,12 +205,269 @@
       "act": "shake",
       "pos": [
        150,
-       610,
-       0.8
+       518,
+       1.2
       ],
-      "brief": true,
-      "enter": "left",
-      "delay": 0.2
+      "brief": true
+     },
+     {
+      "who": "hero",
+      "mood": "happy",
+      "mood2": "shocked",
+      "act": "shake",
+      "pos": [
+       330,
+       518,
+       1.2
+      ],
+      "brief": true
+     },
+     {
+      "who": "invis",
+      "mood": "happy",
+      "mood2": "boo",
+      "act": "float",
+      "pos": [
+       560,
+       501,
+       1.25
+      ],
+      "enter": "right",
+      "delay": 0.3
+     }
+    ],
+    "at": 0.6,
+    "layout": "auto",
+    "bg": "inv_living",
+    "label": "SCARE TIME"
+   }
+  },
+  {
+   "say": "You could walk into a dark room, slowly open the door, and whisper someone's name.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "friend",
+      "mood": "worried",
+      "mood2": "scared",
+      "act": "float",
+      "pos": [
+       230,
+       501,
+       1.25
+      ],
+      "brief": true
+     },
+     {
+      "who": "invis",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       520,
+       501,
+       1.25
+      ],
+      "enter": "right"
+     },
+     {
+      "who": "bubble",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       520,
+       330,
+       1.0
+      ],
+      "text": "psst... Sam?"
+     }
+    ],
+    "at": 0.6,
+    "layout": "auto",
+    "bg": "inv_dark"
+   }
+  },
+  {
+   "say": "You could make objects float",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "invis",
+      "mood": "boo",
+      "mood2": "boo",
+      "act": "float",
+      "pos": [
+       200,
+       501,
+       1.25
+      ]
+     },
+     {
+      "who": "coffee",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       340,
+       610,
+       0.3
+      ]
+     },
+     {
+      "who": "book",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       420,
+       700,
+       1.25
+      ]
+     },
+     {
+      "who": "friend",
+      "mood": "happy",
+      "mood2": "shocked",
+      "act": "float",
+      "pos": [
+       560,
+       518,
+       1.2
+      ],
+      "brief": true
+     }
+    ],
+    "at": 0.5,
+    "layout": "auto",
+    "bg": "inv_living"
+   }
+  },
+  {
+   "say": "switch on lights when nobody's around",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "lamp",
+      "mood": "happy",
+      "mood2": "boo",
+      "act": "float",
+      "pos": [
+       200,
+       755,
+       1.25
+      ]
+     },
+     {
+      "who": "invis",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       400,
+       501,
+       1.25
+      ]
+     },
+     {
+      "who": "friend",
+      "mood": "worried",
+      "mood2": "shocked",
+      "act": "float",
+      "pos": [
+       590,
+       518,
+       1.2
+      ],
+      "brief": true
+     }
+    ],
+    "at": 0.45,
+    "layout": "auto",
+    "bg": "inv_dark"
+   }
+  },
+  {
+   "say": "or pull someone's chair just as they're about to sit down.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "friend",
+      "mood": "happy",
+      "mood2": "shocked",
+      "act": "fall",
+      "pos": [
+       330,
+       501,
+       1.25
+      ],
+      "brief": true
+     },
+     {
+      "who": "invis",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       560,
+       501,
+       1.25
+      ]
+     },
+     {
+      "who": "chair",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "swim",
+      "pos": [
+       330,
+       930,
+       1.25
+      ],
+      "from": "base",
+      "to": "left",
+      "walk": true,
+      "start": 0.4,
+      "end": 0.75
+     }
+    ],
+    "at": 0.55,
+    "layout": "auto",
+    "bg": "inv_room"
+   }
+  },
+  {
+   "say": "Your friends would probably start looking for an exorcist!",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "friend",
+      "mood": "worried",
+      "mood2": "scared",
+      "act": "float",
+      "pos": [
+       130,
+       587,
+       1.0
+      ],
+      "brief": true
+     },
+     {
+      "who": "hero",
+      "mood": "worried",
+      "mood2": "scared",
+      "act": "float",
+      "pos": [
+       300,
+       587,
+       1.0
+      ],
+      "brief": true
      },
      {
       "who": "priest",
@@ -130,107 +475,289 @@
       "mood2": "determined",
       "act": "float",
       "pos": [
-       360,
-       540,
-       0.95
+       560,
+       536,
+       1.15
       ],
-      "enter": "bottom"
-     },
-     {
-      "who": "hero",
-      "mood": "happy",
-      "mood2": "shocked",
-      "act": "shake",
-      "pos": [
-       580,
-       610,
-       0.8
-      ],
-      "brief": true,
-      "enter": "right",
-      "delay": 0.4
-     }
-    ],
-    "at": 0.55,
-    "layout": "auto",
-    "label": "CALL THE EXORCIST",
-    "bg": "inv_dark"
-   }
-  },
-  {
-   "say": "Or imagine going to a restaurant. You pick up a burger, and it starts floating in mid-air. People would think they're witnessing a real ghost, and start running!",
-   "type": "toon",
-   "data": {
-    "cast": [
-     {
-      "who": "hero",
-      "mood": "happy",
-      "mood2": "worried",
-      "act": "hop",
-      "pos": [
-       150,
-       720,
-       0.8
-      ],
-      "brief": true,
-      "enter": "left"
-     },
-     {
-      "who": "burger",
-      "act": "float",
-      "pos": [
-       360,
-       640,
-       1.6
-      ]
-     },
-     {
-      "who": "friend",
-      "mood": "happy",
-      "mood2": "worried",
-      "act": "hop",
-      "pos": [
-       580,
-       720,
-       0.8
-      ],
-      "brief": true,
       "enter": "right",
       "delay": 0.2
      }
     ],
-    "at": 0.55,
+    "at": 0.45,
     "layout": "auto",
-    "label": "FLOATING BURGER",
+    "bg": "inv_room",
+    "label": "CALL THE EXORCIST"
+   }
+  },
+  {
+   "say": "Or imagine going to a restaurant. You pick up a burger, and it starts floating in mid-air.",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "friend",
+      "mood": "happy",
+      "mood2": "shocked",
+      "act": "float",
+      "pos": [
+       190,
+       501,
+       1.25
+      ],
+      "brief": true
+     },
+     {
+      "who": "invis",
+      "mood": "boo",
+      "mood2": "boo",
+      "act": "float",
+      "pos": [
+       540,
+       501,
+       1.25
+      ]
+     },
+     {
+      "who": "burger",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       420,
+       735,
+       0.28
+      ]
+     },
+     {
+      "who": "table",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       360,
+       850,
+       1.25
+      ]
+     }
+    ],
+    "at": 0.6,
+    "layout": "auto",
+    "bg": "inv_restaurant",
+    "label": "FLOATING BURGER"
+   }
+  },
+  {
+   "say": "People would think they're witnessing a real ghost, and start running!",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "friend",
+      "mood": "happy",
+      "mood2": "scared",
+      "act": "swim",
+      "pos": [
+       170,
+       501,
+       1.25
+      ],
+      "brief": true,
+      "from": "base",
+      "to": "left",
+      "walk": true,
+      "start": 0.3,
+      "end": 1
+     },
+     {
+      "who": "hero",
+      "mood": "happy",
+      "mood2": "scared",
+      "act": "swim",
+      "pos": [
+       540,
+       501,
+       1.25
+      ],
+      "brief": true,
+      "from": "base",
+      "to": "right",
+      "walk": true,
+      "start": 0.3,
+      "end": 1
+     },
+     {
+      "who": "invis",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       360,
+       501,
+       1.25
+      ]
+     },
+     {
+      "who": "burger",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       360,
+       720,
+       0.28
+      ]
+     },
+     {
+      "who": "table",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       360,
+       850,
+       1.25
+      ]
+     }
+    ],
+    "at": 0.3,
+    "layout": "auto",
     "bg": "inv_restaurant"
    }
   },
   {
-   "say": "But here's the real question. If you really had the power to become invisible for twenty four hours, what would you do first? Would you become a ghost and prank everyone, or use your power for something completely different? Let me know in the comments!",
+   "say": "But here's the real question.",
    "type": "toon",
    "data": {
     "cast": [
      {
       "who": "invis",
       "mood": "thinking",
+      "mood2": "thinking",
+      "act": "float",
+      "pos": [
+       360,
+       244,
+       2.0
+      ]
+     }
+    ],
+    "at": 0.5,
+    "layout": "auto",
+    "bg": "inv_comments"
+   }
+  },
+  {
+   "say": "If you really had the power to become invisible for twenty four hours, what would you do first?",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "invis",
+      "mood": "thinking",
+      "mood2": "thinking",
+      "act": "float",
+      "pos": [
+       360,
+       484,
+       1.3
+      ]
+     },
+     {
+      "who": "bubble",
+      "mood": "happy",
       "mood2": "happy",
       "act": "float",
       "pos": [
        360,
-       560,
-       1.5
+       260,
+       1.6
       ],
-      "enter": "bottom"
+      "text": "24:00:00"
      }
     ],
-    "at": 0.55,
+    "at": 0.5,
     "layout": "auto",
-    "label": "WHAT WOULD YOU DO?",
+    "bg": "inv_comments"
+   }
+  },
+  {
+   "say": "Would you become a ghost and prank everyone, or use your power for something completely different?",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "friend",
+      "mood": "worried",
+      "mood2": "scared",
+      "act": "float",
+      "pos": [
+       140,
+       587,
+       1.0
+      ],
+      "brief": true
+     },
+     {
+      "who": "invis",
+      "mood": "happy",
+      "mood2": "boo",
+      "act": "float",
+      "pos": [
+       340,
+       501,
+       1.25
+      ]
+     },
+     {
+      "who": "gift",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       590,
+       700,
+       1.7
+      ]
+     }
+    ],
+    "at": 0.45,
+    "layout": "auto",
+    "bg": "inv_comments"
+   }
+  },
+  {
+   "say": "Let me know in the comments!",
+   "type": "toon",
+   "data": {
+    "cast": [
+     {
+      "who": "invis",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "hop",
+      "pos": [
+       360,
+       484,
+       1.3
+      ]
+     },
+     {
+      "who": "bubble",
+      "mood": "happy",
+      "mood2": "happy",
+      "act": "float",
+      "pos": [
+       360,
+       300,
+       1.5
+      ],
+      "text": "COMMENT BELOW!"
+     }
+    ],
+    "at": 0.5,
+    "layout": "auto",
     "bg": "inv_comments"
    }
   }
- ],
- "look": {
-  "frame": "wide"
- }
+ ]
 }

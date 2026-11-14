@@ -12,12 +12,13 @@
 
   /* ------------------------------------------------------------ expressions */
   const P0 = { eye: 1, pup: .55, open: 1, arc: 0, brow: 0, browY: 0, mw: 26, curve: .8, mo: 0, blush: .5, tongue: 0,
-    sweat: 0, tears: 0, zzz: 0, hearts: 0, stars: 0, shades: 0, excl: 0, ques: 0, tremble: 0, dizzy: 0, lookUp: 0, wink: 0, talk: 0, specs: 0, bags: 0 };
+    sweat: 0, tears: 0, zzz: 0, hearts: 0, stars: 0, shades: 0, excl: 0, ques: 0, tremble: 0, dizzy: 0, lookUp: 0, wink: 0, talk: 0, specs: 0, bags: 0, raise: 0 };
   const MOODS = {
     happy:    {},
     joy:      { arc: 1, mw: 34, curve: 1, mo: .55, blush: 1, stars: 1 },
     excited:  { eye: 1.2, pup: .7, mw: 34, curve: 1, mo: .7, blush: .9, stars: 1, browY: -8 },
     shocked:  { eye: 1.3, pup: .28, browY: -12, mw: 14, curve: 0, mo: 1.5, blush: .1, excl: 1 },
+    boo:      { brow: -20, browY: 2, mw: 26, curve: 1, mo: 0, blush: 0, raise: 1 },
     gasp:     { eye: 1.3, pup: .28, browY: -12, mw: 8, curve: 0, mo: .75, blush: 0, excl: 1 },
     fear:     { eye: 1.3, pup: .25, brow: 22, browY: -8, mw: 9, curve: 0, mo: .6, blush: 0, sweat: 1, tremble: 1 },
     scared:   { eye: 1.3, pup: .25, brow: 26, browY: -8, mw: 20, curve: -.3, mo: .8, blush: 0, sweat: 1, tremble: 1 },
@@ -668,6 +669,7 @@
   const limbP = (parent, w, stroke) => el('path', { fill: 'none', stroke, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, parent);
   function mkPerson(o) {
     return function (g, c) {
+      el('ellipse', { cx: 0, cy: 346, rx: 74, ry: 13, fill: '#000', opacity: .2 }, g);
       const tee = c || o.suit, hairC = o.hair || '#4a2a14', pants = o.pants || '#3b4560';
       const legs = [-1, 1].map(sg => ({ sg, o: limbP(g, 26, OLK), i: limbP(g, 16, o.robe ? tee : pants) }));
       [-1, 1].forEach(sg => el('ellipse', { cx: sg * 22, cy: 340, rx: 22, ry: 9, fill: '#2b2b3a', stroke: OLK, 'stroke-width': 4 }, g));
@@ -680,7 +682,7 @@
       [-1, 1].forEach(sg => el('ellipse', { cx: sg * 80, cy: 8, rx: 10, ry: 16, fill: SKIN, stroke: OLK, 'stroke-width': 4 }, g));
       el('path', { d: 'M -78 -14 Q -86 -88 0 -86 Q 86 -88 78 -14 Q 60 -56 0 -58 Q -60 -56 -78 -14 Z', fill: hairC, stroke: OLK, 'stroke-width': 4, 'stroke-linejoin': 'round' }, g);
       return { fy: 0, fs: 1, top: -108, noblush: true, tick: (t, p) => {
-        const f = p ? clamp(Math.max(p.tremble || 0, p.excl * .8 || 0, p.sweat > .5 ? .3 : 0), 0, 1) : 0, sw = Math.sin(t * 1.8), fl = Math.sin(t * 11) * 6 * f;
+        const f = p ? clamp(Math.max(p.tremble || 0, p.excl * .8 || 0, p.raise || 0, p.sweat > .5 ? .3 : 0), 0, 1) : 0, sw = Math.sin(t * 1.8), fl = Math.sin(t * 11) * 6 * f;
         arms.forEach(a => { const sg = a.sg, x0 = sg * 46, y0 = 104, ex = sg * lerp(78, 74, f), ey = lerp(186 + sw * 9 * sg, 24 + fl * sg, f), d = `M ${x0} ${y0} Q ${sg * lerp(82, 96, f)} ${lerp(140, 70, f)} ${ex} ${ey}`;
           a.o.setAttribute('d', d); a.i.setAttribute('d', d); a.h.setAttribute('cx', ex); a.h.setAttribute('cy', ey); });
         legs.forEach(l => { const sg = l.sg, d = `M ${sg * 22} 208 Q ${sg * (28 + f * 8)} 272 ${sg * (22 + f * 10)} 332`; l.o.setAttribute('d', d); l.i.setAttribute('d', d); });
@@ -696,7 +698,9 @@
     el('feMorphology', { in: 'SourceAlpha', operator: 'erode', radius: 3.2, result: 'e' }, fl);
     el('feComposite', { in: 'SourceGraphic', in2: 'e', operator: 'out', result: 'rim' }, fl);
     const fillT = el('feComponentTransfer', { in: 'SourceGraphic', result: 'fillA' }, fl); const fa = el('feFuncA', { type: 'linear', slope: .16 }, fillT);
-    const mg = el('feMerge', {}, fl); el('feMergeNode', { in: 'fillA' }, mg); el('feMergeNode', { in: 'rim' }, mg);
+    const mg = el('feMerge', { result: 'm' }, fl); el('feMergeNode', { in: 'fillA' }, mg); el('feMergeNode', { in: 'rim' }, mg);
+    el('feDropShadow', { in: 'm', dx: 0, dy: 0, stdDeviation: 2.4, 'flood-color': '#3b8cff', 'flood-opacity': .9 }, fl);
+    el('ellipse', { cx: 0, cy: 346, rx: 74, ry: 13, fill: '#000', opacity: .12 }, g);
     const sil = el('g', { filter: `url(#${id})` }, g), W = '#e8f6ff';
     const tube = w => el('path', { fill: 'none', stroke: W, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, sil);
     const legs = [-1, 1].map(sg => ({ sg, p: tube(30) })), arms = [-1, 1].map(sg => ({ sg, p: tube(26), h: el('circle', { r: 15, fill: W }, sil) }));
@@ -707,7 +711,7 @@
     const sp = [0, 1, 2, 3, 4].map(() => el('path', { d: 'M 0 -10 L 3 -3 L 10 0 L 3 3 L 0 10 L -3 3 L -10 0 L -3 -3 Z', fill: '#fff' }, g));
     const shine = el('path', { d: 'M -52 -34 Q -30 -62 0 -62', fill: 'none', stroke: '#fff', 'stroke-width': 7, 'stroke-linecap': 'round', opacity: .7 }, g);
     return { fy: 0, fs: 1, top: -120, noblush: true, makeFace: p => { const f = makeFace(p, true); p.setAttribute('opacity', .55); return f; }, tick: (t, p) => {
-      const f = p ? clamp(Math.max(p.tremble || 0, p.excl * .8 || 0), 0, 1) : 0;
+      const f = p ? clamp(Math.max(p.tremble || 0, p.excl * .8 || 0, p.raise || 0), 0, 1) : 0;
       fa.setAttribute('slope', (.14 + .06 * Math.sin(t * 2.4)).toFixed(3)); shine.setAttribute('opacity', (.5 + .3 * Math.sin(t * 2.4 + 1)).toFixed(2));
       arms.forEach(a => { const sg = a.sg, x0 = sg * 46, y0 = 104, ex = sg * lerp(80, 76, f), ey = lerp(190 + Math.sin(t * 1.8) * 9 * sg, 30, f), d = `M ${x0} ${y0} Q ${sg * 94} ${lerp(140, 72, f)} ${ex} ${ey}`; a.p.setAttribute('d', d); a.h.setAttribute('cx', ex); a.h.setAttribute('cy', ey); });
       legs.forEach(l => { const sg = l.sg, d = `M ${sg * 24} 210 Q ${sg * 30} 272 ${sg * 24} 332`; l.p.setAttribute('d', d); });
@@ -742,7 +746,64 @@
     el('circle', { cx: 0, cy: -48, r: 18, fill: '#d8362b', stroke: OLK, 'stroke-width': 5 }, g); el('path', { d: 'M 0 -66 Q 6 -84 18 -88', fill: 'none', stroke: '#3a7a2a', 'stroke-width': 5, 'stroke-linecap': 'round' }, g);
     return { fy: 0, fs: 0, top: -120, noface: true, tick: t => gl.setAttribute('opacity', (.25 + .12 * Math.sin(t * 4)).toFixed(2)) };
   };
-  const INV_BGS = ['inv_kitchen', 'inv_dark', 'inv_restaurant', 'inv_comments'];
+  /* ---------- realistic-size props (1 unit ~ 4 mm, a person is ~420 units tall) ---------- */
+  BODIES.blanket = function (g, c) {
+    el('path', { d: 'M -290 22 Q -290 -22 -230 -22 L 230 -22 Q 290 -22 290 22 L 310 340 L -310 340 Z', fill: c || '#7b8cff', stroke: OLK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
+    el('path', { d: 'M -300 70 L 300 70 M -304 130 L 304 130', stroke: '#fff', 'stroke-width': 10, opacity: .35 }, g);
+    el('path', { d: 'M -230 -22 Q 0 -46 230 -22', fill: 'none', stroke: '#fff', 'stroke-width': 8, 'stroke-linecap': 'round', opacity: .5 }, g);
+    return { fy: 0, fs: 0, top: -60, noface: true, tick: () => { } };
+  };
+  BODIES.bubble = function (g, txt) {
+    txt = String(txt || '...'); const w = Math.max(120, txt.length * 21 + 56);
+    el('path', { d: `M ${-w / 2 + 26} 32 L ${-w / 2 + 6} 74 L ${-w / 2 + 62} 32 Z`, fill: '#fff', stroke: OLK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
+    el('rect', { x: -w / 2, y: -34, width: w, height: 70, rx: 35, fill: '#fff', stroke: OLK, 'stroke-width': 6 }, g);
+    el('rect', { x: -w / 2 + 14, y: 28, width: 46, height: 10, fill: '#fff' }, g);
+    X.text(g, txt, 0, 12, 34, '#14213d', 900);
+    return { fy: 0, fs: 0, top: -60, noface: true, tick: () => { } };
+  };
+  BODIES.book = function (g, c) {
+    const gl = el('ellipse', { cx: 0, cy: 0, rx: 52, ry: 40, fill: '#ffd34d', opacity: .3 }, g);
+    el('rect', { x: -27, y: -20, width: 54, height: 40, rx: 4, fill: c || '#d9483b', stroke: OLK, 'stroke-width': 4 }, g);
+    el('rect', { x: -23, y: 14, width: 48, height: 8, fill: '#fff6dc', stroke: OLK, 'stroke-width': 3 }, g);
+    el('rect', { x: -17, y: -12, width: 28, height: 6, rx: 3, fill: '#ffd34d' }, g);
+    return { fy: 0, fs: 0, top: -50, noface: true, tick: t => gl.setAttribute('opacity', (.25 + .12 * Math.sin(t * 4)).toFixed(2)) };
+  };
+  BODIES.lamp = function (g) {       // side table + table lamp; the lamp switches on when the mood changes to "boo"
+    const glow = el('ellipse', { cx: 0, cy: -70, rx: 330, ry: 300, fill: '#ffe9a8', opacity: 0 }, g), cone = el('path', { d: 'M -46 -66 L -300 150 L 300 150 L 46 -66 Z', fill: '#fff3c4', opacity: 0 }, g);
+    [-1, 1].forEach(s => el('line', { x1: s * 50, y1: 0, x2: s * 56, y2: 140, stroke: OLK, 'stroke-width': 9, 'stroke-linecap': 'round' }, g));
+    el('rect', { x: -66, y: -6, width: 132, height: 14, rx: 5, fill: '#a9743f', stroke: OLK, 'stroke-width': 5 }, g);
+    el('rect', { x: -5, y: -62, width: 10, height: 58, fill: '#6b4a2a', stroke: OLK, 'stroke-width': 3 }, g);
+    el('ellipse', { cx: 0, cy: -4, rx: 24, ry: 6, fill: '#6b4a2a', stroke: OLK, 'stroke-width': 3 }, g);
+    const sh = el('path', { d: 'M -38 -62 L -24 -112 L 24 -112 L 38 -62 Z', fill: '#f4e3b2', stroke: OLK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
+    return { fy: 0, fs: 0, top: -140, noface: true, tick: (t, p) => { const on = clamp((p && p.raise) || 0, 0, 1); glow.setAttribute('opacity', (on * (.3 + .04 * Math.sin(t * 5))).toFixed(2)); cone.setAttribute('opacity', (on * .3).toFixed(2)); sh.setAttribute('fill', on > .5 ? '#fff6c4' : '#b9a878'); } };
+  };
+  BODIES.chair = function (g, c) {   // origin = floor under the chair
+    const col = c || '#b5763c';
+    [[-46, -110, -52, 0], [46, -110, 52, 0]].forEach(([x1, y1, x2, y2]) => el('line', { x1, y1, x2, y2, stroke: OLK, 'stroke-width': 14, 'stroke-linecap': 'round' }, g));
+    [[-46, -110, -52, 0], [46, -110, 52, 0]].forEach(([x1, y1, x2, y2]) => el('line', { x1, y1, x2, y2, stroke: col, 'stroke-width': 7, 'stroke-linecap': 'round' }, g));
+    el('rect', { x: -52, y: -228, width: 104, height: 112, rx: 12, fill: col, stroke: OLK, 'stroke-width': 6 }, g);
+    el('rect', { x: -40, y: -214, width: 80, height: 34, rx: 8, fill: '#d99a5b' }, g);
+    el('rect', { x: -62, y: -122, width: 124, height: 22, rx: 8, fill: '#c98443', stroke: OLK, 'stroke-width': 6 }, g);
+    return { fy: 0, fs: 0, top: -250, noface: true, tick: () => { } };
+  };
+  BODIES.table = function (g) {      // restaurant table; origin = middle of the table top
+    el('path', { d: 'M -180 0 L 180 0 L 200 250 L -200 250 Z', fill: '#fff', stroke: OLK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
+    for (let i = 0; i < 8; i++) el('rect', { x: -190 + i * 48, y: 6, width: 24, height: 240, fill: '#e8483f', opacity: .85 }, g);
+    el('rect', { x: -190, y: -12, width: 380, height: 20, rx: 8, fill: '#f6efe2', stroke: OLK, 'stroke-width': 6 }, g);
+    el('ellipse', { cx: -90, cy: -16, rx: 46, ry: 8, fill: '#fff', stroke: OLK, 'stroke-width': 4 }, g);
+    el('ellipse', { cx: 110, cy: -16, rx: 46, ry: 8, fill: '#fff', stroke: OLK, 'stroke-width': 4 }, g);
+    el('rect', { x: 20, y: -52, width: 22, height: 38, rx: 6, fill: '#bfe6ff', stroke: OLK, 'stroke-width': 4, opacity: .9 }, g);
+    return { fy: 0, fs: 0, top: -90, noface: true, tick: () => { } };
+  };
+  BODIES.gift = function (g) {
+    const gl = el('ellipse', { cx: 0, cy: 0, rx: 70, ry: 60, fill: '#ffd34d', opacity: .3 }, g);
+    el('rect', { x: -38, y: -30, width: 76, height: 66, rx: 8, fill: '#a56bff', stroke: OLK, 'stroke-width': 5 }, g);
+    el('rect', { x: -42, y: -42, width: 84, height: 22, rx: 6, fill: '#c19bff', stroke: OLK, 'stroke-width': 5 }, g);
+    el('rect', { x: -8, y: -42, width: 16, height: 78, fill: '#ffd34d' }, g);
+    X.text(g, '?', 0, 20, 52, '#fff', 900);
+    return { fy: 0, fs: 0, top: -70, noface: true, tick: t => gl.setAttribute('opacity', (.25 + .15 * Math.sin(t * 4)).toFixed(2)) };
+  };
+  const INV_BGS = ['inv_kitchen', 'inv_dark', 'inv_restaurant', 'inv_comments', 'inv_bath', 'inv_bed', 'inv_street', 'inv_living', 'inv_room'];
   function makeInvBg(kind, p) {
     const R = (x, y, w, h, fill, o) => el('rect', Object.assign({ x, y, width: w, height: h, fill }, o || {}), p);
     const C = (cx, cy, r, fill, o) => el('circle', Object.assign({ cx, cy, r, fill }, o || {}), p);
@@ -779,6 +840,48 @@
       R(60, 940, 600, 28, '#d9d9e6', { rx: 8, stroke: OLK, 'stroke-width': 5 });
       for (let i = 0; i < 12; i++) R(60 + i * 50, 968, 50, 90, i % 2 ? '#e8483f' : '#fff', { stroke: OLK, 'stroke-width': 3 });
       R(120, 1058, 24, 150, '#7a4a28'); R(576, 1058, 24, 150, '#7a4a28');
+    } else if (kind === 'inv_bath') {
+      R(0, 0, 720, 1228, '#cfe8ee'); for (let i = 0; i <= 8; i++) el('line', { x1: i * 90, y1: 0, x2: i * 90, y2: 940, stroke: '#a9cdd6', 'stroke-width': 3 }, p); for (let i = 0; i <= 12; i++) el('line', { x1: 0, y1: i * 80, x2: 720, y2: i * 80, stroke: '#a9cdd6', 'stroke-width': 3 }, p);
+      R(0, 930, 720, 298, '#8fb0b8'); R(0, 920, 720, 16, '#6f9099');
+      R(140, 200, 440, 500, '#e9f3f7', { rx: 34, stroke: '#7a8a99', 'stroke-width': 16 }); R(160, 220, 400, 460, '#f4fbfe', { rx: 22 });
+      R(230, 470, 260, 210, '#dcecf2', { rx: 6 }); el('path', { d: 'M 300 470 L 300 300 Q 360 270 420 300 L 420 470 Z', fill: '#e6f0f3' }, p);
+      el('path', { d: 'M 190 240 L 300 240 L 200 460 L 190 460 Z M 330 240 L 370 240 L 260 460 L 220 460 Z', fill: '#fff', opacity: .55 }, p);
+      R(60, 900, 600, 328, '#f1f5f8', { rx: 14, stroke: OLK, 'stroke-width': 6 }); el('ellipse', { cx: 360, cy: 905, rx: 170, ry: 24, fill: '#cfe0e8', stroke: OLK, 'stroke-width': 5 }, p);
+      R(352, 840, 16, 60, '#b8c4cc', { stroke: OLK, 'stroke-width': 4 }); R(330, 836, 60, 14, '#b8c4cc', { rx: 6, stroke: OLK, 'stroke-width': 4 });
+      R(80, 150, 12, 40, '#d4a373'); el('path', { d: 'M 60 190 L 112 190 L 106 330 L 66 330 Z', fill: '#ffb6c1', stroke: OLK, 'stroke-width': 4 }, p);
+    } else if (kind === 'inv_bed') {
+      R(0, 0, 720, 1228, '#f6e5c8'); for (let i = 0; i < 9; i++) R(i * 90, 0, 45, 950, '#fbeed6', { opacity: .6 });
+      R(0, 950, 720, 278, '#d9b38c'); R(0, 940, 720, 14, '#b98d62');
+      R(40, 120, 190, 220, '#bfe6ff', { rx: 10, stroke: '#8a5a3a', 'stroke-width': 10 }); const sun = C(110, 200, 34, '#ffd34d'); R(131, 120, 8, 220, '#8a5a3a'); R(40, 226, 190, 8, '#8a5a3a');
+      R(110, 300, 500, 400, '#8a5a3a', { rx: 46 }); R(130, 320, 460, 360, '#a9743f', { rx: 36 });
+      el('ellipse', { cx: 245, cy: 640, rx: 96, ry: 54, fill: '#fff', stroke: OLK, 'stroke-width': 5 }, p); el('ellipse', { cx: 475, cy: 640, rx: 96, ry: 54, fill: '#fff', stroke: OLK, 'stroke-width': 5 }, p);
+      R(80, 700, 560, 270, '#6f93c9', { rx: 18, stroke: OLK, 'stroke-width': 6 });
+      upd.push(T => sun.setAttribute('r', (34 + 2.5 * Math.sin(T * 2)).toFixed(1)));
+    } else if (kind === 'inv_street') {
+      const gr = el('linearGradient', { id: 'is' + (++UID), x1: 0, y1: 0, x2: 0, y2: 1 }, el('defs', {}, p)); el('stop', { offset: 0, 'stop-color': '#7ec8ff' }, gr); el('stop', { offset: 1, 'stop-color': '#e6f6ff' }, gr);
+      R(0, 0, 720, 1228, 'url(#' + gr.getAttribute('id') + ')'); C(590, 150, 46, '#ffe27a');
+      [[40, 60, 120], [170, 210, 150], [560, 160, 150]].forEach(([x, y, w], i) => R(x, 300 + y * .3, w, 700, ['#9fb4d9', '#b7c4e4', '#8fa3cc'][i], { opacity: .8 }));
+      R(150, 330, 420, 600, '#3a2f5a', { stroke: OLK, 'stroke-width': 8, rx: 8 }); R(210, 360, 300, 78, '#ff4d8d', { rx: 14, stroke: OLK, 'stroke-width': 5 }); X.text(p, 'VIP CLUB', 360, 414, 50, '#fff', 900);
+      R(280, 520, 160, 410, '#1d1633', { stroke: OLK, 'stroke-width': 6 }); R(358, 520, 4, 410, '#6b5a98');
+      R(0, 930, 720, 298, '#b9b9c9'); R(0, 925, 720, 16, '#8f8fa3'); R(250, 935, 220, 293, '#d8353a');
+      [150, 570].forEach(x => { R(x - 7, 760, 14, 175, '#d4af37', { stroke: OLK, 'stroke-width': 4 }); C(x, 756, 15, '#d4af37', { stroke: OLK, 'stroke-width': 4 }); });
+      el('path', { d: 'M 150 780 Q 360 880 570 780', fill: 'none', stroke: '#b3202a', 'stroke-width': 12, 'stroke-linecap': 'round' }, p);
+    } else if (kind === 'inv_living') {
+      R(0, 0, 720, 1228, '#f1d9bd'); for (let i = 0; i < 9; i++) R(i * 90, 0, 45, 950, '#f6e3c9', { opacity: .6 });
+      R(0, 950, 720, 278, '#b98d62'); R(0, 940, 720, 14, '#8f6a45'); el('ellipse', { cx: 360, cy: 1000, rx: 330, ry: 52, fill: '#8f5fa8', opacity: .6 }, p);
+      R(40, 250, 210, 380, '#8a5a3a', { rx: 8, stroke: OLK, 'stroke-width': 6 }); [330, 410, 490].forEach(y => R(52, y, 186, 8, '#5e3c24'));
+      [['#e8483f', 60], ['#4a90e2', 96], ['#59c24a', 132], ['#ffb627', 168], ['#a56bff', 200]].forEach(([c, x], i) => R(x, 262, 28, 64, c, { stroke: OLK, 'stroke-width': 3 }));
+      [['#4a90e2', 70], ['#ffb627', 120], ['#e8483f', 170]].forEach(([c, x]) => R(x, 345, 40, 64, c, { stroke: OLK, 'stroke-width': 3 }));
+      R(330, 300, 340, 220, '#10142e', { rx: 10, stroke: OLK, 'stroke-width': 8 }); const scr = R(344, 314, 312, 192, '#3d7be0', { rx: 4 }); R(480, 520, 40, 40, '#2a2a3a'); R(400, 556, 200, 14, '#2a2a3a', { rx: 6 });
+      R(30, 740, 330, 210, '#c0504d', { rx: 24, stroke: OLK, 'stroke-width': 6 }); R(30, 700, 330, 80, '#d06461', { rx: 26, stroke: OLK, 'stroke-width': 6 });
+      upd.push(T => scr.setAttribute('fill', ['#3d7be0', '#e0623d', '#59c24a'][Math.floor(T * 1.6) % 3]));
+    } else if (kind === 'inv_room') {
+      R(0, 0, 720, 1228, '#ffe2c0'); for (let i = 0; i < 9; i++) R(i * 90, 0, 45, 700, '#ffe9cf', { opacity: .6 }); R(0, 700, 720, 250, '#e8b98a');
+      R(0, 950, 720, 278, '#b98d62'); for (let i = 0; i < 8; i++) el('line', { x1: 0, y1: 950 + i * 40, x2: 720, y2: 950 + i * 40, stroke: '#a67a52', 'stroke-width': 3 }, p);
+      R(0, 940, 720, 14, '#8f6a45'); R(470, 180, 200, 280, '#bfe6ff', { rx: 8, stroke: '#8a5a3a', 'stroke-width': 10 }); R(566, 180, 8, 280, '#8a5a3a');
+      el('path', { d: 'M 440 170 Q 480 320 452 470 L 420 470 L 420 170 Z M 700 170 Q 660 320 688 470 L 720 470 L 720 170 Z', fill: '#e8603d' }, p);
+      R(50, 220, 130, 170, '#fff', { stroke: '#8a5a3a', 'stroke-width': 8 }); el('path', { d: 'M 66 370 L 100 310 L 130 350 L 150 300 L 166 370 Z', fill: '#59c24a' }, p); C(150, 260, 14, '#ffd34d');
+      R(210, 300, 90, 120, '#fff', { stroke: '#8a5a3a', 'stroke-width': 8 }); C(255, 350, 28, '#ff8fb1');
     } else {
       const gr = el('linearGradient', { id: 'ig' + (++UID), x1: 0, y1: 0, x2: 0, y2: 1 }, el('defs', {}, p)); el('stop', { offset: 0, 'stop-color': '#3a1f7a' }, gr); el('stop', { offset: 1, 'stop-color': '#13204f' }, gr);
       R(0, 0, 720, 1228, 'url(#' + gr.getAttribute('id') + ')');
@@ -916,7 +1019,7 @@
 
   /* ----------------------------------------------------------------- scene */
   S.toon = function (g, d) {
-    const cast = (Array.isArray(d.cast) && d.cast.length ? d.cast : [{ who: d.who || 'buddy', mood: d.mood || 'happy', mood2: d.mood2, act: d.act }]).slice(0, 3);
+    const cast = (Array.isArray(d.cast) && d.cast.length ? d.cast : [{ who: d.who || 'buddy', mood: d.mood || 'happy', mood2: d.mood2, act: d.act }]).slice(0, 6);
     const n = cast.length, at = clamp(Number(d.at) > 0 ? Number(d.at) : .5, .15, .85);
     let layout = String(d.layout || 'auto'); if (layout === 'auto') layout = n === 1 ? 'solo' : (n === 2 ? 'duo' : 'trio');
     const orbit = layout === 'orbit' && n >= 2;
@@ -941,7 +1044,7 @@
     if (orbit) { const rx1 = 250, ry1 = 190; orbs.push([rx1, ry1]); el('ellipse', { cx: CX, cy: CY, rx: rx1, ry: ry1, fill: 'none', stroke: '#8fdcff', 'stroke-width': 3, 'stroke-dasharray': '4 14', 'stroke-linecap': 'round', opacity: .45 }, orbitG); }
     const chars = cast.map((c, i) => {
       const w = who(c.who), cg = el('g', {}, g), body = el('g', {}, cg);
-      const b = BODIES[w](body, typeof c.color === 'string' && /^#[0-9a-f]{3,8}$/i.test(c.color) ? c.color : null);
+      const b = BODIES[w](body, typeof c.color === 'string' && /^#[0-9a-f]{3,8}$/i.test(c.color) ? c.color : (typeof c.text === 'string' ? c.text : null));
       const fg = el('g', { transform: `translate(0 ${b.fy}) scale(${b.fs})` }, cg), face = b.noface ? (() => { }) : (b.makeFace ? b.makeFace(fg) : makeFace(fg, b.noblush));
       if (b.afterFace) b.afterFace(cg);
       const ex = b.noface ? null : makeExtras(b.exy ? el('g', { transform: `translate(${b.exx || 0} ${b.exy})` }, cg) : cg, b.top);
@@ -988,7 +1091,7 @@
           const s0 = clamp(Number(c.start) || 0, 0, .95) * dur, e0 = clamp(Number(c.end) > 0 ? Number(c.end) : 1, .05, 1) * dur;
           const at_ = tt => { const u = prog(tt, s0, Math.max(s0 + .3, e0)); const k = vert ? eio(u) : u; return [A[0] + (B[0] - A[0]) * k, A[1] + (B[1] - A[1]) * k]; };
           const P = at_(T), Q = at_(T + .08);
-          x = P[0] + (vert ? Math.sin(T * 2.2) * 24 : 0); y = P[1] + (vert ? 0 : Math.sin(T * 3 + i) * 26);
+          x = P[0] + (vert ? Math.sin(T * 2.2) * 24 : 0); y = P[1] + (vert ? 0 : (c.walk ? -Math.abs(Math.sin(T * 7)) * 12 : Math.sin(T * 3 + i) * 26));
           const vx = (Q[0] - P[0]) / .08, vy = (Q[1] - P[1]) / .08;
           if (Math.abs(vx) > 8) o.flip = vx > 0 ? -1 : 1; else if (vert && !o.dirr) o.flip = o.flip || 1;
           tiltDeg = clamp(Math.atan2(vy, Math.abs(vx) + 24) * 57.3 * .75, -40, 40);
@@ -1033,7 +1136,7 @@
         // expression
         const u = eio(prog(after, -.05, .25));
         const p = mix(o.P1, o.P2, u);
-        if (o.c.brief && after >= 0) { const dk = Math.exp(-after * 2.6); p.mo = lerp(.08, p.mo, dk); p.mw = lerp(18, p.mw, dk); p.curve = lerp(-.25, p.curve, dk); }   // mouth opens only for a moment, then closes
+        if (o.c.brief && after >= 0) { const dk = Math.exp(-after * 2.6); p.mo = lerp(.08, p.mo, dk); p.mw = lerp(18, p.mw, dk); p.curve = lerp(-.25, p.curve, dk); p.tongue = 0; p.mw = Math.min(p.mw, 16); p.mo = Math.min(p.mo, .55); }   // mouth opens only for a moment, then closes
         const bl = (T + i * .9) % 3.2; const blink = bl < .13 ? 1 - Math.sin(bl / .13 * 3.14) * .95 : 1;
         // look toward the nearest other character (or the middle)
         let tx = CX, ty = CY; const other = chars.length > 1 ? (i === 0 ? 1 : 0) : -1; if (other >= 0 && pts[other]) { tx = pts[other].x; ty = pts[other].y; } else if (other >= 0) { tx = chars[other].base[0]; ty = chars[other].base[1]; }

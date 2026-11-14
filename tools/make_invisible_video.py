@@ -11,24 +11,54 @@ from animator.cli import slugify
 
 SR = 44100
 FRAC = float(sys.argv[sys.argv.index("--at") + 1]) if "--at" in sys.argv else 0.62
-# (text, speed, pitch semitones, pause after) -- grouped per scene
-SCENES = [
- [("What if you became invisible, for the next twenty four hours?", 1.0, 0.0, 0.5),
-  ("Imagine waking up tomorrow, and discovering you've become invisible!", 1.0, +0.6, 0)],
- [("You've officially become a walking cheat code!", 1.05, +0.6, 0.45),
-  ("No awkward conversations. No annoying people.", 1.05, 0.0, 0.4),
-  ("And you can finally sneak into the kitchen at midnight, without anyone knowing.", 0.93, -0.7, 0)],
- [("Now imagine becoming a real-life ghost!", 1.0, +0.6, 0.5),
-  ("You could walk into a dark room, slowly open the door, and whisper someone's name.", 0.88, -0.9, 0)],
- [("You could make objects float, switch on lights when nobody's around, or pull someone's chair just as they're about to sit down.", 1.07, +0.3, 0.5),
-  ("Your friends would probably start looking for an exorcist!", 1.05, +0.8, 0)],
- [("Or imagine going to a restaurant. You pick up a burger, and it starts floating in mid-air.", 0.98, +0.2, 0.5),
-  ("People would think they're witnessing a real ghost, and start running!", 1.1, +0.9, 0)],
- [("But here's the real question.", 0.9, -0.5, 0.6),
-  ("If you really had the power to become invisible for twenty four hours, what would you do first?", 1.0, 0.0, 0.5),
-  ("Would you become a ghost and prank everyone, or use your power for something completely different?", 1.0, +0.2, 0.55),
-  ("Let me know in the comments!", 1.05, +0.7, 0)],
+def Y(s): return round(930 - 343 * s)          # y so that a person's feet stand on the floor line (930)
+def person(who, x, s, m1, m2=None, **kw):
+    d = {"who": who, "mood": m1, "mood2": m2 or m1, "act": "float", "pos": [x, Y(s), s]}; d.update(kw); return d
+def prop(who, x, y, s, **kw):
+    d = {"who": who, "mood": "happy", "mood2": "happy", "act": "float", "pos": [x, y, s]}; d.update(kw); return d
+SURP = dict(brief=True)
+# every shot = one narrated phrase: (text, speed, pitch semitones, pause after) + the picture for it
+SHOTS = [
+ {"v": ("What if you became invisible, for the next twenty four hours?", 1.0, 0.0, 0.3), "bg": "inv_bath", "at": .45,
+  "cast": [person("hero", 360, 1.3, "worried", "shocked", **SURP)]},
+ {"v": ("Imagine waking up tomorrow, and discovering you've become invisible!", 1.0, +0.6, 0.3), "bg": "inv_bed", "at": .5, "label": "INVISIBLE?!",
+  "cast": [{"who": "invis", "mood": "happy", "mood2": "shocked", "act": "float", "pos": [360, 500, 1.3], "brief": True}, prop("blanket", 360, 735, 1.0, act="float")]},
+ {"v": ("You've officially become a walking cheat code!", 1.05, +0.6, 0.3), "bg": "inv_street", "at": .5, "label": "CHEAT CODE",
+  "cast": [person("friend", 590, 1.25, "cool", color="#2b2b36"), person("invis", 360, 1.25, "happy", act="swim", **{"from": "left", "to": "right", "walk": True, "start": .1, "end": .9})]},
+ {"v": ("No awkward conversations. No annoying people.", 1.05, 0.0, 0.3), "bg": "inv_room", "at": .5,
+  "cast": [person("friend", 190, 1.25, "happy"), prop("bubble", 250, 330, 1.0, text="BLAH BLAH BLAH"), person("invis", 400, 1.25, "happy", act="swim", **{"from": "base", "to": "right", "walk": True, "start": .3, "end": 1})]},
+ {"v": ("And you can finally sneak into the kitchen at midnight, without anyone knowing.", 0.93, -0.7, 0.4), "bg": "inv_kitchen", "at": .5, "label": "MIDNIGHT SNACK",
+  "cast": [person("invis", 215, 1.3, "happy"), prop("cake", 340, 690, .3)]},
+ {"v": ("Now imagine becoming a real-life ghost!", 1.0, +0.6, 0.3), "bg": "inv_living", "at": .6, "label": "SCARE TIME",
+  "cast": [person("friend", 150, 1.2, "happy", "shocked", act="shake", **SURP), person("hero", 330, 1.2, "happy", "shocked", act="shake", **SURP),
+           person("invis", 560, 1.25, "happy", "boo", enter="right", delay=.3)]},
+ {"v": ("You could walk into a dark room, slowly open the door, and whisper someone's name.", 0.88, -0.9, 0.4), "bg": "inv_dark", "at": .6,
+  "cast": [person("friend", 230, 1.25, "worried", "scared", **SURP), person("invis", 520, 1.25, "happy", enter="right"), prop("bubble", 520, 330, 1.0, text="psst... Sam?")]},
+ {"v": ("You could make objects float,", 1.07, +0.3, 0.15), "bg": "inv_living", "at": .5,
+  "cast": [person("invis", 200, 1.25, "boo"), prop("coffee", 340, 610, .3), prop("book", 420, 700, 1.25), person("friend", 560, 1.2, "happy", "shocked", **SURP)]},
+ {"v": ("switch on lights when nobody's around,", 1.07, +0.3, 0.15), "bg": "inv_dark", "at": .45,
+  "cast": [prop("lamp", 200, 755, 1.25, mood="happy", mood2="boo"), person("invis", 400, 1.25, "happy"), person("friend", 590, 1.2, "worried", "shocked", **SURP)]},
+ {"v": ("or pull someone's chair just as they're about to sit down.", 1.07, +0.3, 0.3), "bg": "inv_room", "at": .55,
+  "cast": [person("friend", 330, 1.25, "happy", "shocked", act="fall", **SURP), person("invis", 560, 1.25, "happy"),
+           prop("chair", 330, 930, 1.25, act="swim", **{"from": "base", "to": "left", "walk": True, "start": .4, "end": .75})]},
+ {"v": ("Your friends would probably start looking for an exorcist!", 1.05, +0.8, 0.3), "bg": "inv_room", "at": .45, "label": "CALL THE EXORCIST",
+  "cast": [person("friend", 130, 1.0, "worried", "scared", **SURP), person("hero", 300, 1.0, "worried", "scared", **SURP), person("priest", 560, 1.15, "determined", enter="right", delay=.2)]},
+ {"v": ("Or imagine going to a restaurant. You pick up a burger, and it starts floating in mid-air.", 0.98, +0.2, 0.3), "bg": "inv_restaurant", "at": .6, "label": "FLOATING BURGER",
+  "cast": [person("friend", 190, 1.25, "happy", "shocked", **SURP), person("invis", 540, 1.25, "boo"), prop("burger", 420, 735, .28), prop("table", 360, 850, 1.25)]},
+ {"v": ("People would think they're witnessing a real ghost, and start running!", 1.1, +0.9, 0.3), "bg": "inv_restaurant", "at": .3,
+  "cast": [person("friend", 170, 1.25, "happy", "scared", **{"brief": True, "act": "swim", "from": "base", "to": "left", "walk": True, "start": .3, "end": 1}),
+           person("hero", 540, 1.25, "happy", "scared", **{"brief": True, "act": "swim", "from": "base", "to": "right", "walk": True, "start": .3, "end": 1}),
+           person("invis", 360, 1.25, "happy"), prop("burger", 360, 720, .28), prop("table", 360, 850, 1.25)]},
+ {"v": ("But here's the real question.", 0.9, -0.5, 0.4), "bg": "inv_comments", "at": .5,
+  "cast": [person("invis", 360, 2.0, "thinking")]},
+ {"v": ("If you really had the power to become invisible for twenty four hours, what would you do first?", 1.0, 0.0, 0.3), "bg": "inv_comments", "at": .5,
+  "cast": [person("invis", 360, 1.3, "thinking"), prop("bubble", 360, 260, 1.6, text="24:00:00")]},
+ {"v": ("Would you become a ghost and prank everyone, or use your power for something completely different?", 1.0, +0.2, 0.3), "bg": "inv_comments", "at": .45,
+  "cast": [person("friend", 140, 1.0, "worried", "scared", **SURP), person("invis", 340, 1.25, "happy", "boo"), prop("gift", 590, 700, 1.7)]},
+ {"v": ("Let me know in the comments!", 1.05, +0.7, 0.0), "bg": "inv_comments", "at": .5,
+  "cast": [person("invis", 360, 1.3, "happy", act="hop"), prop("bubble", 360, 300, 1.5, text="COMMENT BELOW!")]},
 ]
+SCENES = [[x["v"]] for x in SHOTS]
 
 def _ff(*a): subprocess.run(["ffmpeg", "-v", "error", "-y", *a], check=True)
 
@@ -60,9 +90,11 @@ def main():
     stills = "--stills-only" in sys.argv
     workers = int(sys.argv[sys.argv.index("--workers") + 1]) if "--workers" in sys.argv else None
     cfg = config.load(None)
-    raw = json.loads((ROOT / "examples" / "invisible.json").read_text(encoding="utf-8"))
-    for sc, ph in zip(raw["scenes"], SCENES): sc["say"] = " ".join(p[0] for p in ph)
-    sp = specmod.validate(raw)
+    raw = {"title": "What If You Became Invisible for 24 Hours? 👻", "description": "You wake up invisible for 24 hours. Pranks, snacks, floating burgers... what would you do first? Tell us in the comments!\n#shorts #whatif #invisible #funny",
+           "hashtags": ["#shorts", "#whatif", "#invisible", "#funny"], "look": {"frame": "wide"},
+           "scenes": [{"say": x["v"][0].rstrip(", "), "type": "toon", "data": dict(cast=x["cast"], at=x["at"], layout="auto", bg=x["bg"], **({"label": x["label"]} if x.get("label") else {}))} for x in SHOTS]}
+    if "--write-spec" in sys.argv: (ROOT / "examples" / "invisible.json").write_text(json.dumps(raw, ensure_ascii=False, indent=1), encoding="utf-8")
+    sp = specmod.validate(raw, max_scenes=30)
     out = ROOT / "output" / slugify(sp["title"]); work = out / "work"; out.mkdir(parents=True, exist_ok=True)
     clips = build_voice(work / "voice")
     rt = timeline.build(sp, cfg, clips)
