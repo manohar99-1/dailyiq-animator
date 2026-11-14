@@ -91,7 +91,7 @@ def main():
     workers = int(sys.argv[sys.argv.index("--workers") + 1]) if "--workers" in sys.argv else None
     cfg = config.load(None)
     raw = {"title": "What If You Became Invisible for 24 Hours? 👻", "description": "You wake up invisible for 24 hours. Pranks, snacks, floating burgers... what would you do first? Tell us in the comments!\n#shorts #whatif #invisible #funny",
-           "hashtags": ["#shorts", "#whatif", "#invisible", "#funny"], "look": {"frame": "wide"},
+           "hashtags": ["#shorts", "#whatif", "#invisible", "#funny"], "look": {"frame": "wide", "clean": True},
            "scenes": [{"say": x["v"][0].rstrip(", "), "type": "toon", "data": dict(cast=x["cast"], at=x["at"], layout="auto", bg=x["bg"], **({"label": x["label"]} if x.get("label") else {}))} for x in SHOTS]}
     if "--write-spec" in sys.argv: (ROOT / "examples" / "invisible.json").write_text(json.dumps(raw, ensure_ascii=False, indent=1), encoding="utf-8")
     sp = specmod.validate(raw, max_scenes=30)

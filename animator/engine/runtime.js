@@ -28,7 +28,7 @@
     await document.fonts.ready;
     const sg = $('scenes'); sg.innerHTML = ''; inst = [];
     sp.scenes.forEach((s, i) => {
-      const grp = X.el('g', { display: 'inline' }, sg), inner = X.el('g', s.type === 'story' ? {} : { filter: 'url(#fx)' }, grp);
+      const grp = X.el('g', { display: 'inline' }, sg), inner = X.el('g', (s.type === 'story' || (sp.look && sp.look.clean)) ? {} : { filter: 'url(#fx)' }, grp);
       let upd;
       try { upd = (S[s.type] || S.keypoints)(inner, s.data || {}); }
       catch (e) { console.error('scene ' + i + ' (' + s.type + ') failed: ' + e); inner.innerHTML = ''; upd = S.keypoints(inner, { points: [String(s.say || '')] }); }

@@ -221,8 +221,14 @@ def validate(spec, max_scenes=14):
     tags = [("#" + re.sub(r"\W", "", str(t).lstrip("#"))) for t in (spec.get("hashtags") or []) if re.sub(r"\W", "", str(t))]
     tags = list(dict.fromkeys(tags))[:5] or ["#shorts"]
     out = {"title": title, "description": str(spec.get("description") or "")[:400].strip(), "hashtags": tags, "scenes": scenes}
-    if isinstance(spec.get("look"), dict) and spec["look"].get("frame") == "wide":
-        out["look"] = {"frame": "wide"}
+    if isinstance(spec.get("look"), dict):
+        lk = {}
+        if spec["look"].get("frame") == "wide":
+            lk["frame"] = "wide"
+        if spec["look"].get("clean"):
+            lk["clean"] = True
+        if lk:
+            out["look"] = lk
     if spec.get("silent"):
         out["silent"] = True
     return out

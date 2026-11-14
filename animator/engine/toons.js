@@ -714,7 +714,7 @@
   BODIES.friend = mkPerson({ suit: '#3fb67f', hair: '#1c1c28', style: 'spiky', pants: '#5a4a86', skin: '#e8b98a' });
   BODIES.priest = mkPerson({ suit: '#26262f', robe: true, hair: '#9a9aa8', style: 'bald' });
   /* ---------- ANIME-style 2D people: pointed chin, big glossy eyes with highlights and lash flicks, layered hair with shine, cel shading, thin outlines ---------- */
-  const AO = '#2a1c2e';
+  const AO = '#3a2a45';
   function makeAnimeFace(parent, iris) {
     const f = el('g', {}, parent), uid = 'af' + (++UID);
     const defs = el('defs', {}, f);
@@ -805,8 +805,8 @@
       } };
     };
   }
-  BODIES.hero = mkAnime({ suit: '#3d83e8', hair: '#3b2a5e', style: 'swoop', pants: '#2f3550', iris: '#4a90e2', stripe: '#ffffff', trim: '#fff' });
-  BODIES.friend = mkAnime({ suit: '#3fb67f', hair: '#c4572a', style: 'spiky', pants: '#5a4a86', skin: '#f6cfa8', iris: '#3fa86a', trim: '#fff', shoeAcc: '#3d83e8' });
+  BODIES.hero = mkAnime({ suit: '#6f9cf0', hair: '#2f3a78', style: 'swoop', pants: '#39405f', iris: '#5a9cf0', stripe: '#ffffff', trim: '#fff' });
+  BODIES.friend = mkAnime({ suit: '#6cc7a8', hair: '#d98a4a', style: 'spiky', pants: '#6a5b94', skin: '#f6cfa8', iris: '#4fb98a', trim: '#fff', shoeAcc: '#6f9cf0' });
   BODIES.priest = mkAnime({ suit: '#26262f', robe: true, hair: '#b8b8c8', style: 'bald', iris: '#8a6a4a' });
   // invisible person: only a see-through glassy outline (no clothes)
   BODIES.invis = function (g, c) {
@@ -864,61 +864,62 @@
   };
   /* ---------- realistic-size props (1 unit ~ 4 mm, a person is ~420 units tall) ---------- */
   BODIES.blanket = function (g, c) {
-    el('path', { d: 'M -290 22 Q -290 -22 -230 -22 L 230 -22 Q 290 -22 290 22 L 310 340 L -310 340 Z', fill: c || '#7b8cff', stroke: OLK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
-    el('path', { d: 'M -300 70 L 300 70 M -304 130 L 304 130', stroke: '#fff', 'stroke-width': 10, opacity: .35 }, g);
-    el('path', { d: 'M -230 -22 Q 0 -46 230 -22', fill: 'none', stroke: '#fff', 'stroke-width': 8, 'stroke-linecap': 'round', opacity: .5 }, g);
+    el('path', { d: 'M -290 22 Q -290 -22 -230 -22 L 230 -22 Q 290 -22 290 22 L 310 340 L -310 340 Z', fill: c || '#7b8cff', stroke: INVL, 'stroke-width': 3, 'stroke-linejoin': 'round' }, g);
+    el('path', { d: 'M -300 70 L 300 70 M -304 130 L 304 130', stroke: '#fff', 'stroke-width': 6, opacity: .35 }, g);
+    el('path', { d: 'M -230 -22 Q 0 -46 230 -22', fill: 'none', stroke: '#fff', 'stroke-width': 4, 'stroke-linecap': 'round', opacity: .5 }, g);
     return { fy: 0, fs: 0, top: -60, noface: true, tick: () => { } };
   };
   BODIES.bubble = function (g, txt) {
     txt = String(txt || '...'); const w = Math.max(120, txt.length * 21 + 56);
-    el('path', { d: `M ${-w / 2 + 26} 32 L ${-w / 2 + 6} 74 L ${-w / 2 + 62} 32 Z`, fill: '#fff', stroke: OLK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
-    el('rect', { x: -w / 2, y: -34, width: w, height: 70, rx: 35, fill: '#fff', stroke: OLK, 'stroke-width': 6 }, g);
+    el('path', { d: `M ${-w / 2 + 26} 32 L ${-w / 2 + 6} 74 L ${-w / 2 + 62} 32 Z`, fill: '#fff', stroke: INVL, 'stroke-width': 3, 'stroke-linejoin': 'round' }, g);
+    el('rect', { x: -w / 2, y: -34, width: w, height: 70, rx: 35, fill: '#fff', stroke: INVL, 'stroke-width': 3 }, g);
     el('rect', { x: -w / 2 + 14, y: 28, width: 46, height: 10, fill: '#fff' }, g);
     X.text(g, txt, 0, 12, 34, '#14213d', 900);
     return { fy: 0, fs: 0, top: -60, noface: true, tick: () => { } };
   };
   BODIES.book = function (g, c) {
     const gl = el('ellipse', { cx: 0, cy: 0, rx: 52, ry: 40, fill: '#ffd34d', opacity: .3 }, g);
-    el('rect', { x: -27, y: -20, width: 54, height: 40, rx: 4, fill: c || '#d9483b', stroke: OLK, 'stroke-width': 4 }, g);
-    el('rect', { x: -23, y: 14, width: 48, height: 8, fill: '#fff6dc', stroke: OLK, 'stroke-width': 3 }, g);
+    el('rect', { x: -27, y: -20, width: 54, height: 40, rx: 4, fill: c || '#d9483b', stroke: INVL, 'stroke-width': 2 }, g);
+    el('rect', { x: -23, y: 14, width: 48, height: 8, fill: '#fff6dc', stroke: INVL, 'stroke-width': 3 }, g);
     el('rect', { x: -17, y: -12, width: 28, height: 6, rx: 3, fill: '#ffd34d' }, g);
     return { fy: 0, fs: 0, top: -50, noface: true, tick: t => gl.setAttribute('opacity', (.25 + .12 * Math.sin(t * 4)).toFixed(2)) };
   };
   BODIES.lamp = function (g) {       // side table + table lamp; the lamp switches on when the mood changes to "boo"
     const glow = el('ellipse', { cx: 0, cy: -70, rx: 330, ry: 300, fill: '#ffe9a8', opacity: 0 }, g), cone = el('path', { d: 'M -46 -66 L -300 150 L 300 150 L 46 -66 Z', fill: '#fff3c4', opacity: 0 }, g);
-    [-1, 1].forEach(s => el('line', { x1: s * 50, y1: 0, x2: s * 56, y2: 140, stroke: OLK, 'stroke-width': 9, 'stroke-linecap': 'round' }, g));
-    el('rect', { x: -66, y: -6, width: 132, height: 14, rx: 5, fill: '#a9743f', stroke: OLK, 'stroke-width': 5 }, g);
-    el('rect', { x: -5, y: -62, width: 10, height: 58, fill: '#6b4a2a', stroke: OLK, 'stroke-width': 3 }, g);
-    el('ellipse', { cx: 0, cy: -4, rx: 24, ry: 6, fill: '#6b4a2a', stroke: OLK, 'stroke-width': 3 }, g);
-    const sh = el('path', { d: 'M -38 -62 L -24 -112 L 24 -112 L 38 -62 Z', fill: '#f4e3b2', stroke: OLK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, g);
+    [-1, 1].forEach(s => el('line', { x1: s * 50, y1: 0, x2: s * 56, y2: 140, stroke: INVL, 'stroke-width': 5, 'stroke-linecap': 'round' }, g));
+    el('rect', { x: -66, y: -6, width: 132, height: 14, rx: 5, fill: '#a9743f', stroke: INVL, 'stroke-width': 3 }, g);
+    el('rect', { x: -5, y: -62, width: 10, height: 58, fill: '#6b4a2a', stroke: INVL, 'stroke-width': 3 }, g);
+    el('ellipse', { cx: 0, cy: -4, rx: 24, ry: 6, fill: '#6b4a2a', stroke: INVL, 'stroke-width': 3 }, g);
+    const sh = el('path', { d: 'M -38 -62 L -24 -112 L 24 -112 L 38 -62 Z', fill: '#f4e3b2', stroke: INVL, 'stroke-width': 3, 'stroke-linejoin': 'round' }, g);
     return { fy: 0, fs: 0, top: -140, noface: true, tick: (t, p) => { const on = clamp((p && p.raise) || 0, 0, 1); glow.setAttribute('opacity', (on * (.3 + .04 * Math.sin(t * 5))).toFixed(2)); cone.setAttribute('opacity', (on * .3).toFixed(2)); sh.setAttribute('fill', on > .5 ? '#fff6c4' : '#b9a878'); } };
   };
   BODIES.chair = function (g, c) {   // origin = floor under the chair
     const col = c || '#b5763c';
-    [[-46, -110, -52, 0], [46, -110, 52, 0]].forEach(([x1, y1, x2, y2]) => el('line', { x1, y1, x2, y2, stroke: OLK, 'stroke-width': 14, 'stroke-linecap': 'round' }, g));
-    [[-46, -110, -52, 0], [46, -110, 52, 0]].forEach(([x1, y1, x2, y2]) => el('line', { x1, y1, x2, y2, stroke: col, 'stroke-width': 7, 'stroke-linecap': 'round' }, g));
-    el('rect', { x: -52, y: -228, width: 104, height: 112, rx: 12, fill: col, stroke: OLK, 'stroke-width': 6 }, g);
+    [[-46, -110, -52, 0], [46, -110, 52, 0]].forEach(([x1, y1, x2, y2]) => el('line', { x1, y1, x2, y2, stroke: INVL, 'stroke-width': 8, 'stroke-linecap': 'round' }, g));
+    [[-46, -110, -52, 0], [46, -110, 52, 0]].forEach(([x1, y1, x2, y2]) => el('line', { x1, y1, x2, y2, stroke: col, 'stroke-width': 4, 'stroke-linecap': 'round' }, g));
+    el('rect', { x: -52, y: -228, width: 104, height: 112, rx: 12, fill: col, stroke: INVL, 'stroke-width': 3 }, g);
     el('rect', { x: -40, y: -214, width: 80, height: 34, rx: 8, fill: '#d99a5b' }, g);
-    el('rect', { x: -62, y: -122, width: 124, height: 22, rx: 8, fill: '#c98443', stroke: OLK, 'stroke-width': 6 }, g);
+    el('rect', { x: -62, y: -122, width: 124, height: 22, rx: 8, fill: '#c98443', stroke: INVL, 'stroke-width': 3 }, g);
     return { fy: 0, fs: 0, top: -250, noface: true, tick: () => { } };
   };
   BODIES.table = function (g) {      // restaurant table; origin = middle of the table top
-    el('path', { d: 'M -180 0 L 180 0 L 200 250 L -200 250 Z', fill: '#fff', stroke: OLK, 'stroke-width': 6, 'stroke-linejoin': 'round' }, g);
-    for (let i = 0; i < 8; i++) el('rect', { x: -190 + i * 48, y: 6, width: 24, height: 240, fill: '#e8483f', opacity: .85 }, g);
-    el('rect', { x: -190, y: -12, width: 380, height: 20, rx: 8, fill: '#f6efe2', stroke: OLK, 'stroke-width': 6 }, g);
-    el('ellipse', { cx: -90, cy: -16, rx: 46, ry: 8, fill: '#fff', stroke: OLK, 'stroke-width': 4 }, g);
-    el('ellipse', { cx: 110, cy: -16, rx: 46, ry: 8, fill: '#fff', stroke: OLK, 'stroke-width': 4 }, g);
-    el('rect', { x: 20, y: -52, width: 22, height: 38, rx: 6, fill: '#bfe6ff', stroke: OLK, 'stroke-width': 4, opacity: .9 }, g);
+    el('path', { d: 'M -180 0 L 180 0 L 200 250 L -200 250 Z', fill: '#fff', stroke: INVL, 'stroke-width': 3, 'stroke-linejoin': 'round' }, g);
+    for (let i = 0; i < 8; i++) el('rect', { x: -190 + i * 48, y: 6, width: 24, height: 240, fill: '#e8837f', opacity: .85 }, g);
+    el('rect', { x: -190, y: -12, width: 380, height: 20, rx: 8, fill: '#f6efe2', stroke: INVL, 'stroke-width': 3 }, g);
+    el('ellipse', { cx: -90, cy: -16, rx: 46, ry: 8, fill: '#fff', stroke: INVL, 'stroke-width': 2 }, g);
+    el('ellipse', { cx: 110, cy: -16, rx: 46, ry: 8, fill: '#fff', stroke: INVL, 'stroke-width': 2 }, g);
+    el('rect', { x: 20, y: -52, width: 22, height: 38, rx: 6, fill: '#bfe6ff', stroke: INVL, 'stroke-width': 2, opacity: .9 }, g);
     return { fy: 0, fs: 0, top: -90, noface: true, tick: () => { } };
   };
   BODIES.gift = function (g) {
     const gl = el('ellipse', { cx: 0, cy: 0, rx: 70, ry: 60, fill: '#ffd34d', opacity: .3 }, g);
-    el('rect', { x: -38, y: -30, width: 76, height: 66, rx: 8, fill: '#a56bff', stroke: OLK, 'stroke-width': 5 }, g);
-    el('rect', { x: -42, y: -42, width: 84, height: 22, rx: 6, fill: '#c19bff', stroke: OLK, 'stroke-width': 5 }, g);
+    el('rect', { x: -38, y: -30, width: 76, height: 66, rx: 8, fill: '#b59af0', stroke: INVL, 'stroke-width': 3 }, g);
+    el('rect', { x: -42, y: -42, width: 84, height: 22, rx: 6, fill: '#c19bff', stroke: INVL, 'stroke-width': 3 }, g);
     el('rect', { x: -8, y: -42, width: 16, height: 78, fill: '#ffd34d' }, g);
     X.text(g, '?', 0, 20, 52, '#fff', 900);
     return { fy: 0, fs: 0, top: -70, noface: true, tick: t => gl.setAttribute('opacity', (.25 + .15 * Math.sin(t * 4)).toFixed(2)) };
   };
+  const INVL = '#6a5470';
   const INV_BGS = ['inv_kitchen', 'inv_dark', 'inv_restaurant', 'inv_comments', 'inv_bath', 'inv_bed', 'inv_street', 'inv_living', 'inv_room'];
   function makeInvBg(kind, p) {
     const R = (x, y, w, h, fill, o) => el('rect', Object.assign({ x, y, width: w, height: h, fill }, o || {}), p);
@@ -927,22 +928,22 @@
     if (kind === 'inv_kitchen') {
       R(0, 0, 720, 1228, '#1d2547'); for (let i = 0; i < 9; i++) R(i * 90, 0, 45, 940, '#252f5a', { opacity: .5 });
       R(0, 940, 720, 288, '#3a2f4f'); R(0, 930, 720, 16, '#2a2140');
-      R(470, 150, 200, 220, '#0f1738', { stroke: '#8a6a4a', 'stroke-width': 10, rx: 8 }); C(590, 250, 42, '#f6f1c9'); C(608, 238, 38, '#0f1738'); R(566, 150, 8, 220, '#8a6a4a');
-      el('path', { d: 'M 40 400 L 330 430 L 330 940 L 40 940 Z', fill: '#2d6f78', stroke: OLK, 'stroke-width': 8, 'stroke-linejoin': 'round' }, p);
+      R(470, 150, 200, 220, '#0f1738', { stroke: '#8a6a4a', 'stroke-width': 6, rx: 8 }); C(590, 250, 42, '#f6f1c9'); C(608, 238, 38, '#0f1738'); R(566, 150, 8, 220, '#8a6a4a');
+      el('path', { d: 'M 40 400 L 330 430 L 330 940 L 40 940 Z', fill: '#2d6f78', stroke: INVL, 'stroke-width': 4, 'stroke-linejoin': 'round' }, p);
       const light = el('path', { d: 'M 330 440 L 720 330 L 720 1228 L 330 940 Z', fill: '#ffe9a8', opacity: .35 }, p);
-      R(20, 380, 330, 570, '#f4f7fb', { stroke: OLK, 'stroke-width': 8, rx: 10, opacity: 0 });
-      R(70, 440, 250, 480, '#eaf2fb', { stroke: OLK, 'stroke-width': 6, rx: 6 });
+      R(20, 380, 330, 570, '#f4f7fb', { stroke: INVL, 'stroke-width': 4, rx: 10, opacity: 0 });
+      R(70, 440, 250, 480, '#eaf2fb', { stroke: INVL, 'stroke-width': 3, rx: 6 });
       [560, 690, 820].forEach(y => R(70, y, 250, 10, '#9bb4cc'));
-      C(120, 500, 26, '#e8483f', { stroke: OLK, 'stroke-width': 4 }); C(200, 506, 22, '#ffb627', { stroke: OLK, 'stroke-width': 4 }); R(240, 480, 50, 74, '#5ab0ff', { rx: 8, stroke: OLK, 'stroke-width': 4 }); R(100, 600, 120, 70, '#fff', { rx: 8, stroke: OLK, 'stroke-width': 4 }); R(240, 610, 50, 60, '#59c24a', { rx: 8, stroke: OLK, 'stroke-width': 4 });
-      R(0, 520, 70, 420, '#2d6f78', { stroke: OLK, 'stroke-width': 6, opacity: .0 });
+      C(120, 500, 26, '#e8837f', { stroke: INVL, 'stroke-width': 2 }); C(200, 506, 22, '#f5c46a', { stroke: INVL, 'stroke-width': 2 }); R(240, 480, 50, 74, '#5ab0ff', { rx: 8, stroke: INVL, 'stroke-width': 2 }); R(100, 600, 120, 70, '#fff', { rx: 8, stroke: INVL, 'stroke-width': 2 }); R(240, 610, 50, 60, '#8fd1a8', { rx: 8, stroke: INVL, 'stroke-width': 2 });
+      R(0, 520, 70, 420, '#2d6f78', { stroke: INVL, 'stroke-width': 3, opacity: .0 });
       upd.push(T => light.setAttribute('opacity', (.3 + .08 * Math.sin(T * 3)).toFixed(2)));
     } else if (kind === 'inv_dark') {
       R(0, 0, 720, 1228, '#12163a'); for (let i = 0; i < 9; i++) R(i * 90, 0, 45, 940, '#171c46', { opacity: .6 });
       R(0, 940, 720, 288, '#1c1b3d'); R(0, 930, 720, 14, '#0c0e26');
-      R(60, 260, 220, 300, '#0c1030', { stroke: '#5a4a78', 'stroke-width': 10, rx: 10 }); C(180, 360, 52, '#f6f1c9'); C(204, 346, 46, '#0c1030'); R(176, 260, 8, 300, '#5a4a78'); R(60, 400, 220, 8, '#5a4a78');
+      R(60, 260, 220, 300, '#0c1030', { stroke: '#5a4a78', 'stroke-width': 6, rx: 10 }); C(180, 360, 52, '#f6f1c9'); C(204, 346, 46, '#0c1030'); R(176, 260, 8, 300, '#5a4a78'); R(60, 400, 220, 8, '#5a4a78');
       el('path', { d: 'M 40 250 Q 80 400 56 580 L 20 580 L 20 250 Z M 300 250 Q 262 400 284 580 L 320 580 L 320 250 Z', fill: '#4a2a5e', opacity: .95 }, p);
-      R(470, 330, 200, 600, '#0a0c22', { stroke: '#5a4a78', 'stroke-width': 10, rx: 8 });
-      const door = el('path', { d: 'M 470 330 L 560 360 L 560 900 L 470 930 Z', fill: '#2a1f4a', stroke: '#5a4a78', 'stroke-width': 6, 'stroke-linejoin': 'round' }, p);
+      R(470, 330, 200, 600, '#0a0c22', { stroke: '#5a4a78', 'stroke-width': 6, rx: 8 });
+      const door = el('path', { d: 'M 470 330 L 560 360 L 560 900 L 470 930 Z', fill: '#2a1f4a', stroke: '#5a4a78', 'stroke-width': 3, 'stroke-linejoin': 'round' }, p);
       const crack = el('path', { d: 'M 560 360 L 670 340 L 670 930 L 560 900 Z', fill: '#7be0ff', opacity: .4 }, p);
       el('ellipse', { cx: 360, cy: 1040, rx: 250, ry: 60, fill: '#2d2a5e', opacity: .8 }, p);
       const st = []; for (let i = 0; i < 18; i++) st.push(C(20 + rnd(i + 3) * 680, 40 + rnd(i + 9) * 200, .8 + rnd(i + 21) * 1.8, '#fff'));
@@ -950,58 +951,58 @@
     } else if (kind === 'inv_restaurant') {
       R(0, 0, 720, 1228, '#ffd9a8'); for (let i = 0; i < 9; i++) R(i * 90, 0, 45, 900, '#ffe6c4', { opacity: .6 });
       R(0, 900, 720, 328, '#b9794a'); R(0, 890, 720, 22, '#e2a870');
-      [120, 360, 600].forEach((x, i) => { el('line', { x1: x, y1: 0, x2: x, y2: 210, stroke: OLK, 'stroke-width': 5 }, p); el('path', { d: `M ${x - 56} 250 Q ${x - 50} 200 ${x} 200 Q ${x + 50} 200 ${x + 56} 250 Z`, fill: i === 1 ? '#e8483f' : '#ffb627', stroke: OLK, 'stroke-width': 5 }, p); el('ellipse', { cx: x, cy: 262, rx: 40, ry: 12, fill: '#fff6c4', opacity: .9 }, p); });
-      R(40, 400, 200, 170, '#fff', { stroke: OLK, 'stroke-width': 6, rx: 10 }); el('path', { d: 'M 60 540 L 100 480 L 140 520 L 180 450 L 220 540 Z', fill: '#59c24a' }, p); C(190, 450, 18, '#ffd34d');
-      R(480, 400, 200, 170, '#fff', { stroke: OLK, 'stroke-width': 6, rx: 10 }); X.text(p, 'MENU', 580, 490, 44, '#e8483f', 900); X.text(p, 'BURGER', 580, 540, 30, '#3a2412', 800);
-      R(60, 940, 600, 28, '#d9d9e6', { rx: 8, stroke: OLK, 'stroke-width': 5 });
-      for (let i = 0; i < 12; i++) R(60 + i * 50, 968, 50, 90, i % 2 ? '#e8483f' : '#fff', { stroke: OLK, 'stroke-width': 3 });
+      [120, 360, 600].forEach((x, i) => { el('line', { x1: x, y1: 0, x2: x, y2: 210, stroke: INVL, 'stroke-width': 3 }, p); el('path', { d: `M ${x - 56} 250 Q ${x - 50} 200 ${x} 200 Q ${x + 50} 200 ${x + 56} 250 Z`, fill: i === 1 ? '#e8837f' : '#f5c46a', stroke: INVL, 'stroke-width': 3 }, p); el('ellipse', { cx: x, cy: 262, rx: 40, ry: 12, fill: '#fff6c4', opacity: .9 }, p); });
+      R(40, 400, 200, 170, '#fff', { stroke: INVL, 'stroke-width': 3, rx: 10 }); el('path', { d: 'M 60 540 L 100 480 L 140 520 L 180 450 L 220 540 Z', fill: '#8fd1a8' }, p); C(190, 450, 18, '#ffd34d');
+      R(480, 400, 200, 170, '#fff', { stroke: INVL, 'stroke-width': 3, rx: 10 }); X.text(p, 'MENU', 580, 490, 44, '#e8837f', 900); X.text(p, 'BURGER', 580, 540, 30, '#3a2412', 800);
+      R(60, 940, 600, 28, '#d9d9e6', { rx: 8, stroke: INVL, 'stroke-width': 3 });
+      for (let i = 0; i < 12; i++) R(60 + i * 50, 968, 50, 90, i % 2 ? '#e8837f' : '#fff', { stroke: INVL, 'stroke-width': 3 });
       R(120, 1058, 24, 150, '#7a4a28'); R(576, 1058, 24, 150, '#7a4a28');
     } else if (kind === 'inv_bath') {
       R(0, 0, 720, 1228, '#cfe8ee'); for (let i = 0; i <= 8; i++) el('line', { x1: i * 90, y1: 0, x2: i * 90, y2: 940, stroke: '#a9cdd6', 'stroke-width': 3 }, p); for (let i = 0; i <= 12; i++) el('line', { x1: 0, y1: i * 80, x2: 720, y2: i * 80, stroke: '#a9cdd6', 'stroke-width': 3 }, p);
       R(0, 930, 720, 298, '#8fb0b8'); R(0, 920, 720, 16, '#6f9099');
-      R(140, 200, 440, 500, '#e9f3f7', { rx: 34, stroke: '#7a8a99', 'stroke-width': 16 }); R(160, 220, 400, 460, '#f4fbfe', { rx: 22 });
+      R(140, 200, 440, 500, '#e9f3f7', { rx: 34, stroke: '#7a8a99', 'stroke-width': 9 }); R(160, 220, 400, 460, '#f4fbfe', { rx: 22 });
       R(230, 470, 260, 210, '#dcecf2', { rx: 6 }); el('path', { d: 'M 300 470 L 300 300 Q 360 270 420 300 L 420 470 Z', fill: '#e6f0f3' }, p);
       el('path', { d: 'M 190 240 L 300 240 L 200 460 L 190 460 Z M 330 240 L 370 240 L 260 460 L 220 460 Z', fill: '#fff', opacity: .55 }, p);
-      R(60, 900, 600, 328, '#f1f5f8', { rx: 14, stroke: OLK, 'stroke-width': 6 }); el('ellipse', { cx: 360, cy: 905, rx: 170, ry: 24, fill: '#cfe0e8', stroke: OLK, 'stroke-width': 5 }, p);
-      R(352, 840, 16, 60, '#b8c4cc', { stroke: OLK, 'stroke-width': 4 }); R(330, 836, 60, 14, '#b8c4cc', { rx: 6, stroke: OLK, 'stroke-width': 4 });
-      R(80, 150, 12, 40, '#d4a373'); el('path', { d: 'M 60 190 L 112 190 L 106 330 L 66 330 Z', fill: '#ffb6c1', stroke: OLK, 'stroke-width': 4 }, p);
+      R(60, 900, 600, 328, '#f1f5f8', { rx: 14, stroke: INVL, 'stroke-width': 3 }); el('ellipse', { cx: 360, cy: 905, rx: 170, ry: 24, fill: '#cfe0e8', stroke: INVL, 'stroke-width': 3 }, p);
+      R(352, 840, 16, 60, '#b8c4cc', { stroke: INVL, 'stroke-width': 2 }); R(330, 836, 60, 14, '#b8c4cc', { rx: 6, stroke: INVL, 'stroke-width': 2 });
+      R(80, 150, 12, 40, '#d4a373'); el('path', { d: 'M 60 190 L 112 190 L 106 330 L 66 330 Z', fill: '#ffb6c1', stroke: INVL, 'stroke-width': 2 }, p);
     } else if (kind === 'inv_bed') {
       R(0, 0, 720, 1228, '#f6e5c8'); for (let i = 0; i < 9; i++) R(i * 90, 0, 45, 950, '#fbeed6', { opacity: .6 });
       R(0, 950, 720, 278, '#d9b38c'); R(0, 940, 720, 14, '#b98d62');
-      R(40, 120, 190, 220, '#bfe6ff', { rx: 10, stroke: '#8a5a3a', 'stroke-width': 10 }); const sun = C(110, 200, 34, '#ffd34d'); R(131, 120, 8, 220, '#8a5a3a'); R(40, 226, 190, 8, '#8a5a3a');
+      R(40, 120, 190, 220, '#bfe6ff', { rx: 10, stroke: '#8a5a3a', 'stroke-width': 6 }); const sun = C(110, 200, 34, '#ffd34d'); R(131, 120, 8, 220, '#8a5a3a'); R(40, 226, 190, 8, '#8a5a3a');
       R(110, 300, 500, 400, '#8a5a3a', { rx: 46 }); R(130, 320, 460, 360, '#a9743f', { rx: 36 });
-      el('ellipse', { cx: 245, cy: 640, rx: 96, ry: 54, fill: '#fff', stroke: OLK, 'stroke-width': 5 }, p); el('ellipse', { cx: 475, cy: 640, rx: 96, ry: 54, fill: '#fff', stroke: OLK, 'stroke-width': 5 }, p);
-      R(80, 700, 560, 270, '#6f93c9', { rx: 18, stroke: OLK, 'stroke-width': 6 });
+      el('ellipse', { cx: 245, cy: 640, rx: 96, ry: 54, fill: '#fff', stroke: INVL, 'stroke-width': 3 }, p); el('ellipse', { cx: 475, cy: 640, rx: 96, ry: 54, fill: '#fff', stroke: INVL, 'stroke-width': 3 }, p);
+      R(80, 700, 560, 270, '#6f93c9', { rx: 18, stroke: INVL, 'stroke-width': 3 });
       upd.push(T => sun.setAttribute('r', (34 + 2.5 * Math.sin(T * 2)).toFixed(1)));
     } else if (kind === 'inv_street') {
       const gr = el('linearGradient', { id: 'is' + (++UID), x1: 0, y1: 0, x2: 0, y2: 1 }, el('defs', {}, p)); el('stop', { offset: 0, 'stop-color': '#7ec8ff' }, gr); el('stop', { offset: 1, 'stop-color': '#e6f6ff' }, gr);
       R(0, 0, 720, 1228, 'url(#' + gr.getAttribute('id') + ')'); C(590, 150, 46, '#ffe27a');
       [[40, 60, 120], [170, 210, 150], [560, 160, 150]].forEach(([x, y, w], i) => R(x, 300 + y * .3, w, 700, ['#9fb4d9', '#b7c4e4', '#8fa3cc'][i], { opacity: .8 }));
-      R(150, 330, 420, 600, '#3a2f5a', { stroke: OLK, 'stroke-width': 8, rx: 8 }); R(210, 360, 300, 78, '#ff4d8d', { rx: 14, stroke: OLK, 'stroke-width': 5 }); X.text(p, 'VIP CLUB', 360, 414, 50, '#fff', 900);
-      R(280, 520, 160, 410, '#1d1633', { stroke: OLK, 'stroke-width': 6 }); R(358, 520, 4, 410, '#6b5a98');
+      R(150, 330, 420, 600, '#3a2f5a', { stroke: INVL, 'stroke-width': 4, rx: 8 }); R(210, 360, 300, 78, '#ff4d8d', { rx: 14, stroke: INVL, 'stroke-width': 3 }); X.text(p, 'VIP CLUB', 360, 414, 50, '#fff', 900);
+      R(280, 520, 160, 410, '#1d1633', { stroke: INVL, 'stroke-width': 3 }); R(358, 520, 4, 410, '#6b5a98');
       R(0, 930, 720, 298, '#b9b9c9'); R(0, 925, 720, 16, '#8f8fa3'); R(250, 935, 220, 293, '#d8353a');
-      [150, 570].forEach(x => { R(x - 7, 760, 14, 175, '#d4af37', { stroke: OLK, 'stroke-width': 4 }); C(x, 756, 15, '#d4af37', { stroke: OLK, 'stroke-width': 4 }); });
-      el('path', { d: 'M 150 780 Q 360 880 570 780', fill: 'none', stroke: '#b3202a', 'stroke-width': 12, 'stroke-linecap': 'round' }, p);
+      [150, 570].forEach(x => { R(x - 7, 760, 14, 175, '#d4af37', { stroke: INVL, 'stroke-width': 2 }); C(x, 756, 15, '#d4af37', { stroke: INVL, 'stroke-width': 2 }); });
+      el('path', { d: 'M 150 780 Q 360 880 570 780', fill: 'none', stroke: '#b3202a', 'stroke-width': 7, 'stroke-linecap': 'round' }, p);
     } else if (kind === 'inv_living') {
       R(0, 0, 720, 1228, '#f1d9bd'); for (let i = 0; i < 9; i++) R(i * 90, 0, 45, 950, '#f6e3c9', { opacity: .6 });
       R(0, 950, 720, 278, '#b98d62'); R(0, 940, 720, 14, '#8f6a45'); el('ellipse', { cx: 360, cy: 1000, rx: 330, ry: 52, fill: '#8f5fa8', opacity: .6 }, p);
-      R(40, 250, 210, 380, '#8a5a3a', { rx: 8, stroke: OLK, 'stroke-width': 6 }); [330, 410, 490].forEach(y => R(52, y, 186, 8, '#5e3c24'));
-      [['#e8483f', 60], ['#4a90e2', 96], ['#59c24a', 132], ['#ffb627', 168], ['#a56bff', 200]].forEach(([c, x], i) => R(x, 262, 28, 64, c, { stroke: OLK, 'stroke-width': 3 }));
-      [['#4a90e2', 70], ['#ffb627', 120], ['#e8483f', 170]].forEach(([c, x]) => R(x, 345, 40, 64, c, { stroke: OLK, 'stroke-width': 3 }));
-      R(330, 300, 340, 220, '#10142e', { rx: 10, stroke: OLK, 'stroke-width': 8 }); const scr = R(344, 314, 312, 192, '#3d7be0', { rx: 4 }); R(480, 520, 40, 40, '#2a2a3a'); R(400, 556, 200, 14, '#2a2a3a', { rx: 6 });
-      R(30, 740, 330, 210, '#c0504d', { rx: 24, stroke: OLK, 'stroke-width': 6 }); R(30, 700, 330, 80, '#d06461', { rx: 26, stroke: OLK, 'stroke-width': 6 });
-      upd.push(T => scr.setAttribute('fill', ['#3d7be0', '#e0623d', '#59c24a'][Math.floor(T * 1.6) % 3]));
+      R(40, 250, 210, 380, '#8a5a3a', { rx: 8, stroke: INVL, 'stroke-width': 3 }); [330, 410, 490].forEach(y => R(52, y, 186, 8, '#5e3c24'));
+      [['#e8837f', 60], ['#7fa8ee', 96], ['#8fd1a8', 132], ['#f5c46a', 168], ['#b59af0', 200]].forEach(([c, x], i) => R(x, 262, 28, 64, c, { stroke: INVL, 'stroke-width': 3 }));
+      [['#7fa8ee', 70], ['#f5c46a', 120], ['#e8837f', 170]].forEach(([c, x]) => R(x, 345, 40, 64, c, { stroke: INVL, 'stroke-width': 3 }));
+      R(330, 300, 340, 220, '#2a3150', { rx: 10, stroke: INVL, 'stroke-width': 4 }); const scr = R(344, 314, 312, 192, '#9ad4ff', { rx: 4 }); R(480, 520, 40, 40, '#2a2a3a'); R(400, 556, 200, 14, '#2a2a3a', { rx: 6 });
+      R(30, 740, 330, 210, '#c0504d', { rx: 24, stroke: INVL, 'stroke-width': 3 }); R(30, 700, 330, 80, '#d06461', { rx: 26, stroke: INVL, 'stroke-width': 3 });
+      upd.push(T => scr.setAttribute('fill', ['#9ad4ff', '#ffd0b0', '#c4ecd0'][Math.floor(T * 1.6) % 3]));
     } else if (kind === 'inv_room') {
       R(0, 0, 720, 1228, '#ffe2c0'); for (let i = 0; i < 9; i++) R(i * 90, 0, 45, 700, '#ffe9cf', { opacity: .6 }); R(0, 700, 720, 250, '#e8b98a');
       R(0, 950, 720, 278, '#b98d62'); for (let i = 0; i < 8; i++) el('line', { x1: 0, y1: 950 + i * 40, x2: 720, y2: 950 + i * 40, stroke: '#a67a52', 'stroke-width': 3 }, p);
-      R(0, 940, 720, 14, '#8f6a45'); R(470, 180, 200, 280, '#bfe6ff', { rx: 8, stroke: '#8a5a3a', 'stroke-width': 10 }); R(566, 180, 8, 280, '#8a5a3a');
+      R(0, 940, 720, 14, '#8f6a45'); R(470, 180, 200, 280, '#bfe6ff', { rx: 8, stroke: '#8a5a3a', 'stroke-width': 6 }); R(566, 180, 8, 280, '#8a5a3a');
       el('path', { d: 'M 440 170 Q 480 320 452 470 L 420 470 L 420 170 Z M 700 170 Q 660 320 688 470 L 720 470 L 720 170 Z', fill: '#e8603d' }, p);
-      R(50, 220, 130, 170, '#fff', { stroke: '#8a5a3a', 'stroke-width': 8 }); el('path', { d: 'M 66 370 L 100 310 L 130 350 L 150 300 L 166 370 Z', fill: '#59c24a' }, p); C(150, 260, 14, '#ffd34d');
-      R(210, 300, 90, 120, '#fff', { stroke: '#8a5a3a', 'stroke-width': 8 }); C(255, 350, 28, '#ff8fb1');
+      R(50, 220, 130, 170, '#fff', { stroke: '#8a5a3a', 'stroke-width': 4 }); el('path', { d: 'M 66 370 L 100 310 L 130 350 L 150 300 L 166 370 Z', fill: '#8fd1a8' }, p); C(150, 260, 14, '#ffd34d');
+      R(210, 300, 90, 120, '#fff', { stroke: '#8a5a3a', 'stroke-width': 4 }); C(255, 350, 28, '#ff8fb1');
     } else {
       const gr = el('linearGradient', { id: 'ig' + (++UID), x1: 0, y1: 0, x2: 0, y2: 1 }, el('defs', {}, p)); el('stop', { offset: 0, 'stop-color': '#3a1f7a' }, gr); el('stop', { offset: 1, 'stop-color': '#13204f' }, gr);
       R(0, 0, 720, 1228, 'url(#' + gr.getAttribute('id') + ')');
-      const bub = [['PRANK!', 90, 420, '#ffb627'], ['SNACKS!', 520, 470, '#59c24a'], ['SCARE!', 110, 880, '#ff6b6b'], ['SPY!', 560, 900, '#7be0ff']].map(([tx, x, y, col], i) => { const gg = el('g', {}, p); el('rect', { x: -78, y: -34, width: 156, height: 62, rx: 28, fill: col, stroke: OLK, 'stroke-width': 5 }, gg); el('path', { d: 'M -20 28 L -34 50 L 0 28 Z', fill: col, stroke: OLK, 'stroke-width': 5, 'stroke-linejoin': 'round' }, gg); X.text(gg, tx, 0, 10, 32, '#14213d', 900); return { gg, x, y, i }; });
+      const bub = [['PRANK!', 90, 420, '#f5c46a'], ['SNACKS!', 520, 470, '#8fd1a8'], ['SCARE!', 110, 880, '#ff6b6b'], ['SPY!', 560, 900, '#7be0ff']].map(([tx, x, y, col], i) => { const gg = el('g', {}, p); el('rect', { x: -78, y: -34, width: 156, height: 62, rx: 28, fill: col, stroke: INVL, 'stroke-width': 3 }, gg); el('path', { d: 'M -20 28 L -34 50 L 0 28 Z', fill: col, stroke: INVL, 'stroke-width': 3, 'stroke-linejoin': 'round' }, gg); X.text(gg, tx, 0, 10, 32, '#14213d', 900); return { gg, x, y, i }; });
       const q = [0, 1, 2, 3, 4, 5].map(i => X.text(p, '?', 0, 0, 60 + (i % 3) * 24, '#cdb6ff', 900));
       upd.push(T => { bub.forEach(b => b.gg.setAttribute('transform', `translate(${b.x} ${b.y + Math.sin(T * 2 + b.i) * 14}) rotate(${Math.sin(T * 1.4 + b.i) * 4})`)); q.forEach((e, i) => { const u = (T * .3 + i / 6) % 1; e.setAttribute('transform', `translate(${60 + (i * 117) % 620} ${1100 - u * 900})`); e.setAttribute('opacity', (.5 * Math.sin(u * 3.14)).toFixed(2)); }); });
     }
@@ -1150,7 +1151,8 @@
       el('rect', { x: 0, y: 900, width: 720, height: 330, fill: '#b9794a' }, bg); el('rect', { x: 0, y: 890, width: 720, height: 26, fill: '#e2a870' }, bg);
       for (let i = 0; i < 5; i++) el('path', { d: `M ${i * 160} 930 L ${i * 160} 1228`, stroke: '#a26636', 'stroke-width': 4, opacity: .6 }, bg);
     }
-    const brainBg = INV_BGS.indexOf(d.bg) >= 0 ? makeInvBg(d.bg, bg) : makeBrainBg(d.bg, bg);
+    const brainBg = INV_BGS.indexOf(d.bg) >= 0 ? (() => { const sf = 'sf' + (++UID), dd = el('defs', {}, bg), ff = el('filter', { id: sf, 'color-interpolation-filters': 'sRGB' }, dd); el('feColorMatrix', { type: 'saturate', values: 1.0 }, ff); const wg = el('g', { filter: `url(#${sf})` }, bg), r = makeInvBg(d.bg, wg);
+          const lg = el('radialGradient', { id: sf + 'l', cx: '50%', cy: '22%', r: '75%' }, dd); el('stop', { offset: 0, 'stop-color': '#fff8e6', 'stop-opacity': .28 }, lg); el('stop', { offset: 1, 'stop-color': '#7a5a90', 'stop-opacity': .08 }, lg); el('rect', { x: 0, y: 0, width: 720, height: 1228, fill: `url(#${sf}l)` }, bg); return r; })() : makeBrainBg(d.bg, bg);
     if (d.bg === 'day') { el('rect', { x: 0, y: 0, width: 720, height: 1228, fill: '#2d63b8', opacity: .55 }, bg); }
 
     const CX = 360, CY = 620;
