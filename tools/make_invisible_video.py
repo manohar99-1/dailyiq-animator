@@ -102,7 +102,9 @@ def main():
     print(f"[timeline] narration {rt['T']:.1f}s + end card {rt['end']:.1f}s")
     if stills:
         spec_json = work / "stills_spec.json"; spec_json.write_text(json.dumps(rt, default=str), encoding="utf-8")
+        only = [int(v) for v in sys.argv[sys.argv.index("--only") + 1].split(",")] if "--only" in sys.argv else None
         for i, s in enumerate(rt["scenes"]):
+            if only and (i + 1) not in only: continue
             f = int((s["start"] + (s["end"] - s["start"]) * FRAC) * fps)
             subprocess.run([sys.executable, "-m", "animator.render_worker", str(spec_json), str(out / "stills"), str(f), str(f + 1), str(fps)], cwd=str(ROOT), check=True)
             p = out / "stills" / f"f{f:05d}.jpg"; shutil.move(p, out / "stills" / f"scene{i + 1}.jpg")
