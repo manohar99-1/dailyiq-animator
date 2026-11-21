@@ -31,8 +31,8 @@ PHRASES = [
     (5, "the smaller you get, the more surface area you have compared with your volume.", 0.95, 1.0, 1.0, 0.35),
     (5, "So air resistance and water surface tension matter far more.", 0.95, 1.0, 1.0, 0.8),
     (6, "But here's the biggest problem.", 0.95, 0.96, 1.0, 0.45),
-    (6, "Human cells can't simply shrink like cartoon objects.", 1.0, 1.0, 1.0, 0.35),
-    (6, "With today's science, it's impossible!", 0.92, 0.96, 1.08, 0.9),
+    (6, "Human cells can't shrink, so a body that small couldn't hold a working brain.", 0.97, 1.0, 1.0, 0.4),
+    (6, "Surviving at this size is impossible!", 0.92, 0.96, 1.08, 0.9),
     (7, "Follow Daily IQ to discover more!", 1.0, 1.0, 1.0, 0.3),
 ]
 
