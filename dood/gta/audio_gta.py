@@ -187,18 +187,19 @@ backT = wantT + 1.8; walkOffT = sandT + 0.9
 
 sfx = np.zeros(N, dtype=np.float32)
 amb = np.zeros(N, dtype=np.float32)
+sus = np.zeros(N, dtype=np.float32)   # sustained effects (sirens, helicopter): ducked under the narration
 mus = np.zeros(N, dtype=np.float32)
 
 # --- Scene 1: couch, TV game, flash ---
 place(amb, room_tone(F1 + 0.1), 0, 0.5)
-place(amb, tv_game(F1 + 0.05), 0, 0.55)
+place(amb, tv_game(F1 + 0.05), 0, 0.35)
 t = 0.5
 while t < F1 - 0.25: place(sfx, click(), t, 0.22); t += 0.26 + 0.3 * rng.random()
 place(sfx, swish(0.25), 1.1, 0.12)                                    # leans forward
 gate = (np.sin(tt(int(0.45 * SR)) * 60 + (F1 - 0.45) * 60) > 0.2).astype(np.float32) * np.linspace(0.3, 1, int(0.45 * SR))
 place(sfx, sos(noise(int(0.45 * SR)), "band", (900, 4200)) * gate, F1 - 0.45, 0.5)   # TV flicker buzz
-place(sfx, riser(0.9), F1 - 0.85, 0.35)
-place(sfx, whoomph(1.9), F1, 0.75)                                    # white flash
+place(sfx, riser(0.9), F1 - 0.85, 0.25)
+place(sfx, whoomph(1.9), F1, 0.55)                                    # white flash
 place(amb, city_bed(dur - FL + 1.0), FL - 1.0, 0.5)                   # the game world fades in
 place(sfx, breath(0.5), FL + 0.45, 0.2)                               # he wakes up
 place(sfx, swish(0.2), FL + 1.0, 0.14); place(sfx, swish(0.2), FL + 1.6, 0.14)   # looks left, right
@@ -226,10 +227,9 @@ place(sfx, ping(1319, 0.5), wantT + 0.03, 0.35); place(sfx, ping(1760, 0.5), wan
 place(sfx, heartbeat(), wantT + 0.4, 0.55); place(sfx, heartbeat(), wantT + 1.2, 0.5)
 for j, f in enumerate([988, 1319, 1760]): place(sfx, ping(f, 0.4), policeT + j * 0.12, 0.28)   # stars jump to 3
 tail = dur - policeT
-place(sfx, siren(tail + 0.5, "wail"), policeT - 0.1, 0.11)
-place(sfx, siren(tail, "hilo"), policeT + 0.5, 0.07)
-place(sfx, chopper(tail + 0.5), policeT - 0.3, 0.3)
-place(sfx, radio(tail), policeT + 0.4, 0.12)
+place(sus, siren(tail + 0.5, "wail"), policeT - 0.1, 0.11)
+place(sus, siren(tail, "hilo"), policeT + 0.5, 0.06)
+place(sus, chopper(tail + 0.5), policeT - 0.3, 0.26)
 steps = [659, 587, 523, 494, 440, 392]
 t = backT; j = 0
 while t < broT - 0.1: place(sfx, pizz(steps[j % 6]), t, 0.3); place(sfx, footstep(0.5), t, 0.15); t += 0.748; j += 1   # tiptoeing backwards
@@ -249,12 +249,13 @@ if v.ndim > 1: v = v.mean(axis=1)
 assert vsr == SR
 voice = np.zeros(N, dtype=np.float32); m = min(N, len(v)); voice[:m] = v[:m]
 env = sos(np.abs(voice), "low", 6) * 5
-mus *= (1 - 0.65 * np.clip(env / 0.25, 0, 1)).astype(np.float32)
-amb *= (1 - 0.3 * np.clip(env / 0.25, 0, 1)).astype(np.float32)
+mus *= (1 - 0.8 * np.clip(env / 0.25, 0, 1)).astype(np.float32)
+amb *= (1 - 0.5 * np.clip(env / 0.25, 0, 1)).astype(np.float32)
+sus *= (1 - 0.7 * np.clip(env / 0.25, 0, 1)).astype(np.float32)
 vm = np.abs(voice) > 0.02
 rms = lambda x: float(np.sqrt(np.mean(x[vm] ** 2)))
 print("stem rms while voice speaks  voice %.3f  music %.3f  amb %.3f  sfx %.3f" % (rms(voice), rms(mus * 0.28), rms(amb * 0.42), rms(sfx * 0.5)))
-mix = voice * 1.0 + mus * 0.28 + amb * 0.42 + sfx * 0.5
+mix = voice * 1.0 + mus * 0.28 + amb * 0.42 + sfx * 0.42 + sus * 0.5
 mix *= env_fade(N, 0.0, 0.4)
 pk = np.max(np.abs(mix))
 if pk > 0.95: mix *= 0.95 / pk

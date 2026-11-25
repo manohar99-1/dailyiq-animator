@@ -304,13 +304,12 @@ function scene2(t) {
     const sxp = dd.pt.head[0], syp = dd.pt.head[1] - 170 - 6 * Math.sin(t * 4);
     g += `<g transform="translate(${n2(sxp)},${n2(syp)}) scale(${n2(sa)}) translate(${n2(-sxp)},${n2(-syp)})">${star5(sxp, syp, 52, '#FFD83D', COL.ink, 8, 8 * Math.sin(t * 3))}</g>`;
   }
-  // sandwich thought bubble
+  // sandwich pops in as a plain prop (no bubble, nothing that reads as speech)
   const ba = pop(seg(t, sandT, sandT + 0.35)) * (1 - seg(t, sandT + 1.7, sandT + 2.0));
   if (ba > 0.01) {
-    const bx = dd.pt.head[0] + 100, by = dd.pt.head[1] - 320;
-    g += `<g transform="translate(${n2(bx)},${n2(by)}) scale(${n2(ba)})"><circle cx="-60" cy="110" r="10" fill="#fff" stroke="${COL.ink}" stroke-width="5"/><circle cx="-36" cy="78" r="16" fill="#fff" stroke="${COL.ink}" stroke-width="5"/>
-<ellipse rx="100" ry="70" fill="#fff" stroke="${COL.ink}" stroke-width="7"/>
-<path d="M-62,-6 Q0,-48 62,-6 L62,0 L-62,0Z" fill="#E8B96A" stroke="${COL.ink}" stroke-width="5" stroke-linejoin="round"/><rect x="-66" y="0" width="132" height="12" rx="6" fill="#6DBE45" stroke="${COL.ink}" stroke-width="4"/><rect x="-58" y="12" width="116" height="12" rx="6" fill="#E5533D" stroke="${COL.ink}" stroke-width="4"/><path d="M-62,24 L62,24 Q58,46 40,46 L-40,46 Q-58,46 -62,24Z" fill="#E8B96A" stroke="${COL.ink}" stroke-width="5" stroke-linejoin="round"/></g>`;
+    const bx = dd.pt.head[0] + 110, by = dd.pt.head[1] - 300 + 8 * Math.sin(t * 5);
+    g += `<g transform="translate(${n2(bx)},${n2(by)}) scale(${n2(ba * 1.25)})">
+<path d="M-62,-6 Q0,-48 62,-6 L62,0 L-62,0Z" fill="#E8B96A" stroke="${COL.ink}" stroke-width="6" stroke-linejoin="round"/><rect x="-66" y="0" width="132" height="12" rx="6" fill="#6DBE45" stroke="${COL.ink}" stroke-width="5"/><rect x="-58" y="12" width="116" height="12" rx="6" fill="#E5533D" stroke="${COL.ink}" stroke-width="5"/><path d="M-62,24 L62,24 Q58,46 40,46 L-40,46 Q-58,46 -62,24Z" fill="#E8B96A" stroke="${COL.ink}" stroke-width="6" stroke-linejoin="round"/></g>`;
   }
   // siren glow once police are mentioned
   const sir = seg(t, policeT, policeT + 0.5);
@@ -361,7 +360,6 @@ function frame(t) {
   const fin = seg(t, a, a + 0.25), fout = 1 - seg(t, b - 0.2, b);
   const alpha = sc === KEYS[0] ? fout : Math.min(fin, fout);
   const scene = (SCENES[sc] || placeholder)(t);
-  const pills = KEYS.map((k, i) => `<rect x="${690 + i * 56}" y="1838" width="48" height="16" rx="8" fill="${k === sc ? COL.yellow : '#4A5A86'}"/>`).join('');
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="720" height="1280">
 <defs><pattern id="dots" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="3.2" fill="#E4D9BF"/></pattern>
 <clipPath id="pc"><rect x="16" y="92" width="1048" height="1800" rx="52"/></clipPath>
@@ -376,9 +374,6 @@ function frame(t) {
 <text x="540" y="66" text-anchor="middle" font-family="InterX" font-weight="900" font-size="34" fill="${COL.navy}" letter-spacing="1">WHAT IF YOU GOT GTA 6 IN REAL LIFE?</text>
 <g clip-path="url(#pc)"><rect x="16" y="92" width="1048" height="1800" fill="#EAD6B6"/>
 <g opacity="${n2(alpha)}">${scene}</g>
-<rect x="16" y="1800" width="1048" height="92" fill="${COL.navy}"/>
-<text x="64" y="1862" font-family="InterX" font-weight="900" font-size="46" fill="#fff">Daily<tspan fill="${COL.yellow}">IQ</tspan></text>
-${pills}
 ${caption(t)}</g>
 <rect x="16" y="92" width="1048" height="1800" rx="52" fill="none" stroke="${COL.navy}" stroke-width="8"/>
 </svg>`;
