@@ -279,7 +279,7 @@ function scene2(t) {
     } else if (t >= broT - 0.1) {
       dx = bxD - 24 - 70 * (broT - 0.1 - backT);
       const sh = ease(seg(t, broT, broT + 0.4));
-      dArms = [[lerp(-8, -42, sh), lerp(-6, -112, sh)], [lerp(8, 42, sh), lerp(6, 112, sh)]];
+      dArms = [[lerp(-8, -36, sh), lerp(-6, -100, sh)], [lerp(8, 30, sh), lerp(6, 92, sh)]];
       dExpr = sh > 0.5 ? 'shrug' : 'uneasy'; dLook = { x: 0, y: 0 }; dTilt = -6 * sh;
     }
   }
@@ -291,7 +291,7 @@ function scene2(t) {
   else {
     sx = bxS + 18 * easeOut(seg(t, bumpT, bumpT + 0.3));
     sArms = [[-8, -6], [8, 6]]; sLegs = [[0, 0], [0, 0]]; sExpr = 'annoyed'; sLook = { x: -4, y: 0 };
-    if (t > bumpT + 0.5 && t < walkOffT) sArms = [[-8, -6], [lerp(8, 30, ease(seg(t, bumpT + 0.5, bumpT + 0.9))), lerp(6, 74, ease(seg(t, bumpT + 0.5, bumpT + 0.9)))]];
+    if (t > bumpT + 0.5 && t < wantT + 0.6) sArms = [[-8, -6], [lerp(8, 30, ease(seg(t, bumpT + 0.5, bumpT + 0.9))), lerp(6, 74, ease(seg(t, bumpT + 0.5, bumpT + 0.9)))]];
     if (t > wantT + 0.2 && t < walkOffT) { sExpr = 'surprise'; sLook = { x: -5, y: -5 * ease(seg(t, wantT + 0.2, wantT + 0.5)) }; }
     if (t >= walkOffT) { sFlip = 1; const w3 = walkPose(sPh, 0.85); sx = bxS + 18 + 150 * (t - walkOffT); sArms = w3.arms; sLegs = w3.legs; sExpr = 'neutral'; sLook = { x: 0, y: 0 }; }
   }
@@ -361,7 +361,7 @@ function frame(t) {
   const fin = seg(t, a, a + 0.25), fout = 1 - seg(t, b - 0.2, b);
   const alpha = sc === KEYS[0] ? fout : Math.min(fin, fout);
   const scene = (SCENES[sc] || placeholder)(t);
-  const pills = KEYS.map((k, i) => `<rect x="${330 + i * 58}" y="1838" width="48" height="16" rx="8" fill="${k === sc ? COL.yellow : '#4A5A86'}"/>`).join('');
+  const pills = KEYS.map((k, i) => `<rect x="${690 + i * 56}" y="1838" width="48" height="16" rx="8" fill="${k === sc ? COL.yellow : '#4A5A86'}"/>`).join('');
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="720" height="1280">
 <defs><pattern id="dots" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="3.2" fill="#E4D9BF"/></pattern>
 <clipPath id="pc"><rect x="16" y="92" width="1048" height="1800" rx="52"/></clipPath>
@@ -378,7 +378,7 @@ function frame(t) {
 <g opacity="${n2(alpha)}">${scene}</g>
 <rect x="16" y="1800" width="1048" height="92" fill="${COL.navy}"/>
 <text x="64" y="1862" font-family="InterX" font-weight="900" font-size="46" fill="#fff">Daily<tspan fill="${COL.yellow}">IQ</tspan></text>
-<text x="1030" y="1858" text-anchor="end" font-family="InterX" font-weight="800" font-size="30" fill="#fff">${sc}/6  ${LABELS[sc] || ''}</text>${pills}
+${pills}
 ${caption(t)}</g>
 <rect x="16" y="92" width="1048" height="1800" rx="52" fill="none" stroke="${COL.navy}" stroke-width="8"/>
 </svg>`;
