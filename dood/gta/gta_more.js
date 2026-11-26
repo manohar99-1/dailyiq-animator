@@ -1,5 +1,5 @@
 // Scenes 3-6 of the GTA Short + props (car, owner's bat, trash can, wall, pool, house, phone, scooter, mission card).
-const END_T = 46.8;
+const END_T = 51.3;
 VIS[6][1] = END_T;
 const T3 = VIS[3][0], T4 = VIS[4][0], T5 = VIS[5][0], T6 = VIS[6][0];
 const ink = COL.ink;
@@ -256,7 +256,6 @@ function scene5(t) {
   const jig = shake ? 3 * Math.sin(t * 38) : 0;
   const d = person({ x: X + jig, y: GY - hop, s: S, expr, look, tilt, blink: blinkAt(t), arms, legs });
   g += `<g opacity="${n2(vis)}">${d.svg}</g>`;
-  if (t >= wDead) { const k = Math.sin((t - wDead) * 9) * 8; const h = d.pt.hip; [-1, 1].forEach(sg => { g += `<g transform="translate(${n2(h[0] + sg * 62)},${n2(h[1] + 28)}) rotate(${n2(sg * (18 + k))})"><path d="M-22,0 L22,0 L18,76 Q0,92 -18,76Z" fill="#fff" stroke="${ink}" stroke-width="6" stroke-linejoin="round"/></g>`; }); }
   if (phoneUp > 0.3) { const m = [(d.pt.hand0[0] + d.pt.hand1[0]) / 2, (d.pt.hand0[1] + d.pt.hand1[1]) / 2]; g += `<g transform="translate(${n2(m[0] + 8)},${n2(m[1] - 4)}) rotate(${n2(12 + (shake ? 8 * Math.sin(t * 40) : 0))})"><rect x="-22" y="-38" width="44" height="76" rx="9" fill="#14161C" stroke="${ink}" stroke-width="5"/><rect x="-16" y="-30" width="32" height="58" rx="5" fill="#BFD6FF"/></g>`; }
   // phone close-up: loading, then 0, then again
   const loading = t < revealT || (t > wAcc && t < wAcc + 0.6);
