@@ -24,6 +24,22 @@ const LABELS = { 1: 'THE DREAM', 2: 'WANTED LEVEL', 3: 'FREE CAR', 4: 'POLICE CH
 const cv = document.createElement('canvas').getContext('2d');
 function textW(str, size, weight = 900) { cv.font = `${weight} ${size}px InterX`; return cv.measureText(str).width; }
 
+// speech bubble with the character's words as a subtitle. Shows between t0 and t1, tail points at (tx,ty).
+function bubble(t, t0, t1, lines, cx, cy, tx, ty) {
+  if (t < t0 || t > t1) return '';
+  const a = pop(seg(t, t0, t0 + 0.25)) * (1 - seg(t, t1 - 0.2, t1));
+  if (a < 0.01) return '';
+  const size = 44, lh = 54;
+  const w = Math.max(...lines.map(l => textW(l, size))) + 64, h = lines.length * lh + 36;
+  cx = clamp(cx, 40 + w / 2, 1040 - w / 2);
+  const x0 = cx - w / 2, y0 = cy - h / 2, yb = y0 + h, bx = clamp(tx, x0 + 44, x0 + w - 44);
+  const tail = `<path d="M${n2(bx - 22)},${n2(yb - 2)} L${n2(tx)},${n2(ty)} L${n2(bx + 22)},${n2(yb - 2)}" fill="#fff" stroke="${COL.ink}" stroke-width="7" stroke-linejoin="round"/>`;
+  const box = `<rect x="${n2(x0)}" y="${n2(y0)}" width="${n2(w)}" height="${n2(h)}" rx="34" fill="#fff" stroke="${COL.ink}" stroke-width="7"/>`;
+  const cover = `<rect x="${n2(bx - 19)}" y="${n2(yb - 6)}" width="38" height="9" fill="#fff"/>`;
+  const txt = lines.map((l, i) => `<text x="${n2(cx)}" y="${n2(y0 + 18 + lh * (i + 1) - 14)}" text-anchor="middle" font-family="InterX" font-weight="900" font-size="${size}" fill="${COL.ink}">${l}</text>`).join('');
+  return `<g transform="translate(${n2(tx)},${n2(ty)}) scale(${n2(a)}) translate(${n2(-tx)},${n2(-ty)})">${tail}${box}${cover}${txt}</g>`;
+}
+
 // ======================= Dood & people: ONE outline around the whole body =======================
 // Every body part is drawn twice: first all parts in ink but fatter (the outline pass), then all parts in their
 // own colour on top. Overlapping parts therefore merge into one silhouette with a single outline and no inner lines.
@@ -155,6 +171,10 @@ function roomScene(t) {
   // flash grows from the TV
   const k = seg(t, F1, FL);
   if (k > 0) out += `<circle cx="${TVX}" cy="${TVY}" r="${n2(lerp(40, 2600, ease(k)))}" fill="#fff"/>`;
+  // opening title card
+  const ta = pop(seg(t, 0.05, 0.4)) * (1 - seg(t, 1.45, 1.75));
+  if (ta > 0.01) out += `<g transform="translate(540,600) scale(${n2(ta)})"><rect x="-370" y="-110" width="740" height="220" rx="40" fill="${COL.navy}" opacity=".94"/><text y="-12" text-anchor="middle" font-family="InterX" font-weight="900" font-size="84" fill="#fff">ONE MORNING</text><text y="76" text-anchor="middle" font-family="InterX" font-weight="900" font-size="84" fill="${COL.yellow}">TO TOMORROW</text></g>`;
+  out += bubble(t, 0.95, F1 - 0.12, ['Just one more mission...'], 440, 850, 350, 975);
   return out;
 }
 
@@ -199,7 +219,7 @@ function buildWorld() {
 const WORLD = buildWorld();
 
 // ======================= HUD (generic open-world game interface) =======================
-function hud(t, t0, stars, tt) {
+function hud(t, t0, stars, tt, cash = '₹5,000', cashCol = '#9BE564') {
   const a = i => pop(seg(t, t0 + i * 0.2, t0 + i * 0.2 + 0.35));
   let g = '';
   const m = a(0);
@@ -211,7 +231,7 @@ function hud(t, t0, stars, tt) {
   const b = a(1);
   if (b > 0.01) g += `<g transform="translate(300,1650) scale(${n2(b)})" style="transform-origin:0 0"><rect x="0" y="-34" width="190" height="22" rx="6" fill="${COL.ink}"/><rect x="3" y="-31" width="184" height="16" rx="4" fill="#4FA3FF"/><rect x="0" y="0" width="190" height="22" rx="6" fill="${COL.ink}"/><rect x="3" y="3" width="184" height="16" rx="4" fill="#E53935"/></g>`;
   const c = a(2);
-  if (c > 0.01) g += `<text transform="translate(1030,1720) scale(${n2(c)})" text-anchor="end" font-family="InterX" font-weight="900" font-size="56" fill="#9BE564" stroke="${COL.ink}" stroke-width="9" paint-order="stroke" stroke-linejoin="round">₹5,000</text>`;
+  if (c > 0.01) g += `<text transform="translate(1030,1720) scale(${n2(c)})" text-anchor="end" font-family="InterX" font-weight="900" font-size="56" fill="${cashCol}" stroke="${COL.ink}" stroke-width="9" paint-order="stroke" stroke-linejoin="round">${cash}</text>`;
   const d = a(3);
   if (d > 0.01) {
     const flash = stars > 0 ? (Math.sin(tt * 9) > 0 ? '#FF4040' : '#4F8BFF') : '#FFD83D';
@@ -238,11 +258,13 @@ function scene1(t) {
     bob: 0 });
   let g = WORLD + d.svg;
   // player marker bobbing above head
-  const mk = pop(seg(t, HUD0 + 0.2, HUD0 + 0.5)) * (1 - seg(t, HUD0 + 1.5, HUD0 + 1.9));
+  const mk = pop(seg(t, HUD0 + 0.25, HUD0 + 0.5)) * (1 - seg(t, HUD0 + 0.9, HUD0 + 1.15));
   if (mk > 0.01) g += `<path transform="translate(${n2(d.pt.head[0])},${n2(d.pt.head[1] - 190 + 8 * Math.sin(t * 5))}) scale(${n2(mk)})" d="M0,26 L-26,-12 L-10,-12 L-10,-30 L10,-30 L10,-12 L26,-12Z" fill="#9BE564" stroke="${COL.ink}" stroke-width="6" stroke-linejoin="round"/>`;
   const camS = lerp(1.06, 1.0, easeOut(seg(k, 0, 1.2)));
   const cam = `translate(540,1300) scale(${n2(camS)}) translate(-540,-1300)`;
   let out = `<g transform="${cam}">${g}</g>` + hud(t, HUD0, 0, t);
+  out += bubble(t, FL + 0.85, FL + 1.85, ['Wait... what?'], 540, 775, 545, 925);
+  out += bubble(t, HUD0 + 1.3, HUD0 + 2.55, ['Am I... in the game?'], 540, 775, 545, 925);
   const wa = 1 - seg(t, FL, FL + 0.55);                  // white fades away
   if (wa > 0.01) out += `<rect x="0" y="0" width="${W}" height="${H}" fill="#fff" opacity="${n2(wa)}"/>`;
   return out;
@@ -318,6 +340,11 @@ function scene2(t) {
   const camX = lerp(0, -20, seg(t, tS, tS + 5));
   out += `<g transform="translate(${n2(camX)},0)">${g}</g>`;
   if (sir > 0.01) { const red = Math.sin(t * 8) > 0; out += `<rect x="16" y="92" width="1048" height="1800" fill="url(#${red ? 'sirenR' : 'sirenB'})" opacity="${n2(0.55 * sir)}"/>`; }
+  const hd = dd.pt.head, sh = ss.pt.head;
+  out += bubble(t, bumpT + 0.15, bumpT + 1.45, ['Hey! Watch it!'], sh[0] + 60, sh[1] - 195, sh[0] + 5, sh[1] - 75);
+  out += bubble(t, bumpT + 0.55, bumpT + 1.6, ['Sorry!'], hd[0] - 60, hd[1] - 195, hd[0] - 10, hd[1] - 75);
+  out += bubble(t, wantT + 0.25, wantT + 1.5, ['Wanted?!', 'For what?!'], hd[0] - 40, hd[1] - 335, hd[0] - 72, hd[1] - 100);
+  out += bubble(t, broT + 0.2, broT + 1.6, ['It was an accident!'], hd[0] - 20, hd[1] - 335, hd[0] - 72, hd[1] - 100);
   out += hud(t, 0, stars, t);
   return out;
 }
@@ -364,6 +391,7 @@ function frame(t) {
 <defs><pattern id="dots" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="3.2" fill="#E4D9BF"/></pattern>
 <clipPath id="pc"><rect x="16" y="92" width="1048" height="1800" rx="52"/></clipPath>
 <clipPath id="tvclip"><rect x="708" y="898" width="314" height="204" rx="6"/></clipPath>
+<linearGradient id="beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6B0" stop-opacity="0"/><stop offset="1" stop-color="#FFF6B0" stop-opacity=".85"/></linearGradient>
 <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5FA8F5"/><stop offset=".6" stop-color="#B8DAFF"/><stop offset="1" stop-color="#FFE2B8"/></linearGradient>
 <radialGradient id="sun"><stop offset="0" stop-color="#FFF4C4" stop-opacity=".95"/><stop offset="1" stop-color="#FFF4C4" stop-opacity="0"/></radialGradient>
 <linearGradient id="road" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#454850"/><stop offset="1" stop-color="#2A2C32"/></linearGradient>

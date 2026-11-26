@@ -238,24 +238,60 @@ place(sfx, bloop(500, 900, 0.18), sandT, 0.25)                        # sandwich
 tw = end2 + 0.05
 place(sfx, wah(233, 0.16), tw, 0.45); place(sfx, wah(220, 0.16), tw + 0.18, 0.45); place(sfx, wah(208, 0.3, 0.18), tw + 0.36, 0.45)   # sad trombone
 
+
+# --- Scenes 3-6 (approximate cue times from the scene starts) ---
+S = {k: meta["scenes"][k]["start"] for k in "3456"}
+s3, s4, s5, s6 = S["3"], S["4"], S["5"], S["6"]
+t = s3 + 0.2
+while t < s3 + 1.8: place(sfx, footstep(0.7), t, 0.25); t += 0.5
+place(sfx, bloop(400, 900, 0.15), s3 + 2.0, 0.25)                      # "free car?!"
+place(sfx, bonk(), s3 + 2.6, 0.45)                                    # door slam
+for j in range(6): place(sfx, ping(1500 if j % 2 else 1100, 0.2), s3 + 2.7 + j * 0.22, 0.25)   # car alarm
+place(sfx, swish(0.3), s3 + 3.3, 0.2); place(sfx, bonk(), s3 + 4.0, 0.5)
+place(sfx, horn(), s4 + 0.3, 0.25)
+place(sus, car_pass(4.0), s4 + 0.2, 0.3)
+t = s4 + 0.5
+while t < s5 - 0.9: place(sfx, bonk(), t, 0.5) if (int((t - s4) * 10) % 23 == 0) else None; t += 0.1
+for tb in (s4 + 2.3, s4 + 4.0, s4 + 5.4): place(sfx, bonk(), tb, 0.6); place(sfx, stab(), tb, 0.25)
+place(sfx, whoomph(1.2), s4 + 6.1, 0.4)                               # splash
+place(sus, siren(s5 - s4 + 0.5, "wail"), s4, 0.12)
+place(sfx, riser(0.8), s5 - 0.3, 0.2)
+place(sfx, whoomph(1.5), s5 + 0.2, 0.4)                               # respawn
+for j, f in enumerate([784, 988, 1319, 1568]): place(sfx, ping(f, 0.4), s5 + 1.3 + j * 0.1, 0.3)
+place(sfx, tick(), s5 + 3.4, 0.35); place(sfx, bloop(900, 300, 0.4), s5 + 4.4, 0.3)
+for j in range(5): place(sfx, tick(), s5 + 5.0 + j * 0.12, 0.3)
+place(sfx, wah(233, 0.16), s5 + 6.8, 0.45); place(sfx, wah(208, 0.3, 0.18), s5 + 7.1, 0.45)
+place(sfx, wah(196, 0.5, 0.2), s6 + 0.3, 0.35)
+place(sfx, stab(), s6 + 1.6, 0.35); place(sfx, ping(1319, 0.5), s6 + 1.7, 0.35)
+place(sfx, ping(1760, 0.5), s6 + 2.0, 0.3)
+t = s6 + 3.3
+while t < s6 + 4.3: place(sfx, footstep(), t, 0.3); t += 0.3
+place(sfx, bloop(300, 700, 0.2), s6 + 4.4, 0.25)
+place(sus, car_pass(3.0), s6 + 4.7, 0.3)
+place(sus, siren(dur - s6 - 4.8, "wail"), s6 + 4.8, 0.12)
+
 # --- music: easy groove in the street, tense once the star appears ---
 groove(mus, FL, wantT, MAJ, 100, False)
 groove(mus, wantT, dur, MIN, 112, True)
 mus = sos(mus, "low", 5000)
 
 # --- voice + mix ---
-v, vsr = sf.read(str(OUT / "voice_final.wav"))
-if v.ndim > 1: v = v.mean(axis=1)
-assert vsr == SR
-voice = np.zeros(N, dtype=np.float32); m = min(N, len(v)); voice[:m] = v[:m]
+import os
+voice = np.zeros(N, dtype=np.float32)
+if not os.environ.get("NOVOICE"):
+    v, vsr = sf.read(str(OUT / "voice_final.wav"))
+    if v.ndim > 1: v = v.mean(axis=1)
+    assert vsr == SR
+    m = min(N, len(v)); voice[:m] = v[:m]
 env = sos(np.abs(voice), "low", 6) * 5
 mus *= (1 - 0.8 * np.clip(env / 0.25, 0, 1)).astype(np.float32)
 amb *= (1 - 0.5 * np.clip(env / 0.25, 0, 1)).astype(np.float32)
 sus *= (1 - 0.7 * np.clip(env / 0.25, 0, 1)).astype(np.float32)
 vm = np.abs(voice) > 0.02
-rms = lambda x: float(np.sqrt(np.mean(x[vm] ** 2)))
+rms = lambda x: float(np.sqrt(np.mean(x[vm] ** 2))) if vm.any() else 0.0
 print("stem rms while voice speaks  voice %.3f  music %.3f  amb %.3f  sfx %.3f" % (rms(voice), rms(mus * 0.28), rms(amb * 0.42), rms(sfx * 0.5)))
-mix = voice * 1.0 + mus * 0.28 + amb * 0.42 + sfx * 0.42 + sus * 0.5
+g = 1.0 if not os.environ.get('NOVOICE') else 1.8
+mix = voice * 1.0 + (mus * 0.28 + amb * 0.42 + sfx * 0.42 + sus * 0.5) * g
 mix *= env_fade(N, 0.0, 0.4)
 pk = np.max(np.abs(mix))
 if pk > 0.95: mix *= 0.95 / pk
