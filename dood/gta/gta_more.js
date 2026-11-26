@@ -1,5 +1,5 @@
 // Scenes 3-6 of the GTA Short + props (car, owner's bat, trash can, wall, pool, house, phone, scooter, mission card).
-const END_T = 51.3;
+const END_T = 56.5;
 VIS[6][1] = END_T;
 const T3 = VIS[3][0], T4 = VIS[4][0], T5 = VIS[5][0], T6 = VIS[6][0];
 const ink = COL.ink;
@@ -289,7 +289,7 @@ function missionCard(t) {
 }
 function scene6(t) {
   const GY = 1440, S = 0.72, X0 = 400, bagX = 700, scX = 860, K = 0.66;
-  const run0 = becomeT + 0.4, pickT = becomeT + 0.9, mountT = becomeT + 1.25;
+  const run0 = becomeT + 0.25, pickT = becomeT + 0.7, mountT = becomeT + 1.0;
   const dt = Math.max(0, t - mountT);
   const Dsc = 560 * (dt * dt) / (1 + dt);                          // street scroll once he rides away
   let g = chaseBG(Dsc);
