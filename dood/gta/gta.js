@@ -171,10 +171,7 @@ function roomScene(t) {
   // flash grows from the TV
   const k = seg(t, F1, FL);
   if (k > 0) out += `<circle cx="${TVX}" cy="${TVY}" r="${n2(lerp(40, 2600, ease(k)))}" fill="#fff"/>`;
-  // opening title card
-  const ta = pop(seg(t, 0.05, 0.4)) * (1 - seg(t, 1.45, 1.75));
-  if (ta > 0.01) out += `<g transform="translate(540,600) scale(${n2(ta)})"><rect x="-370" y="-110" width="740" height="220" rx="40" fill="${COL.navy}" opacity=".94"/><text y="-12" text-anchor="middle" font-family="InterX" font-weight="900" font-size="84" fill="#fff">ONE MORNING</text><text y="76" text-anchor="middle" font-family="InterX" font-weight="900" font-size="84" fill="${COL.yellow}">TO TOMORROW</text></g>`;
-  out += bubble(t, 0.95, F1 - 0.12, ['Just one more mission...'], 440, 850, 350, 975);
+  out += bubble(t, 0.4, F1 - 0.12, ['Just one more mission...'], 440, 850, 350, 975);
   return out;
 }
 
@@ -273,8 +270,8 @@ function scene1(t) {
 // ======================= Scene 2: bump, wanted star =======================
 function scene2(t) {
   const tS = VIS[2][0];
-  const wBump = findIn(1, /^bump/i), wWanted = findIn(1, /^wanted/i), wEntire = findIn(1, /^entire/i), wPolice = findIn(1, /^police/i), wSand = findIn(2, /^sandwich/i), wBro = findIn(2, /^bro/i);
-  const bumpT = wBump.s + 0.25, wantT = wWanted.s, policeT = wPolice.s, entireT = wEntire.s, sandT = wSand.s, broT = wBro.s;
+  const wBump = findIn(1, /^bump/i), wWanted = findIn(1, /^wanted/i), wEntire = findIn(1, /^entire/i), wPolice = findIn(1, /^police/i);
+  const bumpT = wBump.s + 0.25, wantT = wWanted.s, policeT = wPolice.s, entireT = wEntire.s, broT = P[2].start, sandT = broT + 0.6;
   const backT = wantT + 1.8;
   const GY = 1440, S = 1.1;
   const bxD = 470, bxS = 612;
@@ -325,13 +322,6 @@ function scene2(t) {
   if (sa > 0.01) {
     const sxp = dd.pt.head[0], syp = dd.pt.head[1] - 170 - 6 * Math.sin(t * 4);
     g += `<g transform="translate(${n2(sxp)},${n2(syp)}) scale(${n2(sa)}) translate(${n2(-sxp)},${n2(-syp)})">${star5(sxp, syp, 52, '#FFD83D', COL.ink, 8, 8 * Math.sin(t * 3))}</g>`;
-  }
-  // sandwich pops in as a plain prop (no bubble, nothing that reads as speech)
-  const ba = pop(seg(t, sandT, sandT + 0.35)) * (1 - seg(t, sandT + 1.7, sandT + 2.0));
-  if (ba > 0.01) {
-    const bx = dd.pt.head[0] + 110, by = dd.pt.head[1] - 300 + 8 * Math.sin(t * 5);
-    g += `<g transform="translate(${n2(bx)},${n2(by)}) scale(${n2(ba * 1.25)})">
-<path d="M-62,-6 Q0,-48 62,-6 L62,0 L-62,0Z" fill="#E8B96A" stroke="${COL.ink}" stroke-width="6" stroke-linejoin="round"/><rect x="-66" y="0" width="132" height="12" rx="6" fill="#6DBE45" stroke="${COL.ink}" stroke-width="5"/><rect x="-58" y="12" width="116" height="12" rx="6" fill="#E5533D" stroke="${COL.ink}" stroke-width="5"/><path d="M-62,24 L62,24 Q58,46 40,46 L-40,46 Q-58,46 -62,24Z" fill="#E8B96A" stroke="${COL.ink}" stroke-width="6" stroke-linejoin="round"/></g>`;
   }
   // siren glow once police are mentioned
   const sir = seg(t, policeT, policeT + 0.5);

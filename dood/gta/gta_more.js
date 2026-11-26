@@ -18,8 +18,6 @@ function car(o) {
   if (occ) {
     const d = person(Object.assign({ x: 25, y: 148, s: 0.75, expr: 'uneasy', arms: [[10, 20], [14, 24]] }, occ));
     g += `<g clip-path="url(#${id}g)">${d.svg}</g>`;
-    g += `<circle cx="42" cy="-118" r="12" fill="#fff" stroke="${ink}" stroke-width="5"/><circle cx="64" cy="-134" r="12" fill="#fff" stroke="${ink}" stroke-width="5"/>`;
-    g += `<ellipse cx="54" cy="-128" rx="9" ry="30" transform="rotate(30 54 -128)" fill="none" stroke="#1C1F26" stroke-width="7"/>`;
   }
   if (cops) {
     g += `<g clip-path="url(#${id}g)">`;
@@ -277,10 +275,11 @@ function scene5(t) {
 
 // ---------------- scene 6: the final mission ----------------
 const becomeT = ws(11, /^becoming/i), unlockT = ws(10, /^unlock/i);
-function scooter(x, y, handle, wheelRot) {
+function scooter(x, y, handle, wheelRot, k = 1) {
+  handle = [x + (handle[0] - x) / k, y + (handle[1] - y) / k];
   const w = cx => `<circle cx="${cx}" cy="-34" r="34" fill="#2A2D36" stroke="${ink}" stroke-width="7"/><circle cx="${cx}" cy="-34" r="12" fill="#C9CED8" stroke="${ink}" stroke-width="4"/><g transform="rotate(${n2(wheelRot)} ${cx} -34)"><line x1="${cx - 12}" y1="-34" x2="${cx + 12}" y2="-34" stroke="${ink}" stroke-width="4"/></g>`;
   const hx = handle[0] - x, hy = handle[1] - y;
-  return `<g transform="translate(${n2(x)},${n2(y)})">${w(-70)}${w(190)}<line x1="190" y1="-34" x2="${n2(hx)}" y2="${n2(hy)}" stroke="${ink}" stroke-width="22" stroke-linecap="round"/><line x1="190" y1="-34" x2="${n2(hx)}" y2="${n2(hy)}" stroke="#FF6B35" stroke-width="11" stroke-linecap="round"/><line x1="${n2(hx - 18)}" y1="${n2(hy)}" x2="${n2(hx + 18)}" y2="${n2(hy)}" stroke="${ink}" stroke-width="16" stroke-linecap="round"/><rect x="-100" y="-46" width="320" height="26" rx="13" fill="#FF6B35" stroke="${ink}" stroke-width="7"/><rect x="-60" y="-106" width="125" height="36" rx="16" fill="#2D2D2D" stroke="${ink}" stroke-width="6"/><rect x="-130" y="-92" width="84" height="48" rx="14" fill="#FF6B35" stroke="${ink}" stroke-width="7"/></g>`;
+  return `<g transform="translate(${n2(x)},${n2(y)}) scale(${k})">${w(-70)}${w(190)}<line x1="190" y1="-34" x2="${n2(hx)}" y2="${n2(hy)}" stroke="${ink}" stroke-width="22" stroke-linecap="round"/><line x1="190" y1="-34" x2="${n2(hx)}" y2="${n2(hy)}" stroke="#FF6B35" stroke-width="11" stroke-linecap="round"/><line x1="${n2(hx - 18)}" y1="${n2(hy)}" x2="${n2(hx + 18)}" y2="${n2(hy)}" stroke="${ink}" stroke-width="16" stroke-linecap="round"/><rect x="-100" y="-46" width="320" height="26" rx="13" fill="#FF6B35" stroke="${ink}" stroke-width="7"/><rect x="-60" y="-106" width="125" height="36" rx="16" fill="#2D2D2D" stroke="${ink}" stroke-width="6"/><rect x="-130" y="-92" width="84" height="48" rx="14" fill="#FF6B35" stroke="${ink}" stroke-width="7"/></g>`;
 }
 const bag = (x, y, rot) => `<g transform="translate(${n2(x)},${n2(y)}) rotate(${n2(rot)})"><path d="M-22,-70 Q0,-112 22,-70" fill="none" stroke="${ink}" stroke-width="9"/><path d="M-50,-70 L50,-70 L60,0 L-60,0Z" fill="#FF9A2E" stroke="${ink}" stroke-width="7" stroke-linejoin="round"/><circle cx="0" cy="-36" r="13" fill="#fff" stroke="${ink}" stroke-width="5"/></g>`;
 function missionCard(t) {
@@ -290,7 +289,7 @@ function missionCard(t) {
   return `<g transform="translate(540,${n2(y)}) scale(${n2(a)})"><rect x="-440" y="-170" width="880" height="340" rx="26" fill="#12151C" opacity=".94" stroke="${COL.yellow}" stroke-width="9"/><text y="-96" text-anchor="middle" font-family="InterX" font-weight="900" font-size="46" fill="${COL.yellow}">NEW MISSION UNLOCKED</text><rect x="-380" y="-70" width="760" height="5" fill="#ffffff55"/><text y="2" text-anchor="middle" font-family="InterX" font-weight="900" font-size="58" fill="#fff">MISSION: DELIVER FOOD</text><text y="100" text-anchor="middle" font-family="InterX" font-weight="900" font-size="66" fill="#9BE564">REWARD: ₹500</text></g>`;
 }
 function scene6(t) {
-  const GY = 1440, S = 1.1, X0 = 400, bagX = 700, scX = 860;
+  const GY = 1440, S = 0.95, X0 = 400, bagX = 700, scX = 860, K = 0.85;
   const run0 = becomeT + 0.4, pickT = becomeT + 0.9, mountT = becomeT + 1.25;
   const dt = Math.max(0, t - mountT);
   const Dsc = 560 * (dt * dt) / (1 + dt);                          // street scroll once he rides away
@@ -311,21 +310,23 @@ function scene6(t) {
     pose = { x: scooterX + 0, y: GY, hipY: -91, lean: 0, tilt: 0, legs: [[100, 48], [96, 44]], arms: [[35, 95], [40, 100]], expr: 'neutral', blink: blinkAt(t), look: { x: 4, y: 0 } };
   }
   const d = person(Object.assign({ s: S }, pose));
-  if (t >= mountT) g += scooter(scooterX, GY, [d.pt.hand1[0], d.pt.hand1[1]], -Dsc * 1.2);
-  else g += scooter(scX, GY, [scX + 164, GY - 189], 0);
+  const pu = seg(t, mountT + 0.1, mountT + 1.1);
+  let pcar = '';
+  if (pu > 0) pcar = car({ x: lerp(-560, 370, easeOut(pu)) + 6 * Math.sin(t * 6), y: 1575, s: 1.45, color: '#F2F4F8', stripe: '#2A5BD7', id: 'p6', cops: { expr: 'deadpan' }, lightPh: t * 16, wheelRot: -t * 900 });
+  g += pcar;
+  if (t >= mountT) g += scooter(scooterX, GY, [d.pt.hand1[0], d.pt.hand1[1]], -Dsc * 1.2, K);
+  else g += scooter(scX, GY, [scX + 164, GY - 189], 0, K);
   if (t < pickT) g += bag(bagX, GY, 0);
   g += d.svg;
   if (t >= pickT) g += bag(d.pt.hand1[0] + 6, d.pt.hand1[1] + 90, 8 * Math.sin(t * 12));
   // phone in his hand while he is slumped
   if (t < becomeT + 0.1) { const buzz = t > unlockT - 0.25 ? 4 * Math.sin(t * 50) : 0; g += `<g transform="translate(${n2(d.pt.hand1[0] + 10 + buzz)},${n2(d.pt.hand1[1] - 6)}) rotate(-18)"><rect x="-24" y="-42" width="48" height="84" rx="10" fill="#14161C" stroke="${ink}" stroke-width="5"/><rect x="-18" y="-34" width="36" height="66" rx="6" fill="${t > unlockT - 0.1 ? '#FFE9A6' : '#3A4660'}"/></g>`; }
   // police car follows the scooter
-  const pu = seg(t, mountT + 0.1, mountT + 1.1);
-  if (pu > 0) g += car({ x: lerp(-330, 250, easeOut(pu)) + 6 * Math.sin(t * 6), y: 1700, s: 0.82, color: '#F2F4F8', stripe: '#2A5BD7', id: 'p6', cops: { expr: 'deadpan' }, lightPh: t * 16, wheelRot: -t * 900 });
   let o = g + missionCard(t) + hud(t, 0, 0, t, '₹0', '#FF5A5A');
   o += bubble(t, T6 + 0.45, T6 + 1.9, ['So tired...'], 520, 960, 480, 1090);
   o += bubble(t, unlockT + 0.55, unlockT + 1.7, ['A mission!'], 520, 960, 480, 1090);
   o += bubble(t, becomeT + 0.1, becomeT + 1.15, ['Delivery time!'], 520, 760, 500, 930);
-  o += bubble(t, mountT + 0.35, END_T - 0.1, ['Not again!'], 250, 1480, 250, 1560);
+  o += bubble(t, mountT + 0.35, END_T - 0.1, ['Not again!'], 470, 900, 690, 1070);
   return o;
 }
 SCENES[3] = scene3; SCENES[4] = scene4; SCENES[5] = scene5; SCENES[6] = scene6;

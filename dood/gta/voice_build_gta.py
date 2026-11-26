@@ -11,7 +11,7 @@ SAY = {"GTA": "G T A", "6": "six", "6!": "six!", "GTA...": "G T A..."}   # spoke
 
 # (scene, [(text, speed, pitch_semitones, volume, gap_after)], pause_after_phrase)   pitch moves are small on purpose
 PHRASES = [
-    (1, [("Imagine waking up one day, and discovering your entire life has turned into...", 0.97, +0.4, 1.0, 0.12),
+    (1, [("Imagine waking up tomorrow, and discovering your entire life has turned into...", 0.97, +0.4, 1.0, 0.12),
          ("GTA 6!", 1.0, +1.3, 1.1, 0)], 1.1),
     (2, [("You accidentally bump into someone, and suddenly you're wanted by the entire police department.", 1.0, -0.4, 1.0, 0)], 0.45),
     (2, [("Bro, you didn't even steal a sandwich!", 1.03, +0.9, 1.08, 0)], 0.9),
