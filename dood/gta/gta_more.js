@@ -289,7 +289,7 @@ function missionCard(t) {
   return `<g transform="translate(540,${n2(y)}) scale(${n2(a)})"><rect x="-440" y="-170" width="880" height="340" rx="26" fill="#12151C" opacity=".94" stroke="${COL.yellow}" stroke-width="9"/><text y="-96" text-anchor="middle" font-family="InterX" font-weight="900" font-size="46" fill="${COL.yellow}">NEW MISSION UNLOCKED</text><rect x="-380" y="-70" width="760" height="5" fill="#ffffff55"/><text y="2" text-anchor="middle" font-family="InterX" font-weight="900" font-size="58" fill="#fff">MISSION: DELIVER FOOD</text><text y="100" text-anchor="middle" font-family="InterX" font-weight="900" font-size="66" fill="#9BE564">REWARD: ₹500</text></g>`;
 }
 function scene6(t) {
-  const GY = 1440, S = 0.95, X0 = 400, bagX = 700, scX = 860, K = 0.85;
+  const GY = 1440, S = 0.72, X0 = 400, bagX = 700, scX = 860, K = 0.66;
   const run0 = becomeT + 0.4, pickT = becomeT + 0.9, mountT = becomeT + 1.25;
   const dt = Math.max(0, t - mountT);
   const Dsc = 560 * (dt * dt) / (1 + dt);                          // street scroll once he rides away
@@ -326,7 +326,7 @@ function scene6(t) {
   o += bubble(t, T6 + 0.45, T6 + 1.9, ['So tired...'], 520, 960, 480, 1090);
   o += bubble(t, unlockT + 0.55, unlockT + 1.7, ['A mission!'], 520, 960, 480, 1090);
   o += bubble(t, becomeT + 0.1, becomeT + 1.15, ['Delivery time!'], 520, 760, 500, 930);
-  o += bubble(t, mountT + 0.35, END_T - 0.1, ['Not again!'], 470, 900, 690, 1070);
+  o += bubble(t, mountT + 0.35, END_T - 0.1, ['Not again!'], 500, 960, 700, 1120);
   return o;
 }
 SCENES[3] = scene3; SCENES[4] = scene4; SCENES[5] = scene5; SCENES[6] = scene6;
